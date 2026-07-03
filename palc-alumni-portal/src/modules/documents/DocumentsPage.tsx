@@ -3,7 +3,7 @@ import SearchBar from "../../shared/components/SearchBar";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
 import { COLORS } from "../../shared/theme/colors";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DocumentPreviewModal from "../../shared/components/DocumentPreviewModal";
 
 const documents = [
@@ -83,6 +83,23 @@ function formatRecentTime(time: number) {
 
 export default function DocumentsPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+  const filteredDocuments = useMemo(() => {
+    return documents.filter((doc) => {
+      const matchesSearch = doc.name
+        .toLowerCase()
+        .includes(searchText.toLowerCase());
+
+      const matchesCategory =
+        selectedCategory === "All Categories" ||
+        doc.category === selectedCategory;
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [searchText, selectedCategory]);
+
   const [selectedDocument, setSelectedDocument] = useState({
     title: "",
     path: "",
@@ -128,7 +145,7 @@ export default function DocumentsPage() {
         title="Document Repository"
         subtitle="Download and manage your employment records, tax documents and settlement statements — available for up to 24 months after separation."
       />
-      
+
       {/* Metrics Grid */}
       <div
         style={{
@@ -168,10 +185,15 @@ export default function DocumentsPage() {
         <div style={{ marginBottom: "22px" }}>
           <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
             <div style={{ flex: 1, minWidth: "320px" }}>
-              <SearchBar />
+              <SearchBar
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
             </div>
 
             <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
               style={{
                 padding: "12px 16px",
                 borderRadius: "12px",
@@ -181,10 +203,10 @@ export default function DocumentsPage() {
                 color: COLORS.text,
               }}
             >
-              <option>All Categories</option>
-              <option>Employment Record</option>
-              <option>Payroll</option>
-              <option>Tax Document</option>
+              <option value="All Categories">All Categories</option>
+              <option value="Employment Record">Employment Record</option>
+              <option value="Payroll">Payroll</option>
+              <option value="Tax Document">Tax Document</option>
             </select>
           </div>
         </div>
@@ -203,39 +225,54 @@ export default function DocumentsPage() {
               </tr>
             </thead>
             <tbody>
-              {documents.map((doc) => (
-                <tr key={doc.name} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
-                  <td style={{ padding: "12px", fontWeight: 700 }}>{doc.name}</td>
-                  <td style={{ padding: "12px" }}>{doc.category}</td>
-                  <td style={{ padding: "12px" }}>{doc.date}</td>
-                  <td style={{ padding: "12px" }}>{doc.format}</td>
-                  <td style={{ padding: "12px" }}>
-                    <StatusBadge status={doc.status} />
-                  </td>
-                  <td style={{ padding: "12px" }}>
-                    <div style={{ display: "flex", gap: "10px" }}>
-                      <button 
-                        style={secondaryButtonStyle}
-                        onClick={() => {
-                          setSelectedDocument({
-                            title: doc.name,
-                            path: doc.path,
-                          });
-                          setPreviewOpen(true);
-                        }}
-                      >
-                        Preview
-                      </button>
-                      <button
-                        style={primaryButtonStyle}
-                        onClick={() => handleDownload(doc)}
-                      >
-                        Download
-                      </button>
-                    </div>
+              {filteredDocuments.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={6}
+                    style={{
+                      textAlign: "center",
+                      padding: "40px",
+                      color: COLORS.textSecondary,
+                    }}
+                  >
+                    No documents found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredDocuments.map((doc) => (
+                  <tr key={doc.name} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                    <td style={{ padding: "12px", fontWeight: 700 }}>{doc.name}</td>
+                    <td style={{ padding: "12px" }}>{doc.category}</td>
+                    <td style={{ padding: "12px" }}>{doc.date}</td>
+                    <td style={{ padding: "12px" }}>{doc.format}</td>
+                    <td style={{ padding: "12px" }}>
+                      <StatusBadge status={doc.status} />
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <button
+                          style={secondaryButtonStyle}
+                          onClick={() => {
+                            setSelectedDocument({
+                              title: doc.name,
+                              path: doc.path,
+                            });
+                            setPreviewOpen(true);
+                          }}
+                        >
+                          Preview
+                        </button>
+                        <button
+                          style={primaryButtonStyle}
+                          onClick={() => handleDownload(doc)}
+                        >
+                          Download
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

@@ -1,4 +1,16 @@
-export default function SearchBar() {
+import type{ ChangeEvent } from "react";
+
+type SearchBarProps = {
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+};
+
+export default function SearchBar({
+  value,
+  onChange,
+  placeholder = "Search...",
+}: SearchBarProps) {
   return (
     <label
       style={{
@@ -14,13 +26,21 @@ export default function SearchBar() {
         boxShadow: "0 10px 24px rgba(15, 23, 42, 0.05)",
       }}
     >
-      <span style={{ color: "#64748B", fontSize: "12px", fontWeight: 850 }}>
-        SR
+      <span
+        style={{
+          color: "#64748B",
+          fontSize: "12px",
+          fontWeight: 850,
+        }}
+      >
+        🔍
       </span>
 
       <input
         type="search"
-        placeholder="Search documents, records, requests"
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
         style={{
           width: "100%",
           border: "none",
