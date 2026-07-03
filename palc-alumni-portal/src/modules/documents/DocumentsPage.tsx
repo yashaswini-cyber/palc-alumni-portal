@@ -3,6 +3,8 @@ import SearchBar from "../../shared/components/SearchBar";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
 import { COLORS } from "../../shared/theme/colors";
+import { useEffect, useState } from "react";
+import DocumentPreviewModal from "../../shared/components/DocumentPreviewModal";
 
 const documents = [
   {
@@ -11,6 +13,7 @@ const documents = [
     date: "12-Jan-2025",
     format: "PDF",
     status: "Available",
+    path: "/downloads/Form16.pdf",
   },
   {
     name: "Relieving Letter",
@@ -18,6 +21,7 @@ const documents = [
     date: "15-Jan-2025",
     format: "PDF",
     status: "Available",
+    path: "/downloads/Form16.pdf",
   },
   {
     name: "Form 16",
@@ -25,6 +29,7 @@ const documents = [
     date: "30-Mar-2025",
     format: "PDF",
     status: "Available",
+    path: "/downloads/Form16.pdf",
   },
   {
     name: "Last Payslip",
@@ -32,6 +37,7 @@ const documents = [
     date: "31-Dec-2024",
     format: "PDF",
     status: "Available",
+    path: "/downloads/Form16.pdf",
   },
 ];
 
@@ -40,39 +46,102 @@ const secondaryButtonStyle = {
   color: COLORS.primary,
   boxShadow: "none",
   border: `1px solid ${COLORS.border}`,
+  padding: "10px 18px",
+  borderRadius: "10px",
+  cursor: "pointer",
 };
 
+const primaryButtonStyle = {
+  background: COLORS.primary,
+  color: "white",
+  border: "none",
+  borderRadius: "10px",
+  padding: "10px 18px",
+  cursor: "pointer",
+};
+
+function formatRecentTime(time: number) {
+  const diff = Date.now() - time;
+  const minutes = Math.floor(diff / (1000 * 60));
+
+  if (minutes < 1) {
+    return "Just now";
+  }
+
+  if (minutes < 60) {
+    return `${minutes} min ago`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+
+  if (hours < 24) {
+    return `${hours} hr ago`;
+  }
+
+  return new Date(time).toLocaleDateString("en-GB");
+}
+
 export default function DocumentsPage() {
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState({
+    title: "",
+    path: "",
+  });
+  const [recentDownloads, setRecentDownloads] = useState<
+    {
+      name: string;
+      time: number;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("recentDownloads");
+    if (stored) {
+      setRecentDownloads(
+        JSON.parse(stored) as {
+          name: string;
+          time: number;
+        }[]
+      );
+    }
+  }, []);
+
+  const handleDownload = (doc: any) => {
+    const link = document.createElement("a");
+    link.href = doc.path;
+    link.download = doc.name + ".pdf";
+    link.click();
+
+    const newDownload = {
+      name: doc.name,
+      time: Date.now(),
+    };
+
+    const updatedDownloads = [newDownload, ...recentDownloads].slice(0, 5);
+    setRecentDownloads(updatedDownloads);
+    localStorage.setItem("recentDownloads", JSON.stringify(updatedDownloads));
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
       <PageHeader
         title="Document Repository"
         subtitle="Download and manage your employment records, tax documents and settlement statements — available for up to 24 months after separation."
       />
-        <div
+      
+      {/* Metrics Grid */}
+      <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
           gap: "18px",
         }}
       >
         {[
-          {
-            title: "Available Documents",
-            value: "4",
-          },
-          {
-            title: "Recently Added",
-            value: "1",
-          },
-          {
-            title: "Downloaded This Month",
-            value: "3",
-          },
-          {
-            title: "Last Updated",
-            value: "30 Mar 2025",
-          },
+          { title: "Available Documents", value: "4" },
+          { title: "Recently Added", value: "1" },
+          { title: "Downloaded This Month", value: "3" },
+          { title: "Last Updated", value: "30 Mar 2025" },
         ].map((card) => (
           <div
             key={card.title}
@@ -81,121 +150,139 @@ export default function DocumentsPage() {
               border: `1px solid ${COLORS.border}`,
               borderRadius: "18px",
               padding: "22px",
-              boxShadow:
-                "0 8px 18px rgba(15,23,42,.06)",
+              boxShadow: "0 8px 18px rgba(15,23,42,.06)",
             }}
           >
-            <p
-              style={{
-                margin: 0,
-                color: COLORS.textSecondary,
-                fontSize: "13px",
-              }}
-            >
+            <p style={{ margin: 0, color: COLORS.textSecondary, fontSize: "13px" }}>
               {card.title}
             </p>
-
-            <h2
-              style={{
-                marginTop: "12px",
-                marginBottom: 0,
-                color: COLORS.text,
-              }}
-            >
+            <h2 style={{ marginTop: "12px", marginBottom: 0, color: COLORS.text }}>
               {card.value}
             </h2>
           </div>
         ))}
       </div>
 
+      {/* Main Repository Section */}
       <SectionCard title="My Documents">
-        <div style={{ marginBottom: "20px" }}>
-          <div
-  style={{
-    display: "flex",
-    gap: "18px",
-    flexWrap: "wrap",
-    marginBottom: "22px",
-  }}
->
-  <div
-    style={{
-      flex: 1,
-      minWidth: "320px",
-    }}
-  >
-    <SearchBar />
-      </div>
+        <div style={{ marginBottom: "22px" }}>
+          <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
+            <div style={{ flex: 1, minWidth: "320px" }}>
+              <SearchBar />
+            </div>
 
-      <select
-        style={{
-          padding: "12px 16px",
-          borderRadius: "12px",
-          border: `1px solid ${COLORS.border}`,
-          minWidth: "220px",
-        }}
-      >
-        <option>All Categories</option>
-
-        <option>Employment Record</option>
-
-        <option>Payroll</option>
-
-        <option>Tax Document</option>
-      </select>
-    </div>
+            <select
+              style={{
+                padding: "12px 16px",
+                borderRadius: "12px",
+                border: `1px solid ${COLORS.border}`,
+                minWidth: "220px",
+                background: COLORS.surface,
+                color: COLORS.text,
+              }}
+            >
+              <option>All Categories</option>
+              <option>Employment Record</option>
+              <option>Payroll</option>
+              <option>Tax Document</option>
+            </select>
+          </div>
         </div>
 
+        {/* Data Table */}
         <div style={{ overflowX: "auto" }}>
-          <table>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr>
-                <th>Document</th>
-                <th>Category</th>
-                <th>Issue Date</th>
-                <th>Format</th>
-                <th>Status</th>
-                <th>Actions</th>
+              <tr style={{ textAlign: "left", borderBottom: `1px solid ${COLORS.border}` }}>
+                <th style={{ padding: "12px" }}>Document</th>
+                <th style={{ padding: "12px" }}>Category</th>
+                <th style={{ padding: "12px" }}>Issue Date</th>
+                <th style={{ padding: "12px" }}>Format</th>
+                <th style={{ padding: "12px" }}>Status</th>
+                <th style={{ padding: "12px" }}>Actions</th>
               </tr>
             </thead>
-
             <tbody>
-  {documents.map((doc) => (
-    <tr key={doc.name}>
-      <td style={{ fontWeight: 700 }}>{doc.name}</td>
-
-      <td>{doc.category}</td>
-
-      <td>{doc.date}</td>
-
-      <td>{doc.format}</td>
-
-      <td>
-        <StatusBadge status={doc.status} />
-      </td>
-
-      <td>
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-          }}
-        >
-          <button style={secondaryButtonStyle}>
-            Preview
-          </button>
-
-          <button>
-            Download
-          </button>
-        </div>
-      </td>
-    </tr>
-  ))}
-</tbody>
+              {documents.map((doc) => (
+                <tr key={doc.name} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                  <td style={{ padding: "12px", fontWeight: 700 }}>{doc.name}</td>
+                  <td style={{ padding: "12px" }}>{doc.category}</td>
+                  <td style={{ padding: "12px" }}>{doc.date}</td>
+                  <td style={{ padding: "12px" }}>{doc.format}</td>
+                  <td style={{ padding: "12px" }}>
+                    <StatusBadge status={doc.status} />
+                  </td>
+                  <td style={{ padding: "12px" }}>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <button 
+                        style={secondaryButtonStyle}
+                        onClick={() => {
+                          setSelectedDocument({
+                            title: doc.name,
+                            path: doc.path,
+                          });
+                          setPreviewOpen(true);
+                        }}
+                      >
+                        Preview
+                      </button>
+                      <button
+                        style={primaryButtonStyle}
+                        onClick={() => handleDownload(doc)}
+                      >
+                        Download
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </SectionCard>
+
+      {/* Recent Downloads Section */}
+      <SectionCard title="Recent Downloads">
+        {recentDownloads.length === 0 ? (
+          <p style={{ color: COLORS.textSecondary }}>No recent downloads.</p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {recentDownloads.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: `1px solid ${COLORS.border}`,
+                  paddingBottom: "12px",
+                }}
+              >
+                <div>
+                  <strong style={{ color: COLORS.text }}>{item.name}</strong>
+                </div>
+
+                <span
+                  style={{
+                    color: COLORS.textSecondary,
+                    fontSize: "13px",
+                  }}
+                >
+                  {formatRecentTime(item.time)}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </SectionCard>
+
+      {/* Document Preview Overlay Panel */}
+      <DocumentPreviewModal
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        pdfPath={selectedDocument.path}
+        title={selectedDocument.title}
+      />
     </div>
   );
 }
