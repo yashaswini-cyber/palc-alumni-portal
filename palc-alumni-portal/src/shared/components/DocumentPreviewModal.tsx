@@ -24,6 +24,7 @@ export default function DocumentPreviewModal({
           overflow: "hidden",
         }}
       >
+        
         {/* Header */}
 
         <div
