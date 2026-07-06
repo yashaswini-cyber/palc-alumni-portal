@@ -7,6 +7,10 @@ import DashboardSection from "../../shared/components/DashboardSection";
 import { COLORS } from "../../shared/theme/colors";
 import { useNavigate } from "react-router-dom";
 import jobs from "../../mockData/jobs";
+import linkedinLogo from "../../assets/images/linkedin.svg";
+import youtubeLogo from "../../assets/images/youtube.svg";
+import xLogo from "../../assets/images/x.svg";
+import websiteLogo from "../../assets/images/palc-logo.svg";
 
 const sectionTitleStyle = {
   margin: "0 0 18px",
@@ -52,6 +56,33 @@ const activities = [
   "Referral Submitted Successfully",
 ];
 
+const palcVideos = [
+  {
+    title: "Life at PalC Networks",
+    thumbnail: "https://img.youtube.com/vi/sFuKFFQNvpM/maxresdefault.jpg",
+    url: "https://www.youtube.com/watch?v=sFuKFFQNvpM&t=16s",
+  },
+  {
+    title: "PalC Engineering Culture",
+    thumbnail: "https://img.youtube.com/vi/94UIAlmWaCk/maxresdefault.jpg",
+    url: "https://www.youtube.com/watch?v=94UIAlmWaCk&t=5s",
+  },
+  {
+    title: "Technology at PalC",
+    thumbnail: "https://img.youtube.com/vi/h2tTEc3hkWI/maxresdefault.jpg",
+    url: "https://www.youtube.com/watch?v=h2tTEc3hkWI",
+  },
+  {
+    title: "Innovation Journey",
+    thumbnail: "https://img.youtube.com/vi/fdEAdOP5gL4/maxresdefault.jpg",
+    url: "https://www.youtube.com/watch?v=fdEAdOP5gL4",
+  },
+  {
+    title: "PalC Networks",
+    thumbnail: "https://img.youtube.com/vi/Z5FrFT7IOW0/maxresdefault.jpg",
+    url: "https://www.youtube.com/watch?v=Z5FrFT7IOW0",
+  },
+];
 function Glyph({ label }: { label: string }) {
   return (
     <span
@@ -86,251 +117,223 @@ export default function DashboardPage() {
         title="Welcome back, John"
         subtitle="Access your employment records, verification services, career opportunities, referrals and alumni engagement updates."
       />
-
       {/* Hero Header Section */}
-      <section
-        style={{
-          minHeight: "280px",
-          borderRadius: "24px",
-          overflow: "hidden",
-          background:
-            "linear-gradient(120deg, #0A1B3D 0%, #123A7A 45%, #2563EB 78%, #38BDF8 100%)",
-          color: "#FFFFFF",
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1.35fr) minmax(280px, 0.65fr)",
-          alignItems: "stretch",
-          boxShadow: "0 24px 60px rgba(15, 27, 61, 0.28)",
-        }}
-      >
-        <div style={{ padding: "38px 42px" }}>
-          <p
-            style={{
-              margin: 0,
-              fontSize: "13px",
-              fontWeight: 800,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              opacity: 0.82,
-            }}
-          >
-            PalC Networks Alumni
-          </p>
-
-          <h2
-            style={{
-              margin: "14px 0 0",
-              maxWidth: "720px",
-              color: "#FFFFFF",
-              fontSize: "42px",
-              lineHeight: 1.08,
-              fontWeight: 850,
-            }}
-          >
-            Your connected alumni workspace
-          </h2>
-
-          <p
-            style={{
-              margin: "16px 0 0",
-              maxWidth: "680px",
-              color: "rgba(255,255,255,0.86)",
-              fontSize: "15px",
-              lineHeight: 1.7,
-            }}
-          >
-            Stay connected with PalC through records, verification, referrals,
-            career opportunities, benefits and alumni programs.
-          </p>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              flexWrap: "wrap",
-              marginTop: "36px", // Balanced top margin to center buttons between the text above and lower container border
-            }}
-          >
-            {[
-              {
-                title: "My Documents",
-                route: "/documents",
-              },
-              {
-                title: "Employment Verification",
-                route: "/verification",
-              },
-              {
-                title: "Raise Support Ticket",
-                route: "/helpdesk",
-              },
-            ].map((item) => (
-              <button
-                key={item.title}
-                onClick={() => navigate(item.route)}
-                style={{
-                  borderRadius: "999px",
-                  background: "rgba(255,255,255,0.18)",
-                  border: "1px solid rgba(255,255,255,0.28)",
-                  padding: "13px 22px",
-                  fontSize: "14px",
-                  fontWeight: 700,
-                  color: "white",
-                  gap: "18px",
-                  cursor: "pointer",
-                  transition: "background 0.2s ease, border-color 0.2s ease, transform 0.15s ease",
-                  outline: "none",
-                  boxShadow: "0 10px 24px rgba(0,0,0,0.12)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.3)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.5)";
-                  e.currentTarget.style.transform = "translateY(-1px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.18)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                {item.title}
-              </button>
-            ))}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "12px",
-              marginTop: "28px",
-            }}
-          >
-            {[
-              {
-                title: "Secure Login",
-                value: "Enabled",
-                color: "#16A34A",
-              },
-              {
-                title: "Portal Access",
-                value: "24 Months",
-                color: "#2563EB",
-              },
-              {
-                title: "Profile",
-                value: "90% Complete",
-                color: "#D97706",
-              },
-              {
-                title: "Support",
-                value: "24×7 Available",
-                color: "#9333EA",
-              },
-            ].map((pill) => (
-              <div
-                key={pill.title}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  padding: "10px 18px",
-                  borderRadius: "999px",
-                  background: "rgba(255,255,255,0.10)",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                <div
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    background: pill.color,
-                    boxShadow: `0 0 10px ${pill.color}`,
-                  }}
-                />
-
-                <span
-                  style={{
-                    fontSize: "13px",
-                    color: "rgba(255,255,255,0.82)",
-                    fontWeight: 600,
-                  }}
-                >
-                  {pill.title}
-                </span>
-
-                <span
-                  style={{
-                    fontSize: "13px",
-                    color: "#FFFFFF",
-                    fontWeight: 700,
-                  }}
-                >
-                  {pill.value}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Hero Right Panel */}
-        <div
+        <section
           style={{
-            padding: "32px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            minHeight: "280px",
+            borderRadius: "24px",
+            overflow: "hidden",
+            background: "linear-gradient(120deg, #0A1B3D 0%, #123A7A 45%, #2563EB 78%, #38BDF8 100%)",
+            color: "#FFFFFF",
+            display: "grid",
+            gridTemplateColumns: "minmax(0, 1.35fr) minmax(280px, 0.65fr)",
+            alignItems: "stretch",
+            boxShadow: "0 24px 60px rgba(15, 27, 61, 0.28)",
           }}
         >
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "320px",
-              borderRadius: "22px",
-              background: "rgba(255,255,255,0.95)",
-              color: COLORS.text,
-              padding: "24px",
-              boxShadow: "0 20px 45px rgba(15,23,42,0.18)",
-            }}
-          >
-            <h3
+          <div style={{ padding: "38px 42px" }}>
+            <p
               style={{
-                marginTop: 0,
-                marginBottom: "20px",
-                fontSize: "20px",
+                margin: 0,
+                fontSize: "13px",
+                fontWeight: 800,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                opacity: 0.82,
               }}
             >
-              Account Summary
-            </h3>
+              PalC Networks Alumni
+            </p>
 
-            {[
-              ["Last Login", "25 Jun 2026"],
-              ["Portal Access", "11 Months Remaining"],
-              ["Documents", "12 Available"],
-              ["Profile Completion", "90%"],
-              ["Support", "24 × 7"],
-            ].map(([label, value]) => (
-              <div
-                key={label}
+            <h2
+              style={{
+                margin: "14px 0 0",
+                maxWidth: "720px",
+                color: "#FFFFFF",
+                fontSize: "42px",
+                lineHeight: 1.08,
+                fontWeight: 850,
+              }}
+            >
+              Your connected alumni workspace
+            </h2>
+
+            <p
+              style={{
+                margin: "16px 0 0",
+                maxWidth: "680px",
+                color: "rgba(255,255,255,0.86)",
+                fontSize: "15px",
+                lineHeight: 1.7,
+              }}
+            >
+              Stay connected with PalC through records, verification, referrals,
+              career opportunities, benefits and alumni programs.
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                gap: "16px",
+                flexWrap: "wrap",
+                marginTop: "36px",
+              }}
+            >
+              {[
+                { title: "My Documents", route: "/documents" },
+                { title: "Employment Verification", route: "/verification" },
+                { title: "Raise Support Ticket", route: "/helpdesk" },
+              ].map((item) => (
+                <button
+                  key={item.title}
+                  onClick={() => navigate(item.route)}
+                  style={{
+                    borderRadius: "999px",
+                    background: "rgba(255,255,255,0.18)",
+                    border: "1px solid rgba(255,255,255,0.28)",
+                    padding: "13px 22px",
+                    fontSize: "14px",
+                    fontWeight: 700,
+                    color: "white",
+                    gap: "18px",
+                    cursor: "pointer",
+                    transition: "background 0.2s ease, border-color 0.2s ease, transform 0.15s ease",
+                    outline: "none",
+                    boxShadow: "0 10px 24px rgba(0,0,0,0.12)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.3)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.5)";
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.18)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  {item.title}
+                </button>
+              ))}
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "12px",
+                marginTop: "28px",
+              }}
+            >
+              {[
+                { title: "Secure Login", value: "Enabled", color: "#16A34A" },
+                { title: "Portal Access", value: "24 Months", color: "#2563EB" },
+                { title: "Profile", value: "90% Complete", color: "#D97706" },
+                { title: "Support", value: "24×7 Available", color: "#9333EA" },
+              ].map((pill) => (
+                <div
+                  key={pill.title}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    padding: "10px 18px",
+                    borderRadius: "999px",
+                    background: "rgba(255,255,255,0.10)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    backdropFilter: "blur(8px)",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      background: pill.color,
+                      boxShadow: `0 0 10px ${pill.color}`,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "13px",
+                      color: "rgba(255,255,255,0.82)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {pill.title}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "13px",
+                      color: "#FFFFFF",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {pill.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Hero Right Panel */}
+          <div
+            style={{
+              padding: "32px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                maxWidth: "320px",
+                borderRadius: "22px",
+                background: "rgba(255,255,255,0.95)",
+                color: COLORS.text,
+                padding: "24px",
+                boxShadow: "0 20px 45px rgba(15,23,42,0.18)",
+              }}
+            >
+              <h3
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "12px 0",
-                  borderBottom: `1px solid ${COLORS.border}`,
+                  marginTop: 0,
+                  marginBottom: "20px",
+                  fontSize: "20px",
                 }}
               >
-                <span style={{ color: COLORS.textSecondary, fontSize: "14px" }}>
-                  {label}
-                </span>
-                <strong style={{ color: COLORS.text, fontSize: "14px" }}>
-                  {value}
-                </strong>
-              </div>
-            ))}
+                Account Summary
+              </h3>
+
+              {[
+                ["Last Login", "25 Jun 2026"],
+                ["Portal Access", "11 Months Remaining"],
+                ["Documents", "12 Available"],
+                ["Profile Completion", "90%"],
+                ["Support", "24 × 7"],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "12px 0",
+                    borderBottom: `1px solid ${COLORS.border}`,
+                  }}
+                >
+                  <span style={{ color: COLORS.textSecondary, fontSize: "14px" }}>
+                    {label}
+                  </span>
+                  <strong style={{ color: COLORS.text, fontSize: "14px" }}>
+                    {value}
+                  </strong>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       <section
   style={{
     display: "grid",
@@ -630,21 +633,231 @@ export default function DashboardPage() {
           ))}
         </div>
       </section>
+     {/* Stay Connected with PalC */}
 
-      {/* Benefits Block */}
-      <section>
-        <h2 style={sectionTitleStyle}>Stay Connected with PalC</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "18px" }}>
-          {["Healthcare Benefits", "Learning & Certifications", "Corporate Discounts", "Insurance Partners", "Travel Benefits", "Wellness Programs"].map((benefit) => (
-            <div key={benefit} style={{ ...cardStyle, padding: "20px", display: "flex", alignItems: "center", gap: "14px" }}>
-              <span style={{ width: "42px", height: "42px", borderRadius: "14px", background: COLORS.primaryLight, color: COLORS.primary, display: "grid", placeItems: "center", flex: "0 0 auto" }}>
-                <Glyph label="BN" />
-              </span>
-              <span style={{ color: COLORS.text, fontSize: "14px", fontWeight: 800 }}>{benefit}</span>
-            </div>
-          ))}
+<DashboardSection
+  title="Stay Connected with PalC"
+  subtitle="Stay connected with PalC through engineering insights, company culture, product updates and our official communication channels."
+>
+  {/* Featured Videos */}
+
+  <h3
+    style={{
+      marginTop: 0,
+      marginBottom: "18px",
+      color: COLORS.text,
+    }}
+  >
+    Featured Videos
+  </h3>
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+      gap: "20px",
+      marginBottom: "36px",
+    }}
+  >
+    {[
+      {
+        title: "PalC Company Overview",
+        id: "sFuKFFQNvpM",
+        url: "https://www.youtube.com/watch?v=sFuKFFQNvpM&t=16s",
+      },
+      {
+        title: "Engineering Culture",
+        id: "94UIAlmWaCk",
+        url: "https://www.youtube.com/watch?v=94UIAlmWaCk&t=5s",
+      },
+      {
+        title: "Technology at PalC",
+        id: "h2tTEc3hkWI",
+        url: "https://www.youtube.com/watch?v=h2tTEc3hkWI",
+      },
+      {
+        title: "Innovation Journey",
+        id: "fdEAdOP5gL4",
+        url: "https://www.youtube.com/watch?v=fdEAdOP5gL4",
+      },
+      {
+        title: "Life at PalC Networks",
+        id: "Z5FrFT7IOW0",
+        url: "https://www.youtube.com/watch?v=Z5FrFT7IOW0",
+      },
+    ].map((video) => (
+      <div
+        key={video.id}
+        onClick={() => window.open(video.url, "_blank")}
+        style={{
+          cursor: "pointer",
+          borderRadius: "18px",
+          overflow: "hidden",
+          background: COLORS.surface,
+          border: `1px solid ${COLORS.border}`,
+          boxShadow: "0 10px 24px rgba(15,23,42,.08)",
+          transition: ".25s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-4px)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+        }}
+      >
+        <img
+          src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+          alt={video.title}
+          style={{
+            width: "100%",
+            height: "170px",
+            objectFit: "cover",
+          }}
+        />
+
+        <div
+          style={{
+            padding: "18px",
+          }}
+        >
+          <h4
+            style={{
+              margin: 0,
+              color: COLORS.text,
+              fontSize: "16px",
+            }}
+          >
+            {video.title}
+          </h4>
+
+          <p
+            style={{
+              marginTop: "10px",
+              marginBottom: 0,
+              color: COLORS.primary,
+              fontWeight: 700,
+              fontSize: "14px",
+            }}
+          >
+            ▶ Watch on YouTube
+          </p>
         </div>
-      </section>
+      </div>
+    ))}
+  </div>
+
+  {/* Divider */}
+
+  <div
+    style={{
+      height: "1px",
+      background: COLORS.border,
+      marginBottom: "28px",
+    }}
+  />
+
+  {/* Follow PalC */}
+
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      flexWrap: "wrap",
+      gap: "20px",
+    }}
+  >
+    <div>
+      <h3
+        style={{
+          margin: 0,
+          color: COLORS.text,
+        }}
+      >
+        Follow PalC
+      </h3>
+
+      <p
+        style={{
+          marginTop: "8px",
+          marginBottom: 0,
+          color: COLORS.textSecondary,
+          fontSize: "14px",
+          lineHeight: 1.6,
+        }}
+      >
+        Stay connected through our official channels for engineering updates,
+        product launches, career opportunities and alumni initiatives.
+      </p>
+    </div>
+
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "24px",
+      }}
+    >
+      {[
+        {
+          logo: linkedinLogo,
+          url: "https://www.linkedin.com/company/palcnetworks/posts/?feedView=all",
+          alt: "LinkedIn",
+        },
+        {
+          logo: xLogo,
+          url: "https://x.com/palcnetworks",
+          alt: "X",
+        },
+        {
+          logo: youtubeLogo,
+          url: "https://www.youtube.com/@palcnetworks",
+          alt: "YouTube",
+        },
+        {
+          logo: websiteLogo,
+          url: "https://palcnetworks.com",
+          alt: "Website",
+        },
+      ].map((item) => (
+        <div
+          key={item.alt}
+          onClick={() => window.open(item.url, "_blank")}
+          style={{
+            width: "58px",
+            height: "58px",
+            background: "#F8FAFC",
+            borderRadius: "16px",
+            border: `1px solid ${COLORS.border}`,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+            transition: ".2s",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#EFF6FF";
+            e.currentTarget.style.transform = "translateY(-3px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#F8FAFC";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          <img
+            src={item.logo}
+            alt={item.alt}
+            style={{
+              width: "28px",
+              height: "28px",
+              objectFit: "contain",
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</DashboardSection>
 
       {/* Helpdesk Summary Section */}
       <DashboardSection
