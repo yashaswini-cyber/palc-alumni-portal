@@ -168,7 +168,7 @@ export default function DashboardPage() {
               }}
             >
               Stay connected with PalC through records, verification, referrals,
-              career opportunities, benefits and alumni programs.
+              career opportunities, and alumni programs.
             </p>
 
             <div

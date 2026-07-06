@@ -32,9 +32,9 @@ export const quickActions = [
   },
 
   {
-    title: "Benefits & Partners",
+    title: "Stay Connected with PalC",
     description:
-      "View healthcare, insurance and learning partner benefits.",
+      "Explore updates, videos and social channels",
     icon: "🎁",
     route: "/benefits",
   },
