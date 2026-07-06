@@ -633,7 +633,7 @@ export default function DashboardPage() {
 
       {/* Benefits Block */}
       <section>
-        <h2 style={sectionTitleStyle}>Benefits & Partner Network</h2>
+        <h2 style={sectionTitleStyle}>Stay Connected with PalC</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "18px" }}>
           {["Healthcare Benefits", "Learning & Certifications", "Corporate Discounts", "Insurance Partners", "Travel Benefits", "Wellness Programs"].map((benefit) => (
             <div key={benefit} style={{ ...cardStyle, padding: "20px", display: "flex", alignItems: "center", gap: "14px" }}>
