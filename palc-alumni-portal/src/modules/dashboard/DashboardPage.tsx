@@ -755,9 +755,7 @@ export default function DashboardPage() {
       marginBottom: "28px",
     }}
   />
-
   {/* Follow PalC */}
-
   <div
     style={{
       display: "flex",
@@ -858,28 +856,9 @@ export default function DashboardPage() {
     </div>
   </div>
 </DashboardSection>
-
-      {/* Helpdesk Summary Section */}
-      <DashboardSection
-        title="Helpdesk Summary"
-        subtitle="Current alumni support request performance."
-        actionText="Raise Request"
-        onActionClick={() =>
-          alert("Backend Integration Pending\n\nDetailed job descriptions and applications will be available after backend integration.")
-        }
-      >
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: "20px", alignItems: "center" }}>
-          {[["3", "Open Requests"], ["18", "Resolved"], ["96%", "SLA"]].map(([value, label]) => (
-            <div key={label} style={{ borderRadius: "16px", background: "#F8FAFC", border: `1px solid ${COLORS.border}`, padding: "16px" }}>
-              <h3 style={{ margin: 0, color: COLORS.text, fontSize: "26px", lineHeight: 1 }}>{value}</h3>
-              <p style={{ margin: "6px 0 0", color: COLORS.textSecondary, fontSize: "13px" }}>{label}</p>
-            </div>
-          ))}
-        </div>
-      </DashboardSection>
-
-      {/* Recent Activity Section */}
-      <DashboardSection title="Recent Activity">
+      {/*My Requests and Updates Section */}
+      {/*This section is incomplete- must contain info about different modules in the interface*/}
+      <DashboardSection title="My Requests and Updates">
         <div style={{ display: "flex", flexDirection: "column" }}>
           {activities.map((item, index) => (
             <div key={item} style={{ display: "flex", gap: "14px", padding: "16px 0", borderBottom: index === activities.length - 1 ? "none" : `1px solid ${COLORS.border}` }}>
