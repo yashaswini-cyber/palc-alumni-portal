@@ -11,6 +11,16 @@ import linkedinLogo from "../../assets/images/linkedin.svg";
 import youtubeLogo from "../../assets/images/youtube.svg";
 import xLogo from "../../assets/images/x.svg";
 import websiteLogo from "../../assets/images/palc-logo.svg";
+import ContentCard from "../../shared/components/ContentCard";
+
+import {
+  leadershipMessage,
+  announcements,
+  events,
+  successStories,
+  technologySpotlight,
+  newsletter,
+} from "../../mockData/alumniEngagement";
 
 const sectionTitleStyle = {
   margin: "0 0 18px",
@@ -610,31 +620,317 @@ export default function DashboardPage() {
         </div>
       </DashboardSection>
 
-      {/* Alumni Engagement Hub */}
-      <section>
-        <h2 style={sectionTitleStyle}>Alumni Engagement Hub</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "20px" }}>
-          {[
-            { icon: <Glyph label="LD" />, title: "Leadership Message", text: "A note from PalC leadership on alumni programs, community support and professional growth.", action: "Read More" },
-            { icon: <Glyph label="AN" />, title: "Announcements", text: "Annual Alumni Meet registrations, referral policy updates and new learning partners.", action: "View Updates" },
-            { icon: <Glyph label="EV" />, title: "Upcoming Events", text: "Leadership Summit, networking sessions and annual alumni community events.", action: "Explore Events" },
-            { icon: <Glyph label="SS" />, title: "Success Stories", text: "Stories from former PalC engineers leading AI, cloud and enterprise technology teams.", action: "Explore Stories" },
-          ].map((item) => (
-            <div key={item.title} style={cardStyle}>
-              <div style={{ width: "46px", height: "46px", borderRadius: "15px", background: COLORS.primaryLight, color: COLORS.primary, display: "grid", placeItems: "center", marginBottom: "18px" }}>
-                {item.icon}
-              </div>
-              <h3 style={{ margin: 0, color: COLORS.text, fontSize: "17px", fontWeight: 800 }}>{item.title}</h3>
-              <p style={{ margin: "10px 0 18px", color: COLORS.textSecondary, lineHeight: 1.65, fontSize: "14px" }}>{item.text}</p>
-              <button type="button" style={{ ...buttonStyle, background: "#EFF6FF", color: COLORS.primary, boxShadow: "none" }}>
-                {item.action}
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-     {/* Stay Connected with PalC */}
+{/*Alumni Engagement Hub*/}
+   <DashboardSection
+  title="Alumni Engagement Hub"
+  subtitle="Stay connected with PalC through leadership updates, community news, events and alumni success stories."
+>
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: "28px",
+    }}
+  >
+    {/* ====================== Leadership ====================== */}
 
+    <ContentCard
+      badge="Leadership"
+      image={leadershipMessage.image}
+      author={leadershipMessage.author}
+      designation={leadershipMessage.designation}
+      preview={leadershipMessage.preview}
+      fullContent={leadershipMessage.fullContent}
+      actionText={leadershipMessage.actionText}
+    />
+
+    {/* ====================== Remaining Cards ====================== */}
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit,minmax(360px,1fr))",
+        gap: "24px",
+      }}
+    >
+      {/* ---------------- Announcements ---------------- */}
+
+      <ContentCard
+        badge="Announcements"
+      >
+        <h2
+          style={{
+            marginTop: 0,
+            marginBottom: 22,
+            color: COLORS.text,
+          }}
+        >
+          Latest Community Updates
+        </h2>
+
+        {announcements.map((item) => (
+          <div
+            key={item.title}
+            style={{
+              paddingBottom: 18,
+              marginBottom: 18,
+              borderBottom: `1px solid ${COLORS.border}`,
+            }}
+          >
+            <h3
+              style={{
+                margin: 0,
+                fontSize: 17,
+                color: COLORS.text,
+              }}
+            >
+              {item.title}
+            </h3>
+
+            <p
+              style={{
+                marginTop: 10,
+                marginBottom: 12,
+                lineHeight: 1.7,
+                color: COLORS.textSecondary,
+              }}
+            >
+              {item.description}
+            </p>
+
+            <span
+              style={{
+                color: COLORS.primary,
+                fontWeight: 600,
+                fontSize: 13,
+              }}
+            >
+              {item.date}
+            </span>
+          </div>
+        ))}
+      </ContentCard>
+
+      {/* ---------------- Upcoming Events ---------------- */}
+
+      <ContentCard
+        badge="Events"
+      >
+        <h2
+          style={{
+            marginTop: 0,
+            marginBottom: 22,
+            color: COLORS.text,
+          }}
+        >
+          Upcoming Alumni Events
+        </h2>
+
+        {events.map((event) => (
+          <div
+            key={event.title}
+            style={{
+              paddingBottom: 18,
+              marginBottom: 18,
+              borderBottom: `1px solid ${COLORS.border}`,
+            }}
+          >
+            <h3
+              style={{
+                margin: 0,
+                fontSize: 17,
+              }}
+            >
+              {event.title}
+            </h3>
+
+            <p
+              style={{
+                marginTop: 10,
+                color: COLORS.textSecondary,
+              }}
+            >
+              📅 {event.date}
+            </p>
+
+            <p
+              style={{
+                marginTop: 6,
+                color: COLORS.textSecondary,
+              }}
+            >
+              📍 {event.location}
+            </p>
+
+            <button
+              style={{
+                ...buttonStyle,
+                marginTop: 16,
+              }}
+            >
+              {event.action}
+            </button>
+          </div>
+        ))}
+      </ContentCard>
+
+      {/* ---------------- Success Stories ---------------- */}
+
+      <ContentCard
+        badge="Alumni Spotlight"
+      >
+        <h2
+          style={{
+            marginTop: 0,
+            marginBottom: 22,
+            color: COLORS.text,
+          }}
+        >
+          Success Stories
+        </h2>
+
+        {successStories.map((story) => (
+          <div
+            key={story.name}
+            style={{
+              paddingBottom: 18,
+              marginBottom: 18,
+              borderBottom: `1px solid ${COLORS.border}`,
+            }}
+          >
+            <h3
+              style={{
+                margin: 0,
+                color: COLORS.text,
+              }}
+            >
+              {story.name}
+            </h3>
+
+            <p
+              style={{
+                color: COLORS.primary,
+                marginTop: 8,
+                fontWeight: 600,
+              }}
+            >
+              {story.role}
+            </p>
+
+            <p
+              style={{
+                color: COLORS.textSecondary,
+                lineHeight: 1.7,
+              }}
+            >
+              {story.achievement}
+            </p>
+
+            <button
+              style={{
+                ...buttonStyle,
+              }}
+            >
+              {story.action}
+            </button>
+          </div>
+        ))}
+      </ContentCard>
+
+      {/* ---------------- Newsletter ---------------- */}
+
+      <ContentCard
+        badge="Newsletter"
+      >
+        <h2
+          style={{
+            marginTop: 0,
+            marginBottom: 10,
+            color: COLORS.text,
+          }}
+        >
+          {newsletter.title}
+        </h2>
+
+        <p
+          style={{
+            color: COLORS.primary,
+            fontWeight: 700,
+          }}
+        >
+          {newsletter.month}
+        </p>
+
+        <p
+          style={{
+            color: COLORS.textSecondary,
+            lineHeight: 1.7,
+          }}
+        >
+          {newsletter.description}
+        </p>
+
+        <button
+          style={{
+            ...buttonStyle,
+            marginTop: 18,
+            marginBottom: 28,
+          }}
+        >
+          {newsletter.action}
+        </button>
+
+        <h3
+          style={{
+            borderTop: `1px solid ${COLORS.border}`,
+            paddingTop: 24,
+            marginBottom: 18,
+          }}
+        >
+          Technology Spotlight
+        </h3>
+
+        {technologySpotlight.map((tech) => (
+          <div
+            key={tech.title}
+            style={{
+              marginBottom: 20,
+            }}
+          >
+            <strong
+              style={{
+                color: COLORS.text,
+              }}
+            >
+              {tech.title}
+            </strong>
+
+            <p
+              style={{
+                marginTop: 8,
+                color: COLORS.textSecondary,
+                lineHeight: 1.6,
+              }}
+            >
+              {tech.description}
+            </p>
+
+            <button
+              style={{
+                ...buttonStyle,
+                marginTop: 10,
+              }}
+            >
+              {tech.action}
+            </button>
+          </div>
+        ))}
+      </ContentCard>
+    </div>
+  </div>
+</DashboardSection>
+
+{/* Stay Connected with PalC */}
 <DashboardSection
   title="Stay Connected with PalC"
   subtitle="Stay connected with PalC through engineering insights, company culture, product updates and our official communication channels."
