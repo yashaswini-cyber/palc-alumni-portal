@@ -661,27 +661,27 @@ export default function DashboardPage() {
   >
     {[
       {
-        title: "PalC Company Overview",
+        title: "Partner Interview: Kingston Smiler Selvaraj, Founder and CEO of PALC Networks",
         id: "sFuKFFQNvpM",
         url: "https://www.youtube.com/watch?v=sFuKFFQNvpM&t=16s",
       },
       {
-        title: "Engineering Culture",
+        title: "PalC Networks at SONiC India Workshop 2025",
         id: "94UIAlmWaCk",
         url: "https://www.youtube.com/watch?v=94UIAlmWaCk&t=5s",
       },
       {
-        title: "Technology at PalC",
+        title: "Network Monitoring with SONiC",
         id: "h2tTEc3hkWI",
         url: "https://www.youtube.com/watch?v=h2tTEc3hkWI",
       },
       {
-        title: "Innovation Journey",
+        title: "Behind-the-Scenes at PalC Networks!",
         id: "fdEAdOP5gL4",
         url: "https://www.youtube.com/watch?v=fdEAdOP5gL4",
       },
       {
-        title: "Life at PalC Networks",
+        title: "PalC building something extraordinary! Shaping a brighter future through hardwork & success!",
         id: "Z5FrFT7IOW0",
         url: "https://www.youtube.com/watch?v=Z5FrFT7IOW0",
       },
