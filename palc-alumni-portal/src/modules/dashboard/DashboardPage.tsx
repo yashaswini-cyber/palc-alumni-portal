@@ -790,14 +790,13 @@ export default function DashboardPage() {
         ))}
       </ContentCard>
 
-      {/*Technology Spotlight*/}
-        {/* Technology Spotlight */}
+      {/* Technology Spotlight */}
 
 <ContentCard badge="Technology">
   <h2
     style={{
       marginTop: 0,
-      marginBottom: 22,
+      marginBottom: 24,
       color: COLORS.text,
     }}
   >
@@ -808,26 +807,23 @@ export default function DashboardPage() {
     {
       title: "SONiC & Open Networking",
       description:
-        "Production-grade open networking solutions with EVPN/VXLAN fabrics and multi-vendor hardware support.",
+        "Discover how PalC Networks enables next-generation open networking with production-grade SONiC deployments, EVPN/VXLAN fabrics, SRv6, OpenTelemetry, and multi-vendor switching solutions engineered for modern enterprise and data centre environments.",
+      link: "https://palcnetworks.com/solutions/sonic-open-networking/",
     },
     {
       title: "AI Data Centre Fabrics",
       description:
-        "High-performance AI networking with RoCEv2, GPU cluster connectivity and scalable spine-leaf architectures.",
-    },
-    {
-      title: "Cloud & Hybrid Cloud",
-      description:
-        "Modern private and hybrid cloud platforms powered by Kubernetes, GitOps and cloud-native operations.",
+        "Explore scalable AI infrastructure built for high-performance workloads using lossless Ethernet, GPU cluster networking, RoCEv2 optimisation, and resilient spine-leaf architectures designed for cloud-scale deployments.",
+      link: "https://palcnetworks.com/solutions/data-center-modernization-ai-fabrics/",
     },
   ].map((tech, index) => (
     <div
       key={tech.title}
       style={{
-        paddingBottom: index !== 2 ? 18 : 0,
-        marginBottom: index !== 2 ? 18 : 0,
+        paddingBottom: index === 0 ? "24px" : "0",
+        marginBottom: index === 0 ? "24px" : "0",
         borderBottom:
-          index !== 2
+          index === 0
             ? `1px solid ${COLORS.border}`
             : "none",
       }}
@@ -835,9 +831,9 @@ export default function DashboardPage() {
       <h3
         style={{
           margin: 0,
-          fontSize: 17,
+          fontSize: "18px",
           color: COLORS.text,
-          fontWeight: 700,
+          fontWeight: 800,
         }}
       >
         {tech.title}
@@ -845,17 +841,18 @@ export default function DashboardPage() {
 
       <p
         style={{
-          marginTop: 10,
-          marginBottom: 12,
-          lineHeight: 1.65,
+          marginTop: "12px",
+          marginBottom: "16px",
           color: COLORS.textSecondary,
-          fontSize: 14,
+          lineHeight: 1.8,
+          fontSize: "14px",
         }}
       >
         {tech.description}
       </p>
 
       <button
+        onClick={() => window.open(tech.link, "_blank")}
         style={{
           border: "none",
           background: "transparent",
@@ -863,16 +860,41 @@ export default function DashboardPage() {
           fontWeight: 700,
           cursor: "pointer",
           padding: 0,
-          fontSize: 14,
+          fontSize: "14px",
         }}
       >
         Learn More →
       </button>
     </div>
   ))}
+    <div
+  style={{
+    marginTop: "28px",
+    paddingTop: "22px",
+    paddingBottom: "18px",   // ← Added whitespace
+    borderTop: `1px solid ${COLORS.border}`,
+    display: "flex",
+    justifyContent: "center",
+  }}
+>
+        <button
+      onClick={() =>
+        window.open(
+          "https://palcnetworks.com/solutions/",
+          "_blank"
+        )
+      }
+      style={{
+        ...buttonStyle,
+        minWidth: "220px",
+        justifyContent: "center",
+      }}
+    >
+      Explore All Solutions →
+    </button>
+  </div>
 </ContentCard>
-      
-
+            
       {/*Success Stories*/}
       <ContentCard badge="Success Story">
   <div
@@ -978,96 +1000,114 @@ export default function DashboardPage() {
     </div>
   </div>
 </ContentCard>
-      
-      {/*Newsletter*/}
+    {/* Upcoming Event */}
 
-      <ContentCard
-        badge="Newsletter"
-      >
-        <h2
-          style={{
-            marginTop: 0,
-            marginBottom: 10,
-            color: COLORS.text,
-          }}
-        >
-          {newsletter.title}
-        </h2>
+<ContentCard badge="Upcoming Event">
+  <h2
+    style={{
+      marginTop: 0,
+      marginBottom: "12px",
+      color: COLORS.text,
+      fontSize: "22px",
+      fontWeight: 800,
+    }}
+  >
+    Alumni Events
+  </h2>
 
-        <p
-          style={{
-            color: COLORS.primary,
-            fontWeight: 700,
-          }}
-        >
-          {newsletter.month}
-        </p>
+  <p
+    style={{
+      margin: "0 0 22px",
+      color: COLORS.textSecondary,
+      fontSize: "14px",
+      lineHeight: 1.7,
+    }}
+  >
+    Reconnect with fellow alumni through networking events,
+    technical sessions and community meetups organised by
+    PalC Networks.
+  </p>
 
-        <p
-          style={{
-            color: COLORS.textSecondary,
-            lineHeight: 1.7,
-          }}
-        >
-          {newsletter.description}
-        </p>
+  <div
+    style={{
+      border: `1px solid ${COLORS.border}`,
+      borderRadius: "16px",
+      padding: "16px",
+      background: "#FBFDFF",
+      marginBottom: "16px",
+    }}
+  >
+    <span
+      style={{
+        display: "inline-block",
+        background: "#E8F1FF",
+        color: COLORS.primary,
+        padding: "6px 12px",
+        borderRadius: "999px",
+        fontSize: "12px",
+        fontWeight: 700,
+        marginBottom: "16px",
+      }}
+    >
+      Featured Event
+    </span>
 
-        <button
-          style={{
-            ...buttonStyle,
-            marginTop: 18,
-            marginBottom: 28,
-          }}
-        >
-          {newsletter.action}
-        </button>
+    <h3
+      style={{
+        margin: 0,
+        color: COLORS.text,
+        fontSize: "19px",
+        fontWeight: 800,
+      }}
+    >
+      Annual Alumni Meet 2026
+    </h3>
 
-        <h3
-          style={{
-            borderTop: `1px solid ${COLORS.border}`,
-            paddingTop: 24,
-            marginBottom: 18,
-          }}
-        >
-          Technology Spotlight
-        </h3>
+    <p
+      style={{
+        marginTop: "14px",
+        marginBottom: "10px",
+        color: COLORS.textSecondary,
+        lineHeight: 1.6,
+      }}
+    >
+    Reconnect with fellow alumni through networking, leadership
+    interactions and technology discussions.
+    </p>
 
-        {technologySpotlight.map((tech) => (
-          <div
-            key={tech.title}
-            style={{
-              marginBottom: 20,
-            }}
-          >
-            <strong
-              style={{
-                color: COLORS.text,
-              }}
-            >
-              {tech.title}
-            </strong>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "4px",
+        marginTop: "10px",
+        color: COLORS.text,
+        fontSize: "14px",
+      }}
+    >
+      <span>📅 15 August 2026</span>
+      <span>📍 Bangalore, India</span>
+      <span>🕒 5:00 PM – 8:30 PM</span>
+    </div>
+  </div>
 
-            <p
-              style={{
-                marginTop: 8,
-                color: COLORS.textSecondary,
-                lineHeight: 1.6,
-              }}
-            >
-              {tech.description}
-            </p>
-
-            <button
-              style={{
-                ...buttonStyle,
-                marginTop: 10,
-              }}
-            >
-              {tech.action}
-            </button>
-          </div>
-        ))}
-      </ContentCard>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+    }}
+  >
+    <button
+      onClick={() => navigate("/events")}
+      style={{
+        ...buttonStyle,
+        minWidth: "220px",
+      }}
+    >
+      View All Events →
+    </button>
+  </div>
+</ContentCard> 
     </div>
   </div>
 </DashboardSection>
