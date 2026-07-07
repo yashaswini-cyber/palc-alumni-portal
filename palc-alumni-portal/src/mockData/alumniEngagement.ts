@@ -15,22 +15,22 @@ export const leadershipMessage = {
 
 export const announcements = [
   {
-    title: "Alumni Portal Officially Launched",
+    title: "Alumni Portal Now Live",
     description:
-      "The PalC Alumni Portal is now live, providing secure access to employment records, verification services, referrals, career opportunities and alumni engagement resources.",
+      "Securely access employment records, verification services, referrals, career opportunities and alumni resources from one unified platform.",
     date: "Today",
   },
   {
-    title: "Learning Benefits Expanded",
+    title: "Employment Verification Service Enhanced",
     description:
-      "Alumni can now access additional technical certification discounts through selected learning partners.",
+      "Employment verification requests can now be tracked directly through the portal with real-time status updates and downloadable verification certificates.",
     date: "2 days ago",
   },
   {
-    title: "Referral Program Updated",
+    title: "Referral Program Open for Alumni",
 
     description:
-      "Updated referral guidelines and expanded opportunities are now available across engineering teams.",
+      "Eligible alumni can now submit professional referrals for selected opportunities through the Referral Program section.",
     date: "1 week ago",
   },
 ];
