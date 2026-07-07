@@ -25,14 +25,13 @@ export default function PageHeader({ title, subtitle }: PageHeaderProps) {
             textTransform: "uppercase",
           }}
         >
-          PalC Networks
         </p>
 
         <h1
           style={{
             margin: 0,
             color: "#0F172A",
-            fontSize: "38px",
+            fontSize: "28px",
             fontWeight: 850,
             lineHeight: 1.12,
           }}

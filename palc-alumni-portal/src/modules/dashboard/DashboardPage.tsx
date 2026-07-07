@@ -621,18 +621,20 @@ export default function DashboardPage() {
         </div>
       </DashboardSection>
 
-{/*Alumni Engagement Hub*/}
-   <DashboardSection
-  title="Alumni Engagement Hub"
-  subtitle="Stay connected with PalC through leadership updates, community news, events and alumni success stories."
+{/* Alumni Engagement Hub */}
+
+<section
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "28px",
+  }}
 >
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: "28px",
-    }}
-  >
+  <PageHeader
+    title="Alumni Engagement Hub"
+    subtitle="Stay connected with PalC through leadership updates, community news, featured technologies, events and alumni success stories."
+  />
+  
     {/* Leadership*/}
       <ContentCard badge="Leadership">
   <div
@@ -1108,9 +1110,8 @@ export default function DashboardPage() {
     </button>
   </div>
 </ContentCard> 
-    </div>
-  </div>
-</DashboardSection>
+</div>
+</section>
 
 {/* Stay Connected with PalC */}
 <DashboardSection
