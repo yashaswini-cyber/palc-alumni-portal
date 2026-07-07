@@ -724,18 +724,16 @@ export default function DashboardPage() {
   </div>
 </ContentCard>
     
-
     {/* Remaining Cards*/}
-
     <div
       style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-        gap: "24px",
-      }}
-    >
-      {/* Announcements */}
-
+      display: "grid",
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+      gap: "24px",
+      alignItems: "start",
+  }}
+>
+    {/* Announcements */}
       <ContentCard
         badge="Announcements"
       >
@@ -792,132 +790,195 @@ export default function DashboardPage() {
         ))}
       </ContentCard>
 
-      {/*Upcoming Events*/}
+      {/*Technology Spotlight*/}
+        {/* Technology Spotlight */}
 
-      <ContentCard
-        badge="Events"
+<ContentCard badge="Technology">
+  <h2
+    style={{
+      marginTop: 0,
+      marginBottom: 22,
+      color: COLORS.text,
+    }}
+  >
+    Technology Spotlight
+  </h2>
+
+  {[
+    {
+      title: "SONiC & Open Networking",
+      description:
+        "Production-grade open networking solutions with EVPN/VXLAN fabrics and multi-vendor hardware support.",
+    },
+    {
+      title: "AI Data Centre Fabrics",
+      description:
+        "High-performance AI networking with RoCEv2, GPU cluster connectivity and scalable spine-leaf architectures.",
+    },
+    {
+      title: "Cloud & Hybrid Cloud",
+      description:
+        "Modern private and hybrid cloud platforms powered by Kubernetes, GitOps and cloud-native operations.",
+    },
+  ].map((tech, index) => (
+    <div
+      key={tech.title}
+      style={{
+        paddingBottom: index !== 2 ? 18 : 0,
+        marginBottom: index !== 2 ? 18 : 0,
+        borderBottom:
+          index !== 2
+            ? `1px solid ${COLORS.border}`
+            : "none",
+      }}
+    >
+      <h3
+        style={{
+          margin: 0,
+          fontSize: 17,
+          color: COLORS.text,
+          fontWeight: 700,
+        }}
       >
-        <h2
-          style={{
-            marginTop: 0,
-            marginBottom: 22,
-            color: COLORS.text,
-          }}
-        >
-          Upcoming Alumni Events
-        </h2>
+        {tech.title}
+      </h3>
 
-        {events.map((event) => (
-          <div
-            key={event.title}
-            style={{
-              paddingBottom: 18,
-              marginBottom: 18,
-              borderBottom: `1px solid ${COLORS.border}`,
-            }}
-          >
-            <h3
-              style={{
-                margin: 0,
-                fontSize: 17,
-              }}
-            >
-              {event.title}
-            </h3>
+      <p
+        style={{
+          marginTop: 10,
+          marginBottom: 12,
+          lineHeight: 1.65,
+          color: COLORS.textSecondary,
+          fontSize: 14,
+        }}
+      >
+        {tech.description}
+      </p>
 
-            <p
-              style={{
-                marginTop: 10,
-                color: COLORS.textSecondary,
-              }}
-            >
-              📅 {event.date}
-            </p>
-
-            <p
-              style={{
-                marginTop: 6,
-                color: COLORS.textSecondary,
-              }}
-            >
-              📍 {event.location}
-            </p>
-
-            <button
-              style={{
-                ...buttonStyle,
-                marginTop: 16,
-              }}
-            >
-              {event.action}
-            </button>
-          </div>
-        ))}
-      </ContentCard>
+      <button
+        style={{
+          border: "none",
+          background: "transparent",
+          color: COLORS.primary,
+          fontWeight: 700,
+          cursor: "pointer",
+          padding: 0,
+          fontSize: 14,
+        }}
+      >
+        Learn More →
+      </button>
+    </div>
+  ))}
+</ContentCard>
+      
 
       {/*Success Stories*/}
+      <ContentCard badge="Success Story">
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: "12px",
+    }}
+  >
+    {/* Description */}
+    {/* Section Heading */}
 
-      <ContentCard
-        badge="Alumni Spotlight"
+<h2
+  style={{
+    margin: "0 0 10px",
+    color: COLORS.text,
+    fontSize: "22px",
+    fontWeight: 800,
+    lineHeight: 1.2,
+  }}
+>
+  Featured Success Story
+</h2>
+
+{/* Description */}
+
+<p
+  style={{
+    margin: "0 0 16px",
+    fontSize: "14px",
+    lineHeight: 1.6,
+    color: COLORS.textSecondary,
+  }}
+>
+  Watch inspiring stories celebrating PalC Networks' journey,
+  engineering excellence, innovation, and the people who continue
+  to shape our growing technology community.
+</p>
+
+    {/* Video Card */}
+
+    <div
+      onClick={() =>
+        window.open(
+          "https://www.youtube.com/watch?v=knoXGE-YdF4",
+          "_blank"
+        )
+      }
+      style={{
+        cursor: "pointer",
+        borderRadius: "12px",
+        overflow: "hidden",
+        background: "#FFFFFF",
+        border: `1px solid ${COLORS.border}`,
+        transition: "0.2s ease",
+        boxShadow: "0 6px 18px rgba(15,23,42,0.06)",
+      }}
+    >
+      {/* Thumbnail */}
+
+      <img
+        src="https://i.ytimg.com/vi/knoXGE-YdF4/hqdefault.jpg"
+        alt="Celebrating 7 Years: Voices of Our Journey"
+        style={{
+          width: "100%",
+          height: "145px",
+          objectFit: "cover",
+          display: "block",
+        }}
+      />
+
+      {/* Title */}
+
+      <div
+        style={{
+          padding: "16px",
+        }}
       >
-        <h2
+        <h3
           style={{
-            marginTop: 0,
-            marginBottom: 22,
+            margin: 0,
+            fontSize: "17px",
+            lineHeight: 1.3,
             color: COLORS.text,
+            fontWeight: 800,
           }}
         >
-          Success Stories
-        </h2>
+          Celebrating 7 Years: Voices of Our Journey
+        </h3>
 
-        {successStories.map((story) => (
-          <div
-            key={story.name}
-            style={{
-              paddingBottom: 18,
-              marginBottom: 18,
-              borderBottom: `1px solid ${COLORS.border}`,
-            }}
-          >
-            <h3
-              style={{
-                margin: 0,
-                color: COLORS.text,
-              }}
-            >
-              {story.name}
-            </h3>
-
-            <p
-              style={{
-                color: COLORS.primary,
-                marginTop: 8,
-                fontWeight: 600,
-              }}
-            >
-              {story.role}
-            </p>
-
-            <p
-              style={{
-                color: COLORS.textSecondary,
-                lineHeight: 1.7,
-              }}
-            >
-              {story.achievement}
-            </p>
-
-            <button
-              style={{
-                ...buttonStyle,
-              }}
-            >
-              {story.action}
-            </button>
-          </div>
-        ))}
-      </ContentCard>
-
+        <p
+          style={{
+            marginTop: "10px",
+            marginBottom: 0,
+            fontSize: "15px",
+            fontWeight: 700,
+            color: COLORS.primary,
+          }}
+        >
+          ▶ Watch on YouTube
+        </p>
+      </div>
+    </div>
+  </div>
+</ContentCard>
+      
       {/*Newsletter*/}
 
       <ContentCard
