@@ -238,7 +238,6 @@ export default function DashboardPage() {
             >
               {[
                 { title: "Secure Login", value: "Enabled", color: "#16A34A" },
-                { title: "Portal Access", value: "24 Months", color: "#2563EB" },
                 { title: "Profile", value: "90% Complete", color: "#D97706" },
                 { title: "Support", value: "24×7 Available", color: "#9333EA" },
               ].map((pill) => (
@@ -319,7 +318,6 @@ export default function DashboardPage() {
 
               {[
                 ["Last Login", "25 Jun 2026"],
-                ["Portal Access", "11 Months Remaining"],
                 ["Documents", "12 Available"],
                 ["Profile Completion", "90%"],
                 ["Support", "24 × 7"],
