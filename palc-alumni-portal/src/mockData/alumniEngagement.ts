@@ -1,4 +1,4 @@
-import ceoImage from "../assets/images/ceo-image.png";
+import ceoImage from "../assets/images/ceo-image.jpg";
 
 export const leadershipMessage = {
   badge: "Leadership",
@@ -31,7 +31,6 @@ export const announcements = [
 
     description:
       "Updated referral guidelines and expanded opportunities are now available across engineering teams.",
-
     date: "1 week ago",
   },
 ];

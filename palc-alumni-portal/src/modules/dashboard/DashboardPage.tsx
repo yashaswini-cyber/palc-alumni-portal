@@ -1,3 +1,4 @@
+import { useState } from "react";
 import DashboardCard from "../../shared/components/DashboardCard";
 import PageHeader from "../../shared/components/PageHeader";
 import QuickActionCard from "../../shared/components/QuickActionCard";
@@ -113,7 +114,7 @@ function Glyph({ label }: { label: string }) {
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-
+  const [showLeadership, setShowLeadership] = useState(false);
   return (
     <div
       style={{
@@ -632,28 +633,108 @@ export default function DashboardPage() {
       gap: "28px",
     }}
   >
-    {/* ====================== Leadership ====================== */}
+    {/* Leadership*/}
+      <ContentCard badge="Leadership">
+  <div
+    style={{
+      display: "flex",
+      gap: "36px",
+      alignItems: "flex-start",
+    }}
+  >
+    {/* CEO Image */}
 
-    <ContentCard
-      badge="Leadership"
-      image={leadershipMessage.image}
-      author={leadershipMessage.author}
-      designation={leadershipMessage.designation}
-      preview={leadershipMessage.preview}
-      fullContent={leadershipMessage.fullContent}
-      actionText={leadershipMessage.actionText}
+    <img
+      src={leadershipMessage.image}
+      alt={leadershipMessage.author}
+      style={{
+        width: "220px",
+        height: "280px",
+        borderRadius: "18px",
+        objectFit: "cover",
+        flexShrink: 0,
+        boxShadow: "0 12px 30px rgba(15,23,42,0.12)",
+      }}
     />
 
-    {/* ====================== Remaining Cards ====================== */}
+    {/* Right Side */}
+
+    <div
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <h2
+        style={{
+          margin: 0,
+          fontSize: "24px",
+          fontWeight: 800,
+          color: COLORS.text,
+          lineHeight: 1.2,
+        }}
+      >
+        {leadershipMessage.author}
+      </h2>
+
+      <p
+        style={{
+          marginTop: "10px",
+          marginBottom: "24px",
+          color: COLORS.primary,
+          fontWeight: 600,
+          fontSize: "17px",
+          lineHeight: 1.5,
+        }}
+      >
+        {leadershipMessage.designation}
+      </p>
+
+      <p
+        style={{
+          margin: 0,
+          color: COLORS.textSecondary,
+          lineHeight: 1.85,
+          fontSize: "15px",
+        }}
+      >
+        {showLeadership
+          ? leadershipMessage.fullContent
+          : leadershipMessage.preview}
+      </p>
+
+      <button
+        onClick={() => setShowLeadership(!showLeadership)}
+        style={{
+          marginTop: "22px",
+          alignSelf: "flex-start",
+          border: "none",
+          background: "transparent",
+          color: COLORS.primary,
+          fontWeight: 700,
+          fontSize: "15px",
+          cursor: "pointer",
+          padding: 0,
+        }}
+      >
+        {showLeadership ? "Read Less ▲" : "Read More ▼"}
+      </button>
+    </div>
+  </div>
+</ContentCard>
+    
+
+    {/* Remaining Cards*/}
 
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit,minmax(360px,1fr))",
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
         gap: "24px",
       }}
     >
-      {/* ---------------- Announcements ---------------- */}
+      {/* Announcements */}
 
       <ContentCard
         badge="Announcements"
@@ -711,7 +792,7 @@ export default function DashboardPage() {
         ))}
       </ContentCard>
 
-      {/* ---------------- Upcoming Events ---------------- */}
+      {/*Upcoming Events*/}
 
       <ContentCard
         badge="Events"
@@ -774,7 +855,7 @@ export default function DashboardPage() {
         ))}
       </ContentCard>
 
-      {/* ---------------- Success Stories ---------------- */}
+      {/*Success Stories*/}
 
       <ContentCard
         badge="Alumni Spotlight"
@@ -837,7 +918,7 @@ export default function DashboardPage() {
         ))}
       </ContentCard>
 
-      {/* ---------------- Newsletter ---------------- */}
+      {/*Newsletter*/}
 
       <ContentCard
         badge="Newsletter"

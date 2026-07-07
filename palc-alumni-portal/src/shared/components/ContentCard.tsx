@@ -65,8 +65,8 @@ export default function ContentCard({
             src={image}
             alt={author}
             style={{
-              width: "100%",
-              height: 260,
+              width: "240px",
+              height: "300px",
               objectFit: "cover",
               borderRadius: 18,
               marginBottom: 22,
