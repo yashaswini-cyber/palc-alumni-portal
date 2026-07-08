@@ -6,6 +6,7 @@ import InfoCard from "../../shared/components/InfoCard";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
 import { COLORS } from "../../shared/theme/colors";
+import { useNavigate } from "react-router-dom";
 
 const requests = [
   {
@@ -45,6 +46,7 @@ const secondaryButtonStyle = {
 };
 
 export default function VerificationPage() {
+  const navigate = useNavigate();
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
       <PageHeader
@@ -517,6 +519,216 @@ export default function VerificationPage() {
         subtitle="Enabled for all generated certificates."
       />
     ))}
+  </div>
+</SectionCard>
+
+{/* Verification Process*/}
+<SectionCard
+  title="Verification Process"
+  subtitle="Understand how every verification request is processed from submission to completion."
+>
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: "18px",
+    }}
+  >
+    {[
+      {
+        title: "Request Submitted",
+        description:
+          "Your verification request has been successfully submitted through the Alumni Portal.",
+      },
+      {
+        title: "HR Review",
+        description:
+          "The HR team validates your employment records and supporting information.",
+      },
+      {
+        title: "Verification Generation",
+        description:
+          "A digitally signed employment verification certificate is generated.",
+      },
+      {
+        title: "Employer Verification",
+        description:
+          "The requesting organisation can verify the certificate using the Verification ID or QR Code.",
+      },
+      {
+        title: "Completed",
+        description:
+          "Verification is completed and remains available in your verification history.",
+      },
+    ].map((step, index) => (
+      <div
+        key={step.title}
+        style={{
+          display: "flex",
+          gap: "18px",
+          alignItems: "flex-start",
+        }}
+      >
+        <div
+          style={{
+            width: "18px",
+            height: "18px",
+            borderRadius: "50%",
+            background: COLORS.primary,
+            marginTop: "4px",
+            flexShrink: 0,
+          }}
+        />
+
+        <div
+          style={{
+            flex: 1,
+            paddingBottom: "18px",
+            borderBottom:
+              index !== 4
+                ? `1px solid ${COLORS.border}`
+                : "none",
+          }}
+        >
+          <h4
+            style={{
+              margin: 0,
+              color: COLORS.text,
+            }}
+          >
+            {step.title}
+          </h4>
+
+          <p
+            style={{
+              marginTop: "8px",
+              color: COLORS.textSecondary,
+              lineHeight: 1.7,
+            }}
+          >
+            {step.description}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</SectionCard>
+
+{/* Verification Guidelines*/}
+<SectionCard
+  title="Verification Guidelines"
+  subtitle="Important information before requesting employment verification."
+>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns:
+        "repeat(auto-fit,minmax(280px,1fr))",
+      gap: "24px",
+    }}
+  >
+    {[
+      {
+        title: "Who can request verification?",
+        text:
+          "Employment verification can be requested for recruitment, higher education, visa processing, financial institutions or any authorised verification purpose.",
+      },
+      {
+        title: "Processing Time",
+        text:
+          "Most requests are completed within two business days. Additional verification may require further documentation.",
+      },
+      {
+        title: "Verification Methods",
+        text:
+          "Verification is supported through digitally signed certificates, Verification ID and QR validation.",
+      },
+      {
+        title: "Privacy",
+        text:
+          "Verification information is shared only with authorised organisations after completing the required verification workflow.",
+      },
+    ].map((item) => (
+      <div
+        key={item.title}
+        style={{
+          background: "#F8FAFC",
+          border: `1px solid ${COLORS.border}`,
+          borderRadius: "16px",
+          padding: "22px",
+        }}
+      >
+        <h4
+          style={{
+            marginTop: 0,
+            color: COLORS.text,
+          }}
+        >
+          {item.title}
+        </h4>
+
+        <p
+          style={{
+            color: COLORS.textSecondary,
+            lineHeight: 1.7,
+            marginBottom: 0,
+          }}
+        >
+          {item.text}
+        </p>
+      </div>
+    ))}
+  </div>
+</SectionCard>
+
+{/* Need Assistance? */}
+<SectionCard
+  title="Need Assistance?"
+  subtitle="Our Alumni Support Team is available to assist with verification-related queries."
+>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      flexWrap: "wrap",
+      gap: "20px",
+    }}
+  >
+    <div
+      style={{
+        maxWidth: "650px",
+      }}
+    >
+      <h3
+        style={{
+          marginTop: 0,
+          marginBottom: "10px",
+          color: COLORS.text,
+        }}
+      >
+        Verification Support
+      </h3>
+
+      <p
+        style={{
+          margin: 0,
+          color: COLORS.textSecondary,
+          lineHeight: 1.7,
+        }}
+      >
+        If your verification request requires additional information,
+        supporting documents or manual review, you can contact the
+        Alumni Helpdesk. Our team will guide you through the verification
+        process and provide status updates.
+      </p>
+    </div>
+
+    <PrimaryButton
+      onClick={() => navigate("/helpdesk")}
+    >
+      Contact Helpdesk
+    </PrimaryButton>
   </div>
 </SectionCard>
   </div>
