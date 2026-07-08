@@ -1,5 +1,6 @@
 import PageHeader from "../../shared/components/PageHeader";
 import HeroBanner from "../../shared/components/HeroBanner";
+import StatsCard from "../../shared/components/StatsCard";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
 import { COLORS } from "../../shared/theme/colors";
@@ -82,7 +83,6 @@ export default function VerificationPage() {
             >
               Verification Summary
             </h3>
-
             {[
               ["Pending Requests", "2"],
               ["Completed", "18"],
@@ -121,70 +121,42 @@ export default function VerificationPage() {
           </>
         }
       />
-
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-          gap: "20px",
-          marginBottom: "32px",
-        }}
-      >
-            {[
-            {
-              title: "Pending Requests",
-              value: "2",
-              color: "#2563EB",
-            },
-            {
-              title: "Completed",
-              value: "18",
-              color: "#16A34A",
-            },
-            {
-              title: "QR Certificates",
-              value: "12",
-              color: "#D97706",
-            },
-            {
-              title: "Average Processing",
-              value: "2 Days",
-              color: "#DC2626",
-            },
-          ].map((card) => (
-            <div
-              key={card.title}
-              style={{
-                background: "#FFFFFF",
-                borderRadius: "18px",
-                padding: "24px",
-                border: `1px solid ${COLORS.border}`,
-                boxShadow:
-                  "0 12px 30px rgba(15,23,42,.05)",
-              }}
-            >
-              <p
-                style={{
-                  margin: 0,
-                  color: COLORS.textSecondary,
-                  fontWeight: 600,
-                }}
-              >
-                {card.title}
-              </p>
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+    gap: "20px",
+    marginBottom: "32px",
+  }}
+>
+  <StatsCard
+    title="Pending Requests"
+    value="2"
+    subtitle="Awaiting HR Review"
+    accentColor="#2563EB"
+  />
 
-              <h2
-                style={{
-                  color: card.color,
-                  marginTop: "12px",
-                  marginBottom: 0,
-                }}
-              >
-                {card.value}
-              </h2>
-            </div>
-          ))}
-        </div>
+  <StatsCard
+    title="Completed"
+    value="18"
+    subtitle="Successfully Verified"
+    accentColor="#16A34A"
+  />
+
+  <StatsCard
+    title="QR Certificates"
+    value="12"
+    subtitle="Ready to Download"
+    accentColor="#D97706"
+  />
+
+  <StatsCard
+    title="Average Processing"
+    value="2 Days"
+    subtitle="Current Turnaround"
+    accentColor="#DC2626"
+  />
+</div>
 
         <SectionCard
       title="Request Employment Verification"

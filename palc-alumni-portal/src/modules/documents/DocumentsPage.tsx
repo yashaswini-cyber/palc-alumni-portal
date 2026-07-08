@@ -1,3 +1,4 @@
+import StatsCard from "../../shared/components/StatsCard";
 import PageHeader from "../../shared/components/PageHeader";
 import SearchBar from "../../shared/components/SearchBar";
 import SectionCard from "../../shared/components/SectionCard";
@@ -148,37 +149,41 @@ export default function DocumentsPage() {
 
       {/* Metrics Grid */}
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "18px",
-        }}
-      >
-        {[
-          { title: "Available Documents", value: "4" },
-          { title: "Recently Added", value: "1" },
-          { title: "Downloaded This Month", value: "3" },
-          { title: "Last Updated", value: "30 Mar 2025" },
-        ].map((card) => (
-          <div
-            key={card.title}
-            style={{
-              background: COLORS.surface,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: "18px",
-              padding: "22px",
-              boxShadow: "0 8px 18px rgba(15,23,42,.06)",
-            }}
-          >
-            <p style={{ margin: 0, color: COLORS.textSecondary, fontSize: "13px" }}>
-              {card.title}
-            </p>
-            <h2 style={{ marginTop: "12px", marginBottom: 0, color: COLORS.text }}>
-              {card.value}
-            </h2>
-          </div>
-        ))}
-      </div>
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+    gap: "20px",
+    marginBottom: "32px",
+  }}
+>
+  <StatsCard
+    title="Available Documents"
+    value="12"
+    subtitle="Employment records"
+    accentColor="#2563EB"
+  />
+
+  <StatsCard
+    title="Recently Added"
+    value="2"
+    subtitle="New this month"
+    accentColor="#16A34A"
+  />
+
+  <StatsCard
+    title="Downloads"
+    value="18"
+    subtitle="This month"
+    accentColor="#D97706"
+  />
+
+  <StatsCard
+    title="Last Updated"
+    value="30 Mar"
+    subtitle="Latest upload"
+    accentColor="#9333EA"
+  />
+</div>
 
       {/* Main Repository Section */}
       <SectionCard title="My Documents">
