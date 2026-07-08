@@ -1,4 +1,5 @@
 import { useState } from "react";
+import HeroBanner from "../../shared/components/HeroBanner";
 import DashboardCard from "../../shared/components/DashboardCard";
 import PageHeader from "../../shared/components/PageHeader";
 import QuickActionCard from "../../shared/components/QuickActionCard";
@@ -129,220 +130,82 @@ export default function DashboardPage() {
         subtitle="Access your employment records, verification services, career opportunities, referrals and alumni engagement updates."
       />
       {/* Hero Header Section */}
-        <section
+        <HeroBanner
+  badge="PalC Networks Alumni"
+  title="Your connected alumni workspace"
+  subtitle="Stay connected with PalC through records, verification, referrals, career opportunities and alumni programs."
+  actions={[
+    {
+      title: "My Documents",
+      onClick: () => navigate("/documents"),
+    },
+    {
+      title: "Employment Verification",
+      onClick: () => navigate("/verification"),
+    },
+    {
+      title: "Raise Support Ticket",
+      onClick: () => navigate("/helpdesk"),
+    },
+  ]}
+  pills={[
+    {
+      title: "Secure Login",
+      value: "Enabled",
+      color: "#16A34A",
+    },
+    {
+      title: "Profile",
+      value: "90% Complete",
+      color: "#D97706",
+    },
+    {
+      title: "Support",
+      value: "24×7 Available",
+      color: "#9333EA",
+    },
+  ]}
+  summaryCard={
+    <>
+      <h3
+        style={{
+          marginTop: 0,
+          marginBottom: 20,
+        }}
+      >
+        Account Summary
+      </h3>
+
+      {[
+        ["Last Login", "25 Jun 2026"],
+        ["Documents", "12 Available"],
+        ["Profile Completion", "90%"],
+        ["Support", "24 × 7"],
+      ].map(([label, value]) => (
+        <div
+          key={label}
           style={{
-            minHeight: "280px",
-            borderRadius: "24px",
-            overflow: "hidden",
-            background: "linear-gradient(120deg, #0A1B3D 0%, #123A7A 45%, #2563EB 78%, #38BDF8 100%)",
-            color: "#FFFFFF",
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1.35fr) minmax(280px, 0.65fr)",
-            alignItems: "stretch",
-            boxShadow: "0 24px 60px rgba(15, 27, 61, 0.28)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "12px 0",
+            borderBottom: `1px solid ${COLORS.border}`,
           }}
         >
-          <div style={{ padding: "38px 42px" }}>
-            <p
-              style={{
-                margin: 0,
-                fontSize: "13px",
-                fontWeight: 800,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                opacity: 0.82,
-              }}
-            >
-              PalC Networks Alumni
-            </p>
-
-            <h2
-              style={{
-                margin: "14px 0 0",
-                maxWidth: "720px",
-                color: "#FFFFFF",
-                fontSize: "42px",
-                lineHeight: 1.08,
-                fontWeight: 850,
-              }}
-            >
-              Your connected alumni workspace
-            </h2>
-
-            <p
-              style={{
-                margin: "16px 0 0",
-                maxWidth: "680px",
-                color: "rgba(255,255,255,0.86)",
-                fontSize: "15px",
-                lineHeight: 1.7,
-              }}
-            >
-              Stay connected with PalC through records, verification, referrals,
-              career opportunities, and alumni programs.
-            </p>
-
-            <div
-              style={{
-                display: "flex",
-                gap: "16px",
-                flexWrap: "wrap",
-                marginTop: "36px",
-              }}
-            >
-              {[
-                { title: "My Documents", route: "/documents" },
-                { title: "Employment Verification", route: "/verification" },
-                { title: "Raise Support Ticket", route: "/helpdesk" },
-              ].map((item) => (
-                <button
-                  key={item.title}
-                  onClick={() => navigate(item.route)}
-                  style={{
-                    borderRadius: "999px",
-                    background: "rgba(255,255,255,0.18)",
-                    border: "1px solid rgba(255,255,255,0.28)",
-                    padding: "13px 22px",
-                    fontSize: "14px",
-                    fontWeight: 700,
-                    color: "white",
-                    gap: "18px",
-                    cursor: "pointer",
-                    transition: "background 0.2s ease, border-color 0.2s ease, transform 0.15s ease",
-                    outline: "none",
-                    boxShadow: "0 10px 24px rgba(0,0,0,0.12)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.3)";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.5)";
-                    e.currentTarget.style.transform = "translateY(-1px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.18)";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }}
-                >
-                  {item.title}
-                </button>
-              ))}
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "12px",
-                marginTop: "28px",
-              }}
-            >
-              {[
-                { title: "Secure Login", value: "Enabled", color: "#16A34A" },
-                { title: "Profile", value: "90% Complete", color: "#D97706" },
-                { title: "Support", value: "24×7 Available", color: "#9333EA" },
-              ].map((pill) => (
-                <div
-                  key={pill.title}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    padding: "10px 18px",
-                    borderRadius: "999px",
-                    background: "rgba(255,255,255,0.10)",
-                    border: "1px solid rgba(255,255,255,0.18)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      background: pill.color,
-                      boxShadow: `0 0 10px ${pill.color}`,
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "rgba(255,255,255,0.82)",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {pill.title}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "#FFFFFF",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {pill.value}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Hero Right Panel */}
-          <div
+          <span
             style={{
-              padding: "32px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              color: COLORS.textSecondary,
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                maxWidth: "320px",
-                borderRadius: "22px",
-                background: "rgba(255,255,255,0.95)",
-                color: COLORS.text,
-                padding: "24px",
-                boxShadow: "0 20px 45px rgba(15,23,42,0.18)",
-              }}
-            >
-              <h3
-                style={{
-                  marginTop: 0,
-                  marginBottom: "20px",
-                  fontSize: "20px",
-                }}
-              >
-                Account Summary
-              </h3>
+            {label}
+          </span>
 
-              {[
-                ["Last Login", "25 Jun 2026"],
-                ["Documents", "12 Available"],
-                ["Profile Completion", "90%"],
-                ["Support", "24 × 7"],
-              ].map(([label, value]) => (
-                <div
-                  key={label}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "12px 0",
-                    borderBottom: `1px solid ${COLORS.border}`,
-                  }}
-                >
-                  <span style={{ color: COLORS.textSecondary, fontSize: "14px" }}>
-                    {label}
-                  </span>
-                  <strong style={{ color: COLORS.text, fontSize: "14px" }}>
-                    {value}
-                  </strong>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+          <strong>{value}</strong>
+        </div>
+      ))}
+    </>
+  }
+/>
       <section
   style={{
     display: "grid",

@@ -1,4 +1,5 @@
 import PageHeader from "../../shared/components/PageHeader";
+import HeroBanner from "../../shared/components/HeroBanner";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
 import { COLORS } from "../../shared/theme/colors";
@@ -34,105 +35,102 @@ export default function VerificationPage() {
   title="Employment Verification Center"
   subtitle="Securely verify your employment with PalC through digital verification workflows, QR-enabled certificates and authorised third-party verification."
 />
+    <HeroBanner
+        badge="Digital Verification Services"
+        title="Employment Verification Center"
+        subtitle="Submit employment verification requests, download QR-enabled employment certificates, securely share verification records with authorised organisations and track the complete verification lifecycle."
+        actions={[
+          {
+            title: "New Verification Request",
+            onClick: () => {},
+          },
+          {
+            title: "Download Certificate",
+            onClick: () => {},
+          },
+          {
+            title: "Verification History",
+            onClick: () => {},
+          },
+        ]}
+        pills={[
+          {
+            title: "Digital Verification",
+            value: "Enabled",
+            color: "#16A34A",
+          },
+          {
+            title: "QR Certificates",
+            value: "12 Available",
+            color: "#2563EB",
+          },
+          {
+            title: "Processing Time",
+            value: "2 Days",
+            color: "#D97706",
+          },
+        ]}
+        summaryCard={
+          <>
+            <h3
+              style={{
+                marginTop: 0,
+                marginBottom: "20px",
+                fontSize: "20px",
+                color: COLORS.text,
+              }}
+            >
+              Verification Summary
+            </h3>
 
-  <div
-    style={{
-      background:
-        "linear-gradient(135deg,#0F3D91,#2563EB)",
-      borderRadius: "22px",
-      padding: "34px",
-      color: "white",
-      marginBottom: "32px",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: "32px",
-      flexWrap: "wrap",
-    }}
-  >
-    <div style={{ flex: 2 }}>
-      <p
-        style={{
-          textTransform: "uppercase",
-          letterSpacing: "1px",
-          opacity: .85,
-          fontWeight: 700,
-          margin: 0,
-        }}
-      >
-        Digital Verification Services
-      </p>
+            {[
+              ["Pending Requests", "2"],
+              ["Completed", "18"],
+              ["QR Certificates", "12"],
+              ["Avg. Processing", "2 Days"],
+            ].map(([label, value]) => (
+              <div
+                key={label}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "12px 0",
+                  borderBottom: `1px solid ${COLORS.border}`,
+                }}
+              >
+                <span
+                  style={{
+                    color: COLORS.textSecondary,
+                    fontSize: "14px",
+                  }}
+                >
+                  {label}
+                </span>
 
-      <h2
-        style={{
-          marginTop: "14px",
-          marginBottom: "16px",
-          color: "white",
-          fontSize: "34px",
-        }}
-      >
-        Verify your employment instantly.
-      </h2>
-      <p
-        style={{
-          maxWidth: "650px",
-          lineHeight: 1.7,
-          opacity: .9,
-        }}
-      >
-        Submit employment verification requests,
-        download digitally verified certificates,
-        and share secure QR-enabled credentials
-        with employers and authorised verification partners.
-      </p>
+                <strong
+                  style={{
+                    color: COLORS.text,
+                    fontSize: "14px",
+                  }}
+                >
+                  {value}
+                </strong>
+              </div>
+            ))}
+          </>
+        }
+      />
+
       <div
         style={{
-          display: "flex",
-          gap: "14px",
-          marginTop: "24px",
-          flexWrap: "wrap",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+          gap: "20px",
+          marginBottom: "32px",
         }}
       >
-        <button>New Verification Request</button>
-        <button style={secondaryButtonStyle}>
-          Download Certificate
-        </button>
-      </div>
-    </div>
-
-    <div
-      style={{
-        background: "rgba(255,255,255,.15)",
-        padding: "24px",
-        borderRadius: "18px",
-        minWidth: "260px",
-        backdropFilter: "blur(8px)",
-      }}
-    >
-      <h3
-        style={{
-          marginTop: 0,
-          color: "white",
-        }}
-      >
-        Account Summary
-      </h3>
-      <p>✔ Digital Verification Enabled</p>
-      <p>✔ QR Certificates Available</p>
-      <p>✔ Third-Party Verification Supported</p>
-      <p>✔ Average Processing: 2 Business Days</p>
-    </div>
-  </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(220px,1fr))",
-            gap: "20px",
-            marginBottom: "32px",
-          }}
-        >
-          {[
+            {[
             {
               title: "Pending Requests",
               value: "2",
