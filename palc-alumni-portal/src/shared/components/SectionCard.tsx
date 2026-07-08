@@ -1,33 +1,88 @@
 import type { ReactNode } from "react";
+import { COLORS } from "../theme/colors";
 
 type Props = {
   title: string;
+  subtitle?: string;
+  actionText?: string;
+  onActionClick?: () => void;
   children: ReactNode;
 };
 
-export default function SectionCard({ title, children }: Props) {
+export default function SectionCard({
+  title,
+  subtitle,
+  actionText,
+  onActionClick,
+  children,
+}: Props) {
   return (
     <section
       style={{
         background: "#FFFFFF",
-        padding: "24px",
-        borderRadius: "18px",
-        boxShadow: "0 18px 42px rgba(15, 23, 42, 0.07)",
-        border: "1px solid #D6E4F0",
-        marginBottom: "24px",
+        padding: "28px",
+        borderRadius: "20px",
+        border: `1px solid ${COLORS.border}`,
+        boxShadow: "0 18px 42px rgba(15,23,42,0.07)",
+        marginBottom: "28px",
       }}
     >
-      <h3
+      {/* Header */}
+      <div
         style={{
-          margin: "0 0 18px",
-          color: "#0F172A",
-          fontSize: "20px",
-          lineHeight: 1.25,
-          fontWeight: 800,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: "20px",
+          marginBottom: "24px",
+          flexWrap: "wrap",
         }}
       >
-        {title}
-      </h3>
+        <div>
+          <h2
+            style={{
+              margin: 0,
+              color: COLORS.text,
+              fontSize: "24px",
+              fontWeight: 800,
+            }}
+          >
+            {title}
+          </h2>
+
+          {subtitle && (
+            <p
+              style={{
+                marginTop: "8px",
+                marginBottom: 0,
+                color: COLORS.textSecondary,
+                fontSize: "14px",
+                lineHeight: 1.6,
+                maxWidth: "700px",
+              }}
+            >
+              {subtitle}
+            </p>
+          )}
+        </div>
+
+        {actionText && (
+          <button
+            onClick={onActionClick}
+            style={{
+              background: COLORS.primary,
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: "10px",
+              padding: "10px 18px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            {actionText}
+          </button>
+        )}
+      </div>
 
       {children}
     </section>
