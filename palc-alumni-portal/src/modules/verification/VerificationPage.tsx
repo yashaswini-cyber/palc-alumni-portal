@@ -1,6 +1,7 @@
 import PageHeader from "../../shared/components/PageHeader";
 import HeroBanner from "../../shared/components/HeroBanner";
 import StatsCard from "../../shared/components/StatsCard";
+import PrimaryButton from "../../shared/components/PrimaryButton";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
 import { COLORS } from "../../shared/theme/colors";
@@ -224,15 +225,15 @@ export default function VerificationPage() {
           marginTop: "24px",
         }}
       >
-        <button>
+        <PrimaryButton>
           Submit Verification Request
-        </button>
+        </PrimaryButton>
       </div>
     </SectionCard>
 
       <SectionCard title="Verification Requests">
         <div style={{ marginBottom: "20px" }}>
-          <button>New Verification Request</button>
+          <PrimaryButton>New Verification Request</PrimaryButton>
         </div>
 
         <div style={{ overflowX: "auto" }}>
@@ -262,7 +263,7 @@ export default function VerificationPage() {
 
                   <td>
                     <button style={secondaryButtonStyle}>Track</button>
-                    <button>Download Letter</button>
+                    <PrimaryButton>Download Letter</PrimaryButton>
                   </td>
                 </tr>
               ))}

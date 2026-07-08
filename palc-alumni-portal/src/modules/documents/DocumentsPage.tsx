@@ -1,4 +1,5 @@
 import StatsCard from "../../shared/components/StatsCard";
+import PrimaryButton from "../../shared/components/PrimaryButton";
 import PageHeader from "../../shared/components/PageHeader";
 import SearchBar from "../../shared/components/SearchBar";
 import SectionCard from "../../shared/components/SectionCard";
@@ -267,12 +268,11 @@ export default function DocumentsPage() {
                         >
                           Preview
                         </button>
-                        <button
-                          style={primaryButtonStyle}
+                        <PrimaryButton
                           onClick={() => handleDownload(doc)}
-                        >
-                          Download
-                        </button>
+                          >
+                              Download
+                          </PrimaryButton>
                       </div>
                     </td>
                   </tr>
