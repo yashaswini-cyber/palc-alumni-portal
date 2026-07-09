@@ -7,6 +7,7 @@ import PrimaryButton from "../../shared/components/PrimaryButton";
 import InfoCard from "../../shared/components/InfoCard";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
+import DetailsModal from "../../shared/components/DetailsModal";
 import { COLORS } from "../../shared/theme/colors";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -132,6 +133,9 @@ export default function VerificationPage() {
   const [sortBy, setSortBy] = useState("Newest");
   const [showSuccess, setShowSuccess] = useState(false);
   const [requiredBy, setRequiredBy] = useState<Date | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<
+  (typeof requests)[number] | null >(null);
 
   const [formData, setFormData] = useState({
     verificationType: "Employment Verification",
@@ -204,9 +208,12 @@ export default function VerificationPage() {
     });
     setRequiredBy(null);
   };
-
+const handleViewDetails = (request: (typeof requests)[number]) => {
+  setSelectedRequest(request);
+  setShowDetailsModal(true);
+};
   const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({
+        document.getElementById(id)?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
@@ -484,7 +491,7 @@ export default function VerificationPage() {
                     <td style={{ padding: "12px" }}><StatusBadge status={req.status} /></td>
                     <td style={{ padding: "12px" }}>
                       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                        <button style={secondaryButtonStyle}>View Details</button>
+                        <button style={secondaryButtonStyle} onClick={() => handleViewDetails(req)} >View Details</button>
                         <button style={secondaryButtonStyle}>Track Progress</button>
                         {req.status === "Approved" ? (
                         <PrimaryButton>Download Certificate</PrimaryButton>) : (<button disabled style={{opacity: 0.5,cursor: "not-allowed",padding: "8px 14px",borderRadius: "8px",border: `1px solid ${COLORS.border}`,background: "#F8FAFC",color: COLORS.textSecondary,}}
@@ -569,6 +576,127 @@ export default function VerificationPage() {
           <PrimaryButton onClick={() => navigate("/helpdesk")}>Contact Helpdesk</PrimaryButton>
         </div>
       </SectionCard>
+     
+        <DetailsModal
+          open={showDetailsModal}
+          title="Verification Request Details"
+          onClose={() => setShowDetailsModal(false)}
+        >
+          {selectedRequest && (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "22px",
+              }}
+            >
+              <div>
+                <p style={{ color: COLORS.textSecondary, marginBottom: "6px" }}>
+                  Request ID
+                </p>
+                <strong>{selectedRequest.id}</strong>
+              </div>
+
+              <div>
+                <p style={{ color: COLORS.textSecondary, marginBottom: "6px" }}>
+                  Requested By
+                </p>
+                <strong>{selectedRequest.requester}</strong>
+              </div>
+
+              <div>
+                <p style={{ color: COLORS.textSecondary, marginBottom: "6px" }}>
+                  Organisation
+                </p>
+                <strong>{selectedRequest.company}</strong>
+              </div>
+
+              <div>
+                <p style={{ color: COLORS.textSecondary, marginBottom: "6px" }}>
+                  Verification Type
+                </p>
+                <strong>{selectedRequest.type}</strong>
+              </div>
+
+              <div>
+                <p style={{ color: COLORS.textSecondary, marginBottom: "6px" }}>
+                  Required By
+                </p>
+                <strong>{selectedRequest.date}</strong>
+              </div>
+
+              <div>
+                <p style={{ color: COLORS.textSecondary, marginBottom: "6px" }}>
+                  Current Stage
+                </p>
+                <StageBadge stage={selectedRequest.stage} />
+              </div>
+
+              <div>
+                <p style={{ color: COLORS.textSecondary, marginBottom: "6px" }}>
+                  Status
+                </p>
+                <StatusBadge status={selectedRequest.status} />
+              </div>
+
+              <div>
+                <p style={{ color: COLORS.textSecondary, marginBottom: "6px" }}>
+                  Verification Method
+                </p>
+                <strong>Digital Verification</strong>
+              </div>
+
+              <div
+                style={{
+                  gridColumn: "1 / -1",
+                  marginTop: "10px",
+                  padding: "18px",
+                  borderRadius: "12px",
+                  background: "#F8FAFC",
+                  border: `1px solid ${COLORS.border}`,
+                }}
+              >
+                <h4
+                  style={{
+                    marginTop: 0,
+                    marginBottom: "10px",
+                    color: COLORS.text,
+                  }}
+                >
+                  Request Summary
+                </h4>
+                <p
+                  style={{
+                    margin: 0,
+                    lineHeight: 1.7,
+                    color: COLORS.textSecondary,
+                  }}
+                >
+                  This request has been created through the PalC Alumni Portal.
+                  The verification will be processed by the HR Operations team.
+                  Once approved, a digitally signed employment certificate with
+                  QR verification will be generated and made available for download.
+                </p>
+              </div>
+              <div
+                style={{
+                  gridColumn: "1 / -1",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "12px",
+                  marginTop: "12px",
+                }}
+              >
+                <button style={secondaryButtonStyle}onClick={() => setShowDetailsModal(false)}>Close</button>        
+                {selectedRequest.status === "Approved" && (
+                  <PrimaryButton>
+                    Download Certificate
+                  </PrimaryButton>
+                )}
+              </div>
+            </div>
+          )}
+        </DetailsModal>
     </div>
   );
 }
