@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../../shared/components/Toast";
 import HeroBanner from "../../shared/components/HeroBanner";
@@ -8,17 +8,15 @@ import InfoCard from "../../shared/components/InfoCard";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
 import { COLORS } from "../../shared/theme/colors";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-// Local PageHeader Component (If not imported externally)
 type PageHeaderProps = {
   title: string;
   subtitle: string;
 };
 
-function PageHeader({
-  title,
-  subtitle,
-}: PageHeaderProps) {
+function PageHeader({ title, subtitle }: PageHeaderProps) {
   return (
     <div style={{ marginBottom: "8px" }}>
       <h1 style={{ color: COLORS.text, margin: "0 0 8px 0", fontSize: "28px" }}>{title}</h1>
@@ -37,6 +35,24 @@ const secondaryButtonStyle = {
   cursor: "pointer",
 };
 
+// Type-safe Ref-forwarding Input element for React-Datepicker
+const CustomDateInput = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+  (props, ref) => (
+    <input
+      {...props}
+      ref={ref}
+      style={{
+        width: "100%",
+        padding: "12px 14px",
+        borderRadius: "10px",
+        border: `1px solid ${COLORS.border}`,
+        backgroundColor: "#fff",
+      }}
+    />
+  )
+);
+CustomDateInput.displayName = "CustomDateInput";
+
 export default function VerificationPage() {
   const navigate = useNavigate();
 
@@ -46,7 +62,7 @@ export default function VerificationPage() {
       id: "VR001",
       company: "Microsoft",
       requester: "HR Team",
-      date: "10 Jun 2026",
+      date: "10 June 2026",
       type: "Employment Verification",
       stage: "HR Review",
       status: "Approved",
@@ -55,7 +71,7 @@ export default function VerificationPage() {
       id: "VR002",
       company: "Google",
       requester: "Background Verification Agency",
-      date: "18 Jun 2026",
+      date: "18 June 2026",
       type: "Background Verification",
       stage: "Processing",
       status: "Pending",
@@ -64,36 +80,42 @@ export default function VerificationPage() {
       id: "VR003",
       company: "Amazon",
       requester: "Recruitment Team",
-      date: "20 Jun 2026",
+      date: "20 June 2026",
       type: "Employment Verification",
       stage: "Completed",
       status: "Approved",
     },
   ]);
 
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [requiredBy, setRequiredBy] = useState<Date | null>(null);
+
   const [formData, setFormData] = useState({
     verificationType: "Employment Verification",
     organisation: "",
     purpose: "New Employment",
-    requiredBy: "",
     notes: "",
   });
 
-  const [showSuccess, setShowSuccess] = useState(false);
-
   // 2. Event Handlers
-  const handleInputChange = (
-  field: keyof typeof formData,
-  value: string
-) => {
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
+  const formatDisplayDate = (date: Date | null) => {
+    if (!date) return "";
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
   const handleCreateRequest = () => {
-    if (!formData.organisation || !formData.requiredBy) {
+    if (!formData.organisation || !requiredBy) {
       alert("Please complete all mandatory fields.");
       return;
     }
@@ -102,12 +124,7 @@ export default function VerificationPage() {
       id: `VR${String(requests.length + 1).padStart(3, "0")}`,
       company: formData.organisation,
       requester: "Self",
-      // Formatting the local date consistently
-      date: new Date().toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      }),
+      date: formatDisplayDate(requiredBy),
       type: formData.verificationType,
       stage: "Submitted",
       status: "Pending",
@@ -115,18 +132,18 @@ export default function VerificationPage() {
 
     setRequests([newRequest, ...requests]);
     setShowSuccess(true);
-    
-    // Reset form fields
+
+    // Reset form fields cleanly
     setFormData({
       verificationType: "Employment Verification",
       organisation: "",
       purpose: "New Employment",
-      requiredBy: "",
       notes: "",
     });
+    setRequiredBy(null);
   };
 
-  const scrollToSection = (id:string) => {
+  const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({
       behavior: "smooth",
       block: "start",
@@ -139,7 +156,7 @@ export default function VerificationPage() {
         title="Employment Verification Center"
         subtitle="Securely verify your employment with PalC through digital verification workflows, QR-enabled certificates and authorised third-party verification."
       />
-      
+
       <Toast
         show={showSuccess}
         type="success"
@@ -190,7 +207,7 @@ export default function VerificationPage() {
           </>
         }
       />
-      
+
       {/* Metrics Section */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px" }}>
         <StatsCard title="Pending Requests" value="2" subtitle="Awaiting HR Review" accentColor="#2563EB" />
@@ -258,11 +275,13 @@ export default function VerificationPage() {
               <label style={{ display: "block", marginBottom: "8px", fontWeight: 600, color: COLORS.text }}>
                 Required By *
               </label>
-              <input
-                type="date"
-                value={formData.requiredBy}
-                onChange={(e) => handleInputChange("requiredBy", e.target.value)}
-                style={{ width: "100%", padding: "12px 14px", borderRadius: "10px", border: `1px solid ${COLORS.border}` }}
+              <DatePicker
+                selected={requiredBy}
+                onChange={(date: Date | null) => setRequiredBy(date)}
+                minDate={new Date()}
+                placeholderText="Select a due date"
+                dateFormat="d MMMM yyyy"
+                customInput={<CustomDateInput />}
               />
             </div>
           </div>
@@ -327,7 +346,7 @@ export default function VerificationPage() {
                 ))}
               </div>
             </div>
-            
+
             <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
               <thead style={{ background: "#F8FAFC" }}>
                 <tr>
@@ -373,7 +392,7 @@ export default function VerificationPage() {
           <InfoCard title="Experience Letter" subtitle="Secure employment history." action={<PrimaryButton>Preview</PrimaryButton>} />
           <InfoCard title="Relieving Letter" subtitle="Official relieving documentation." action={<PrimaryButton>Download</PrimaryButton>} />
         </div>
-      </SectionCard>  
+      </SectionCard>
 
       {/* Third Party Support */}
       <SectionCard title="Third-Party Verification" subtitle="Allow trusted companies to check your context records.">
