@@ -696,6 +696,7 @@ const handleViewDetails = (request: (typeof requests)[number]) => {
               </div>
             </div>
           )}
+
         </DetailsModal>
     </div>
   );
