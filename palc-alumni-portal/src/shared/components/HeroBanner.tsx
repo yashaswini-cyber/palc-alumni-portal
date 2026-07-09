@@ -95,7 +95,7 @@ export default function HeroBanner({
           }}
         >
           {actions.map((item) => (
-            <button
+             <button
               key={item.title}
               onClick={item.onClick}
               style={{
@@ -108,6 +108,15 @@ export default function HeroBanner({
                 color: "#fff",
                 cursor: "pointer",
                 boxShadow: "0 10px 24px rgba(0,0,0,.12)",
+                transition: "all 0.25s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,.28)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,.18)";
+                e.currentTarget.style.transform = "translateY(0)";
               }}
             >
               {item.title}
