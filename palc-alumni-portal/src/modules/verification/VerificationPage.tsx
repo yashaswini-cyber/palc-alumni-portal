@@ -52,7 +52,47 @@ const CustomDateInput = forwardRef<HTMLInputElement, React.InputHTMLAttributes<H
   )
 );
 CustomDateInput.displayName = "CustomDateInput";
+function StageBadge({ stage }: { stage: string }) {
 
+  const stageColors: Record<string, { bg: string; color: string }> = {
+    Submitted: {
+      bg: "#FEF3C7",
+      color: "#92400E",
+    },
+    "HR Review": {
+      bg: "#DBEAFE",
+      color: "#1D4ED8",
+    },
+    Processing: {
+      bg: "#E0F2FE",
+      color: "#0369A1",
+    },
+    Completed: {
+      bg: "#DCFCE7",
+      color: "#166534",
+    },
+  };
+  const style = stageColors[stage] || {
+    bg: "#F3F4F6",
+    color: "#374151",
+  };
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "6px 12px",
+        borderRadius: "999px",
+        background: style.bg,
+        color: style.color,
+        fontWeight: 600,
+        fontSize: "13px",
+      }}
+    >
+      {stage}
+    </span>
+  );
+}
 export default function VerificationPage() {
   const navigate = useNavigate();
 
@@ -87,6 +127,9 @@ export default function VerificationPage() {
     },
   ]);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [sortBy, setSortBy] = useState("Newest");
   const [showSuccess, setShowSuccess] = useState(false);
   const [requiredBy, setRequiredBy] = useState<Date | null>(null);
 
@@ -97,7 +140,26 @@ export default function VerificationPage() {
     notes: "",
   });
 
-  // 2. Event Handlers
+  // 2. Filter and Sort Logic Derivation
+  const filteredRequests = requests
+    .filter((req) => {
+      const matchesStatus = selectedStatus === "All" || req.status === selectedStatus;
+      const matchesSearch =
+        req.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        req.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        req.type.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesStatus && matchesSearch;
+    })
+    .sort((a, b) => {
+      if (sortBy === "Newest") return b.id.localeCompare(a.id);
+      if (sortBy === "Oldest") return a.id.localeCompare(b.id);
+      if (sortBy === "Company") return a.company.localeCompare(b.company);
+      if (sortBy === "Verification Type") return a.type.localeCompare(b.type);
+      return 0;
+    });
+    const visibleRequests = filteredRequests.slice(0, 5);
+
+  // 3. Event Handlers
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -270,35 +332,23 @@ export default function VerificationPage() {
                 <option>Other</option>
               </select>
             </div>
-            <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: 600,
-                color: COLORS.text,
-              }}
-            >
-              Required By *
-            </label>
 
-            <div
-              style={{
-                width: "100%",
-                marginTop: "8px",
-              }}
-            >
-              <DatePicker
-                selected={requiredBy}
-                onChange={(date: Date | null) => setRequiredBy(date)}
-                minDate={new Date()}
-                dateFormat="d MMMM yyyy"
-                placeholderText="Select required completion date"
-                wrapperClassName="verification-datepicker"
-              />
+            <div>
+              <label style={{ display: "block", marginBottom: "8px", fontWeight: 600, color: COLORS.text }}>
+                Required By *
+              </label>
+              <div style={{ width: "100%", marginTop: "8px" }}>
+                <DatePicker
+                  selected={requiredBy}
+                  onChange={(date: Date | null) => setRequiredBy(date)}
+                  minDate={new Date()}
+                  dateFormat="d MMMM yyyy"
+                  placeholderText="Select required completion date"
+                  customInput={<CustomDateInput />}
+                  wrapperClassName="verification-datepicker"
+                />
+              </div>
             </div>
-          </div>
-            
           </div>
 
           <div style={{ marginTop: "24px" }}>
@@ -330,38 +380,83 @@ export default function VerificationPage() {
         </SectionCard>
       </div>
 
-      {/* History List */}
+      {/* Manage Verification Requests */}
       <div id="verification-requests">
-        <SectionCard title="Manage Verification Requests">
-          <div style={{ marginBottom: "20px" }}>
-            <PrimaryButton>Export History</PrimaryButton>
-          </div>
-
-          <div style={{ overflowX: "auto" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
+        <SectionCard
+          title="Manage Verification Requests"
+          subtitle={`Showing ${Math.min(
+  visibleRequests.length,
+  filteredRequests.length
+)} of ${filteredRequests.length} verification requests`}
+        >
+          {/* Controls Bar */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "24px" }}>
+            {/* Left Controls */}
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
               <input
-                placeholder="Search verification requests..."
-                style={{ width: "320px", padding: "12px 16px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, outline: "none" }}
+                placeholder="Search by Request ID, Company or Verification Type..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  width: "340px",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  border: `1px solid ${COLORS.border}`,
+                  outline: "none",
+                }}
               />
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                {["All", "Pending", "Approved", "Rejected"].map((status) => (
-                  <button
-                    key={status}
-                    style={{
-                      padding: "8px 16px",
-                      borderRadius: "999px",
-                      border: `1px solid ${COLORS.border}`,
-                      background: status === "All" ? COLORS.primary : "#fff",
-                      color: status === "All" ? "#fff" : COLORS.text,
-                      cursor: "pointer",
-                    }}
-                  >
-                    {status}
-                  </button>
-                ))}
-              </div>
+
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                style={{
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  border: `1px solid ${COLORS.border}`,
+                  background: "#fff",
+                  cursor: "pointer",
+                }}
+              >
+                <option>Newest</option>
+                <option>Oldest</option>
+                <option>Company</option>
+                <option>Verification Type</option>
+              </select>
             </div>
 
+            {/* Right Controls */}
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+              <button style={secondaryButtonStyle} onClick={() => { setSearchTerm(""); setSelectedStatus("All"); }}>
+                View All Requests
+              </button>
+              <PrimaryButton>Export History</PrimaryButton>
+            </div>
+          </div>
+
+          {/* Status Filters */}
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "24px" }}>
+            {["All", "Pending", "Approved", "Rejected", "Completed"].map((status) => (
+              <button
+                key={status}
+                onClick={() => setSelectedStatus(status)}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "999px",
+                  border: `1px solid ${COLORS.border}`,
+                  background: selectedStatus === status ? COLORS.primary : "#FFFFFF",
+                  color: selectedStatus === status ? "#FFFFFF" : COLORS.text,
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  transition: "0.2s ease",
+                }}
+              >
+                {status}
+              </button>
+            ))}
+          </div>
+
+          {/* Table Container */}
+          <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
               <thead style={{ background: "#F8FAFC" }}>
                 <tr>
@@ -376,24 +471,36 @@ export default function VerificationPage() {
                 </tr>
               </thead>
               <tbody>
-                {requests.map((req) => (
-                  <tr key={req.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
-                    <td style={{ padding: "12px" }}>{req.id}</td>
+                {visibleRequests.map((req) => (
+                  <tr key={req.id} style={{borderBottom: `1px solid ${COLORS.border}`,transition: "0.2s ease",}} onMouseEnter={(e) => {e.currentTarget.style.background = "#F8FBFF"; }}onMouseLeave={(e) => {e.currentTarget.style.background = "transparent";}}
+>                   <td style={{ padding: "12px" }}>{req.id}</td>
                     <td style={{ padding: "12px" }}>{req.requester}</td>
                     <td style={{ padding: "12px" }}>{req.company}</td>
                     <td style={{ padding: "12px" }}>{req.type}</td>
                     <td style={{ padding: "12px" }}>{req.date}</td>
-                    <td style={{ padding: "12px" }}>{req.stage}</td>
+                    <td style={{ padding: "12px" }}>
+                      <StageBadge stage={req.stage} />
+                    </td>
                     <td style={{ padding: "12px" }}><StatusBadge status={req.status} /></td>
                     <td style={{ padding: "12px" }}>
                       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                         <button style={secondaryButtonStyle}>View Details</button>
-                        <button style={secondaryButtonStyle}>Track</button>
-                        <PrimaryButton>Download</PrimaryButton>
+                        <button style={secondaryButtonStyle}>Track Progress</button>
+                        {req.status === "Approved" ? (
+                        <PrimaryButton>Download Certificate</PrimaryButton>) : (<button disabled style={{opacity: 0.5,cursor: "not-allowed",padding: "8px 14px",borderRadius: "8px",border: `1px solid ${COLORS.border}`,background: "#F8FAFC",color: COLORS.textSecondary,}}
+                        >Awaiting Approval </button>
+                        )}
                       </div>
                     </td>
                   </tr>
                 ))}
+                {filteredRequests.length === 0 && (
+                  <tr>
+                    <td colSpan={8} style={{ padding: "24px", textAlign: "center", color: COLORS.textSecondary }}>
+                      No matching verification requests found.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
