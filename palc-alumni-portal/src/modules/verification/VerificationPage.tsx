@@ -270,20 +270,35 @@ export default function VerificationPage() {
                 <option>Other</option>
               </select>
             </div>
-
             <div>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: 600, color: COLORS.text }}>
-                Required By *
-              </label>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: 600,
+                color: COLORS.text,
+              }}
+            >
+              Required By *
+            </label>
+
+            <div
+              style={{
+                width: "100%",
+                marginTop: "8px",
+              }}
+            >
               <DatePicker
                 selected={requiredBy}
                 onChange={(date: Date | null) => setRequiredBy(date)}
                 minDate={new Date()}
-                placeholderText="Select a due date"
                 dateFormat="d MMMM yyyy"
-                customInput={<CustomDateInput />}
+                placeholderText="Select required completion date"
+                wrapperClassName="verification-datepicker"
               />
             </div>
+          </div>
+            
           </div>
 
           <div style={{ marginTop: "24px" }}>

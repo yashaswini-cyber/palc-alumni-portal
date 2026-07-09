@@ -118,7 +118,16 @@ h3 {
   line-height: 1.3;
   font-weight: 800;
 }
-
+.verification-date-picker {
+  width: 100%;
+  min-width: 320px;
+  padding: 12px 14px;
+  border: 1px solid #D1D5DB;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
 table {
   width: 100%;
   border-collapse: separate;
@@ -175,4 +184,26 @@ tbody tr:hover {
     overflow-x: auto;
     white-space: nowrap;
   }
+}
+/* Employment Verification Date Picker */
+
+.verification-datepicker {
+  display: block;
+  width: 100%;
+}
+
+.verification-datepicker input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #D1D5DB;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.verification-datepicker input:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
