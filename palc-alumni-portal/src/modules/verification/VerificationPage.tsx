@@ -212,13 +212,48 @@ const handleViewDetails = (request: (typeof requests)[number]) => {
   setSelectedRequest(request);
   setShowDetailsModal(true);
 };
+const handleExportHistory = () => {
+  const headers = [
+    "Request ID",
+    "Requested By",
+    "Company",
+    "Verification Type",
+    "Required By",
+    "Current Stage",
+    "Status",
+  ];
+  const rows = requests.map((request) => [
+    request.id,
+    request.requester,
+    request.company,
+    request.type,
+    request.date,
+    request.stage,
+    request.status,
+  ]);
+
+  const csvContent = [
+    headers.join(","),
+    ...rows.map((row) => row.join(",")),
+  ].join("\n");
+
+  const blob = new Blob([csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "PalC_Verification_History.csv";
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
   const scrollToSection = (id: string) => {
         document.getElementById(id)?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
   };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px", padding: "20px" }}>
       <PageHeader
@@ -436,7 +471,7 @@ const handleViewDetails = (request: (typeof requests)[number]) => {
               <button style={secondaryButtonStyle} onClick={() => { setSearchTerm(""); setSelectedStatus("All"); }}>
                 View All Requests
               </button>
-              <PrimaryButton>Export History</PrimaryButton>
+              <PrimaryButton onClick={handleExportHistory}>  Export History</PrimaryButton>
             </div>
           </div>
 
@@ -491,10 +526,10 @@ const handleViewDetails = (request: (typeof requests)[number]) => {
                     <td style={{ padding: "12px" }}><StatusBadge status={req.status} /></td>
                     <td style={{ padding: "12px" }}>
                       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                        <button style={secondaryButtonStyle} onClick={() => handleViewDetails(req)} >View Details</button>
+                        <button style={secondaryButtonStyle} onClick={() => handleViewDetails(req)}>View Details</button>
                         <button style={secondaryButtonStyle}>Track Progress</button>
                         {req.status === "Approved" ? (
-                        <PrimaryButton>Download Certificate</PrimaryButton>) : (<button disabled style={{opacity: 0.5,cursor: "not-allowed",padding: "8px 14px",borderRadius: "8px",border: `1px solid ${COLORS.border}`,background: "#F8FAFC",color: COLORS.textSecondary,}}
+                        <PrimaryButton>Download</PrimaryButton>) : (<button disabled style={{opacity: 0.5,cursor: "not-allowed",padding: "8px 14px",borderRadius: "8px",border: `1px solid ${COLORS.border}`,background: "#F8FAFC",color: COLORS.textSecondary,}}
                         >Awaiting Approval </button>
                         )}
                       </div>
