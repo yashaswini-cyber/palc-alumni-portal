@@ -820,27 +820,139 @@ const handleExportHistory = () => {
   </div>
 </SectionCard>
 
-      {/* Workflow Information */}
+      {/*Verification Process */}
       <div id="verification-process">
-        <SectionCard title="Verification Process" subtitle="Understand how requests clear validation lifecycle steps.">
-          <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-            {[
-              { title: "Request Submitted", description: "Your verification request has been successfully submitted." },
-              { title: "HR Review", description: "The HR team validates your history archives." },
-              { title: "Verification Generation", description: "A secure digital certificate is minted." },
-              { title: "Employer Verification", description: "The platform provides seamless lookup via Secure Hash ID or QR scan." },
-              { title: "Completed", description: "The verified record moves to structural history storage." },
-            ].map((step, index) => (
-              <div key={step.title} style={{ display: "flex", gap: "18px", alignItems: "flex-start" }}>
-                <div style={{ width: "18px", height: "18px", borderRadius: "50%", background: COLORS.primary, marginTop: "4px", flexShrink: 0 }} />
-                <div style={{ flex: 1, paddingBottom: "18px", borderBottom: index !== 4 ? `1px solid ${COLORS.border}` : "none" }}>
-                  <h4 style={{ margin: 0, color: COLORS.text }}>{step.title}</h4>
-                  <p style={{ marginTop: "8px", color: COLORS.textSecondary, lineHeight: 1.7 }}>{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </SectionCard>
+        <SectionCard
+  title="Verification Process"
+  subtitle="Track how every employment verification request moves through the PalC verification lifecycle."
+>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(170px,1fr))",
+      gap: "20px",
+      alignItems: "stretch",
+    }}
+  >
+    {[
+      {
+        title: "Request Submitted",
+        description: "Verification request is successfully created in the Alumni Portal.",
+        color: "#2563EB",
+      },
+      {
+        title: "HR Review",
+        description: "PalC HR validates employment records and supporting information.",
+        color: "#0EA5E9",
+      },
+      {
+        title: "Certificate Generated",
+        description: "A digitally signed employment certificate is securely generated.",
+        color: "#D97706",
+      },
+      {
+        title: "Employer Verification",
+        description: "Authorised organisations verify records using secure credentials.",
+        color: "#9333EA",
+      },
+      {
+        title: "Completed",
+        description: "The verification is complete and documents become available.",
+        color: "#16A34A",
+      },
+    ].map((step, index, array) => (
+      <div
+        key={step.title}
+        style={{
+          position: "relative",
+          background: "#FFFFFF",
+          border: `1px solid ${COLORS.border}`,
+          borderRadius: "18px",
+          padding: "22px",
+          transition: "0.2s ease",
+          cursor: "default",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-4px)";
+          e.currentTarget.style.boxShadow = "0 12px 28px rgba(37,99,235,0.12)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "none";
+        }}
+      >
+        {index !== array.length - 1 && (
+          <div
+            style={{
+              position: "absolute",
+              top: "34px",
+              right: "-22px",
+              width: "44px",
+              height: "2px",
+              background: "#CBD5E1",
+              zIndex: 0,
+            }}
+          />
+        )}
+
+        <div
+          style={{
+            width: "18px",
+            height: "18px",
+            borderRadius: "50%",
+            background: step.color,
+            marginBottom: "18px",
+          }}
+        />
+
+        <h4
+          style={{
+            margin: "0 0 10px",
+            color: COLORS.text,
+            fontSize: "16px",
+          }}
+        >
+          {step.title}
+        </h4>
+
+        <p
+          style={{
+            margin: 0,
+            color: COLORS.textSecondary,
+            lineHeight: 1.7,
+            fontSize: "14px",
+          }}
+        >
+          {step.description}
+        </p>
+      </div>
+    ))}
+  </div>
+
+  <div
+    style={{
+      marginTop: "28px",
+      padding: "18px",
+      borderRadius: "14px",
+      background: "#EFF6FF",
+      border: `1px solid ${COLORS.border}`,
+    }}
+  >
+    <strong style={{ color: COLORS.primary }}>
+      Processing Time
+    </strong>
+
+    <p
+      style={{
+        margin: "8px 0 0",
+        color: COLORS.textSecondary,
+        lineHeight: 1.7,
+      }}
+    >
+      Most employment verification requests are completed within <strong>2 business days</strong>. You can monitor the current stage at any time from the <strong>Manage Verification Requests</strong> section above.
+    </p>
+  </div>
+</SectionCard>
       </div>
 
       {/* Help & Support */}
