@@ -824,7 +824,7 @@ const handleExportHistory = () => {
       <div id="verification-process">
         <SectionCard
   title="Verification Process"
-  subtitle="Track how every employment verification request moves through the PalC verification lifecycle."
+  subtitle="Understand how your employment verification request is processed, reviewed and securely verified before official documents are issued."
 >
   <div
     style={{
@@ -851,7 +851,7 @@ const handleExportHistory = () => {
         color: "#D97706",
       },
       {
-        title: "Employer Verification",
+        title: "Verification Ready",
         description: "Authorised organisations verify records using secure credentials.",
         color: "#9333EA",
       },
@@ -925,48 +925,161 @@ const handleExportHistory = () => {
         >
           {step.description}
         </p>
-      </div>
+      </div> 
     ))}
   </div>
 
-  <div
-    style={{
-      marginTop: "28px",
-      padding: "18px",
-      borderRadius: "14px",
-      background: "#EFF6FF",
-      border: `1px solid ${COLORS.border}`,
-    }}
-  >
-    <strong style={{ color: COLORS.primary }}>
-      Processing Time
-    </strong>
+      <div
+        style={{
+          marginTop: "28px",
+          padding: "18px",
+          borderRadius: "14px",
+          background: "#EFF6FF",
+          border: `1px solid ${COLORS.border}`,
+        }}
+      >
+        <strong style={{ color: COLORS.primary }}>
+          Processing Time
+        </strong>
 
-    <p
-      style={{
-        margin: "8px 0 0",
-        color: COLORS.textSecondary,
-        lineHeight: 1.7,
-      }}
-    >
-      Most employment verification requests are completed within <strong>2 business days</strong>. You can monitor the current stage at any time from the <strong>Manage Verification Requests</strong> section above.
-    </p>
-  </div>
-</SectionCard>
+        <p
+          style={{
+            margin: "8px 0 0",
+            color: COLORS.textSecondary,
+            lineHeight: 1.7,
+          }}
+        >
+          Most employment verification requests are completed within <strong>2 business days</strong>. You can monitor the current stage at any time from the <strong>Manage Verification Requests</strong> section above.
+        </p>
+      </div>
+    </SectionCard>
       </div>
 
       {/* Help & Support */}
-      <SectionCard title="Need Assistance?" subtitle="Our Alumni Support Team is available to assist with verification queries.">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
-          <div style={{ maxWidth: "650px" }}>
-            <h3 style={{ marginTop: 0, marginBottom: "10px", color: COLORS.text }}>Verification Support</h3>
-            <p style={{ margin: 0, color: COLORS.textSecondary, lineHeight: 1.7 }}>
-              If your request requires manual background review or supplemental paperwork overrides, ping our systems team directly.
-            </p>
-          </div>
-          <PrimaryButton onClick={() => navigate("/helpdesk")}>Contact Helpdesk</PrimaryButton>
+      <SectionCard
+  title="We're Here to Help"
+  subtitle="Everything you need to complete your employment verification successfully. If your request requires additional assistance, our Alumni Support Team is ready to help."
+>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "2fr 1fr",
+      gap: "24px",
+    }}
+  >
+    {/* Left Column */}
+    <div
+      style={{
+        display: "grid",
+        gap: "18px",
+      }}
+    >
+      {[
+        {
+          title: "Processing Timeline",
+          description:
+            "Standard employment verification requests are typically completed within 2 business days. Complex requests may require additional review.",
+        },
+        {
+          title: "Before You Submit",
+          description:
+            "Ensure your organisation details, verification purpose and required completion date are accurate to avoid processing delays.",
+        },
+        {
+          title: "Digital Verification",
+          description:
+            "Approved requests generate a digitally signed employment certificate containing a unique Verification ID and QR code for secure employer validation.",
+        },
+        {
+          title: "Track Your Progress",
+          description:
+            "Monitor each stage of your request from submission through HR review to certificate generation directly from the Verification Requests section.",
+        },
+      ].map((item) => (
+        <div
+          key={item.title}
+          style={{
+            border: `1px solid ${COLORS.border}`,
+            borderRadius: "14px",
+            padding: "18px",
+            background: "#FFFFFF",
+          }}
+        >
+          <h4
+            style={{
+              margin: "0 0 8px",
+              color: COLORS.text,
+              fontWeight: 700,
+            }}
+          >
+            {item.title}
+          </h4>
+
+          <p
+            style={{ margin: 0,color: COLORS.textSecondary, lineHeight: 1.7, fontSize: "14px",}}
+         >  {item.description}
+          </p>
         </div>
-      </SectionCard>
+      ))}
+    </div>
+
+    {/* Right Column */}
+    <div
+      style={{
+        border: `1px solid ${COLORS.border}`,
+        borderRadius: "18px",
+        padding: "24px",
+        background: "#F8FBFF",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>
+        <h3
+          style={{
+            marginTop: 0,
+            marginBottom: "12px",
+            color: COLORS.text,
+          }}
+        >
+          Still Need Assistance?
+        </h3>
+
+        <p
+          style={{
+            color: COLORS.textSecondary,
+            lineHeight: 1.7,
+            marginBottom: "20px",
+          }}
+        >
+          If your verification request requires manual review, additional
+          documentation or you are experiencing issues, our Alumni Support Team
+          will be happy to assist you.
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            marginBottom: "24px",
+          }}
+        >
+          <span>• Employment verification support</span>
+          <span>• Certificate-related queries</span>
+          <span>• Verification status assistance</span>
+          <span>• Manual verification requests</span>
+        </div>
+      </div>
+
+      <PrimaryButton
+        onClick={() => navigate("/helpdesk")}
+      > Contact Alumni Helpdesk
+      </PrimaryButton>
+    </div>
+  </div>
+</SectionCard>
      
         <DetailsModal
           open={showDetailsModal}
