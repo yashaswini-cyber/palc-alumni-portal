@@ -48,7 +48,7 @@ const documents = [
   {
     id: "DOC-005",
     name: "Full & Final (F&F) Settlement Statement",
-    category: "Settlement",
+    category: "Employment Record",
     date: "18-Jan-2025",
     format: "PDF",
     status: "Available",
@@ -57,7 +57,7 @@ const documents = [
   {
     id: "DOC-006",
     name: "PF Transfer Documents",
-    category: "Provident Fund",
+    category: "Employment Record",
     date: "20-Jan-2025",
     format: "PDF",
     status: "Available",
