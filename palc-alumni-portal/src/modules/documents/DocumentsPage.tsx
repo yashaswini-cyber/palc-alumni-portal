@@ -65,6 +65,12 @@ export default function DocumentsPage() {
     });
   }, [filteredDocuments, sortBy]);
 
+  const latestDocument = useMemo(() => {
+  return [...documents].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  )[0];
+}, []);
+
   useEffect(() => {
     const stored = localStorage.getItem("recentActivity");
     if (stored) setRecentActivity(JSON.parse(stored));
@@ -113,7 +119,7 @@ export default function DocumentsPage() {
       {/* Metrics Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "32px" }}>
         <StatsCard title="Available Documents" value={documents.length.toString()} subtitle="Employment records" accentColor="#2563EB" />
-        <StatsCard title="Recently Added" value="2" subtitle="New this month" accentColor="#16A34A" />
+        <StatsCard title="Latest Upload"value={latestDocument.name}subtitle={new Date(latestDocument.date).toLocaleDateString("en-GB", {day: "2-digit",month: "short",year: "numeric", })} accentColor="#16A34A"/>
         <StatsCard title="Downloads" value="18" subtitle="This month" accentColor="#D97706" />
         <StatsCard title="Latest Upload" value="30 Mar" subtitle="Latest upload" accentColor="#9333EA" />
       </div>
