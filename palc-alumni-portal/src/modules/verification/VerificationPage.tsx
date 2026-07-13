@@ -1000,9 +1000,24 @@ const handleExportHistory = () => {
           key={item.title}
           style={{
             border: `1px solid ${COLORS.border}`,
-            borderRadius: "14px",
-            padding: "18px",
+            borderRadius: "16px",
+            padding: "20px",
             background: "#FFFFFF",
+            transition: "all 0.25s ease",
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-4px)";
+            e.currentTarget.style.borderColor = COLORS.primary;
+            e.currentTarget.style.boxShadow =
+              "0 18px 36px rgba(37,99,235,0.18)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.borderColor = COLORS.border;
+            e.currentTarget.style.boxShadow =
+              "0 4px 12px rgba(15,23,42,0.04)";
           }}
         >
           <h4
@@ -1337,10 +1352,8 @@ const handleExportHistory = () => {
         }}
       >
         <button
-          style={secondaryButtonStyle}
-          onClick={() => setShowDocumentPreview(false)}
-        >Close </button>
-        <PrimaryButton> Download PDF</PrimaryButton>
+          style={secondaryButtonStyle}onClick={() => setShowDocumentPreview(false)} >Close </button>
+          <PrimaryButton> Download PDF</PrimaryButton>
          </div>
     </>
   )}
