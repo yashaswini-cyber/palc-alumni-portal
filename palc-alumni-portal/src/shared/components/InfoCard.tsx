@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { COLORS } from "../theme/colors";
 
 type InfoCardProps = {
@@ -18,19 +18,37 @@ export default function InfoCard({
 }: InfoCardProps) {
   return (
     <div
-      className={hoverable ? "info-card hoverable" : "info-card"}
-      style={{
-        background: "#FFFFFF",
-        border: `1px solid ${COLORS.border}`,
-        borderRadius: "18px",
-        padding: "24px",
-        boxShadow: "0 8px 20px rgba(15,23,42,0.04)",
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        transition: "border-color .18s ease, background-color .18s ease",
-      }}
-    >
+  style={{
+    border: `1px solid ${COLORS.border}`,
+    borderRadius: "16px",
+    padding: "20px",
+    background: "#FFFFFF",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    transition: "all 0.25s ease",
+    cursor: hoverable ? "pointer" : "default",
+    boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
+  }}
+  onMouseEnter={(e) => {
+    if (!hoverable) return;
+
+    Object.assign(e.currentTarget.style, {
+      transform: "translateY(-4px)",
+      borderColor: COLORS.primary,
+      boxShadow: "0 18px 36px rgba(37,99,235,0.18)",
+    } satisfies CSSProperties);
+  }}
+  onMouseLeave={(e) => {
+    if (!hoverable) return;
+
+    Object.assign(e.currentTarget.style, {
+      transform: "translateY(0)",
+      borderColor: COLORS.border,
+      boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
+    } satisfies CSSProperties);
+  }}
+>
       {icon && (
         <div
           style={{
@@ -51,7 +69,7 @@ export default function InfoCard({
         style={{
           margin: "0 0 8px",
           color: COLORS.text,
-          fontSize: "18px",
+          fontSize: "16px",
           fontWeight: 700,
         }}
       >
@@ -61,7 +79,6 @@ export default function InfoCard({
       <p
         style={{
           margin: 0,
-          marginTop: "8px",
           color: COLORS.textSecondary,
           lineHeight: 1.7,
           fontSize: "14px",

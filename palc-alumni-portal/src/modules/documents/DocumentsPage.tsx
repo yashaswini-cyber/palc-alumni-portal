@@ -126,8 +126,8 @@ export default function DocumentsPage() {
         <StatsCard title="Latest Upload" value="30 Mar" subtitle="Latest upload" accentColor="#9333EA" />
       </div>
 
-      {/* Main Repository Section */}
-      <SectionCard title="My Documents">
+      {/* My Documents Section */}
+     <SectionCard title="My Documents">
         <div style={{ marginBottom: "22px" }}>
           <div style={{ display: "flex", gap: "18px", flexWrap: "wrap", alignItems: "center" }}>
             <div style={{ flex: 1, minWidth: "320px" }}>
@@ -242,20 +242,23 @@ export default function DocumentsPage() {
 
   {/* Repository Information */}
     <SectionCard title="Repository Information">
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px" }}>
+  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "18px" }}>
     <InfoCard
       hoverable
       title="Document Availability"
-      subtitle="Employment documents remain available for up to 24 months after your separation date."/>
+      subtitle="Employment documents remain available for up to 24 months after your separation date."
+    />
     <InfoCard
       hoverable
       title="Supported Formats"
-      subtitle="All employment records are provided in PDF format for consistency and long-term accessibility."/>
+      subtitle="All employment records are provided in PDF format for consistency and long-term accessibility."
+    />
     <InfoCard
       hoverable
       title="Security"
-      subtitle="Documents are securely stored and can only be accessed by authenticated alumni."/>
-    </div>
+      subtitle="Documents are securely stored and can only be accessed by authenticated alumni."
+    />
+  </div>
 </SectionCard>
       
       {/* Recent Activity Section */}

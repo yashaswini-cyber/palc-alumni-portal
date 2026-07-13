@@ -207,17 +207,3 @@ tbody tr:hover {
   border-color: #2563EB;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
-/*Enterprise Info Card Hover*/
-.info-card {
-  .info-card {
-  transition: border-color 240ms cubic-bezier(0.2, 0, 0, 1),
-              background-color 240ms cubic-bezier(0.2, 0, 0, 1);
-}
-  cursor: pointer;
-}
-
-.info-card.hoverable:hover {
-  transform: translateY(-4px);
-  border-color: var(--primary-color, #2563EB) !important;
-  box-shadow: 0 18px 36px rgba(37,99,235,0.18) !important;
-}
