@@ -38,6 +38,7 @@ export default function DocumentsPage() {
   const [fileSizes, setFileSizes] = useState<Record<string, string>>({});
   const [selectedDocument, setSelectedDocument] = useState({ title: "", path: "" });
   const [recentActivity, setRecentActivity] = useState<{ name: string; action: "Downloaded" | "Previewed"; time: number; }[]>([]);
+  const downloadsThisMonth = useMemo(() => recentActivity.filter(item => item.action === "Downloaded" && new Date(item.time).getMonth() === new Date().getMonth() && new Date(item.time).getFullYear() === new Date().getFullYear()).length, [recentActivity]);
 
   const filteredDocuments = useMemo(() => {
     return documents.filter((doc) => {
@@ -120,7 +121,7 @@ export default function DocumentsPage() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "32px" }}>
         <StatsCard title="Available Documents" value={documents.length.toString()} subtitle="Employment records" accentColor="#2563EB" />
         <StatsCard title="Latest Upload"value={latestDocument.name}subtitle={new Date(latestDocument.date).toLocaleDateString("en-GB", {day: "2-digit",month: "short",year: "numeric", })} accentColor="#16A34A"/>
-        <StatsCard title="Downloads" value="18" subtitle="This month" accentColor="#D97706" />
+        <StatsCard title="Downloads" value={downloadsThisMonth.toString()} subtitle="This month" accentColor="#D97706" />
         <StatsCard title="Latest Upload" value="30 Mar" subtitle="Latest upload" accentColor="#9333EA" />
       </div>
 
