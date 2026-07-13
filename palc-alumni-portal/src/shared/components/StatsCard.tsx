@@ -61,7 +61,7 @@ export default function StatsCard({
             style={{
               margin: "12px 0 6px",
               color: accentColor,
-              fontSize: "34px",
+              fontSize: "26px",
               lineHeight: 1,
             }}
           >

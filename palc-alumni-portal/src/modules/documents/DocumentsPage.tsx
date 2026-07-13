@@ -4,6 +4,7 @@ import PageHeader from "../../shared/components/PageHeader";
 import SearchBar from "../../shared/components/SearchBar";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
+import InfoCard from "../../shared/components/InfoCard";
 import DetailsModal from "../../shared/components/DetailsModal";
 import { COLORS } from "../../shared/theme/colors";
 import { useEffect, useMemo, useState } from "react";
@@ -239,23 +240,23 @@ export default function DocumentsPage() {
         </div>
       </SectionCard>
 
-      {/* Repository Information */}
-      <SectionCard title="Repository Information">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px" }}>
-          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-            <div style={{ fontWeight: 700, marginBottom: "10px" }}>Document Availability</div>
-            <div style={{ color: COLORS.textSecondary }}>Employment documents remain available for up to 24 months after your separation date.</div>
-          </div>
-          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-            <div style={{ fontWeight: 700, marginBottom: "10px" }}>Supported Formats</div>
-            <div style={{ color: COLORS.textSecondary }}>All employment records are provided in PDF format for consistency and long-term accessibility.</div>
-          </div>
-          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-            <div style={{ fontWeight: 700, marginBottom: "10px" }}>Security</div>
-            <div style={{ color: COLORS.textSecondary }}>Documents are securely stored and can only be accessed by authenticated alumni.</div>
-          </div>
-        </div>
-      </SectionCard>
+  {/* Repository Information */}
+    <SectionCard title="Repository Information">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px" }}>
+    <InfoCard
+      hoverable
+      title="Document Availability"
+      subtitle="Employment documents remain available for up to 24 months after your separation date."/>
+    <InfoCard
+      hoverable
+      title="Supported Formats"
+      subtitle="All employment records are provided in PDF format for consistency and long-term accessibility."/>
+    <InfoCard
+      hoverable
+      title="Security"
+      subtitle="Documents are securely stored and can only be accessed by authenticated alumni."/>
+    </div>
+</SectionCard>
       
       {/* Recent Activity Section */}
       <SectionCard title="Recent Activity">
