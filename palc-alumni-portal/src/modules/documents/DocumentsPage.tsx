@@ -9,99 +9,23 @@ import { useEffect, useMemo, useState } from "react";
 import DocumentPreviewModal from "../../shared/components/DocumentPreviewModal";
 
 const documents = [
-  {
-    id: "DOC-001",
-    name: "Experience Certificate",
-    category: "Employment Record",
-    date: "12-Jan-2025",
-    format: "PDF",
-    status: "Available",
-    path: "/downloads/Form16.pdf",
-  },
-  {
-    id: "DOC-002",
-    name: "Relieving Letter",
-    category: "Employment Record",
-    date: "15-Jan-2025",
-    format: "PDF",
-    status: "Available",
-    path: "/downloads/Form16.pdf",
-  },
-  {
-    id: "DOC-003",
-    name: "Form 16",
-    category: "Tax Document",
-    date: "30-Mar-2025",
-    format: "PDF",
-    status: "Available",
-    path: "/downloads/Form16.pdf",
-  },
-  {
-    id: "DOC-004",
-    name: "Last Payslip",
-    category: "Payroll",
-    date: "31-Dec-2024",
-    format: "PDF",
-    status: "Available",
-    path: "/downloads/Form16.pdf",
-  },
-  {
-    id: "DOC-005",
-    name: "Full & Final (F&F) Settlement Statement",
-    category: "Employment Record",
-    date: "18-Jan-2025",
-    format: "PDF",
-    status: "Available",
-    path: "/downloads/Form16.pdf",
-  },
-  {
-    id: "DOC-006",
-    name: "PF Transfer Documents",
-    category: "Employment Record",
-    date: "20-Jan-2025",
-    format: "PDF",
-    status: "Available",
-    path: "/downloads/Form16.pdf",
-  },
+  { id: "DOC-001", name: "Experience Certificate", category: "Employment Record", date: "12-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-002", name: "Relieving Letter", category: "Employment Record", date: "15-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-003", name: "Form 16", category: "Tax Document", date: "30-Mar-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-004", name: "Last Payslip", category: "Payroll", date: "31-Dec-2024", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-005", name: "Full & Final (F&F) Settlement Statement", category: "Employment Record", date: "18-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-006", name: "PF Transfer Documents", category: "Employment Record", date: "20-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
 ];
 
-const secondaryButtonStyle = {
-  background: "#EFF6FF",
-  color: COLORS.primary,
-  boxShadow: "none",
-  border: `1px solid ${COLORS.border}`,
-  padding: "10px 18px",
-  borderRadius: "10px",
-  cursor: "pointer",
-};
-
-const primaryButtonStyle = {
-  background: COLORS.primary,
-  color: "white",
-  border: "none",
-  borderRadius: "10px",
-  padding: "10px 18px",
-  cursor: "pointer",
-};
+const secondaryButtonStyle = { background: "#EFF6FF", color: COLORS.primary, boxShadow: "none", border: `1px solid ${COLORS.border}`, padding: "10px 18px", borderRadius: "10px", cursor: "pointer" };
 
 function formatRecentTime(time: number) {
   const diff = Date.now() - time;
   const minutes = Math.floor(diff / (1000 * 60));
-
-  if (minutes < 1) {
-    return "Just now";
-  }
-
-  if (minutes < 60) {
-    return `${minutes} min ago`;
-  }
-
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes} min ago`;
   const hours = Math.floor(minutes / 60);
-
-  if (hours < 24) {
-    return `${hours} hr ago`;
-  }
-
+  if (hours < 24) return `${hours} hr ago`;
   return new Date(time).toLocaleDateString("en-GB");
 }
 
@@ -109,77 +33,67 @@ export default function DocumentsPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
-  const [sortBy, setSortBy] = useState("Latest"); /*for sorting state*/
-  const [fileSizes, setFileSizes] = useState<Record<string, string>>({}); /*dynamic downloaded file size*/
-  const filteredDocuments = useMemo(() => {
-  return documents.filter((doc) => {
-    const matchesSearch =
-      doc.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      doc.category.toLowerCase().includes(searchText.toLowerCase()) ||
-      doc.id.toLowerCase().includes(searchText.toLowerCase());
-
-    const matchesCategory =
-      selectedCategory === "All Categories" ||
-      doc.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-}, [searchText, selectedCategory]);
-
-const sortedDocuments = useMemo(() => {
-  return [...filteredDocuments].sort((a, b) => {
-    switch (sortBy) {
-      case "A-Z":
-        return a.name.localeCompare(b.name);
-      case "Z-A":
-        return b.name.localeCompare(a.name);
-      case "Oldest":
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      case "Latest":
-      default:
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-    }
-  });
-}, [filteredDocuments, sortBy]);
-
-  const [selectedDocument, setSelectedDocument] = useState({
-    title: "",
-    path: "",
-  });
+  const [sortBy, setSortBy] = useState("Latest");
+  const [fileSizes, setFileSizes] = useState<Record<string, string>>({});
+  const [selectedDocument, setSelectedDocument] = useState({ title: "", path: "" });
   const [recentActivity, setRecentActivity] = useState<{ name: string; action: "Downloaded" | "Previewed"; time: number; }[]>([]);
- useEffect(() => {
-  const stored = localStorage.getItem("recentActivity");
-  if (stored) {
-    setRecentActivity(JSON.parse(stored));
-  }
-}, []);
+
+  const filteredDocuments = useMemo(() => {
+    return documents.filter((doc) => {
+      const search = searchText.toLowerCase();
+      const matchesSearch =
+        doc.name.toLowerCase().includes(search) ||
+        doc.category.toLowerCase().includes(search) ||
+        doc.id.toLowerCase().includes(search) ||
+        doc.format.toLowerCase().includes(search) ||
+        doc.status.toLowerCase().includes(search);
+      const matchesCategory = selectedCategory === "All Categories" || doc.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [searchText, selectedCategory]);
+
+  const sortedDocuments = useMemo(() => {
+    return [...filteredDocuments].sort((a, b) => {
+      switch (sortBy) {
+        case "A-Z": return a.name.localeCompare(b.name);
+        case "Z-A": return b.name.localeCompare(b.name);
+        case "Oldest": return new Date(a.date).getTime() - new Date(b.date).getTime();
+        case "Latest":
+        default: return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+    });
+  }, [filteredDocuments, sortBy]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("recentActivity");
+    if (stored) setRecentActivity(JSON.parse(stored));
+  }, []);
   
   useEffect(() => {
-  async function loadSizes() {
-    const sizes: Record<string, string> = {};
-    for (const doc of documents) {
-      try {
-        const response = await fetch(doc.path);
-        const blob = await response.blob();
-        const kb = blob.size / 1024;
-        sizes[doc.id] =
-          kb >= 1024
-            ? `${(kb / 1024).toFixed(2)} MB`
-            : `${kb.toFixed(0)} KB`;
-      } catch {
-        sizes[doc.id] = "--";
+    async function loadSizes() {
+      const sizes: Record<string, string> = {};
+      for (const doc of documents) {
+        try {
+          const response = await fetch(doc.path);
+          const blob = await response.blob();
+          const kb = blob.size / 1024;
+          sizes[doc.id] = kb >= 1024 ? `${(kb / 1024).toFixed(2)} MB` : `${kb.toFixed(0)} KB`;
+        } catch {
+          sizes[doc.id] = "--";
+        }
       }
+      setFileSizes(sizes);
     }
-    setFileSizes(sizes);
-  }
-  loadSizes();
-}, []);
+    loadSizes();
+  }, []);
 
   const logActivity = (name: string, action: "Downloaded" | "Previewed") => {
-  const activity = { name, action, time: Date.now() };
-  const updated = [activity, ...recentActivity].slice(0, 8);
-  setRecentActivity(updated);
-  localStorage.setItem("recentActivity", JSON.stringify(updated));
-};
+    const activity = { name, action, time: Date.now() };
+    const updated = [activity, ...recentActivity].slice(0, 8);
+    setRecentActivity(updated);
+    localStorage.setItem("recentActivity", JSON.stringify(updated));
+  };
+
   const handleDownload = (doc: any) => {
     const link = document.createElement("a");
     link.href = doc.path;
@@ -196,126 +110,52 @@ const sortedDocuments = useMemo(() => {
       />
 
       {/* Metrics Grid */}
-      <div
-  style={{
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-    gap: "20px",
-    marginBottom: "32px",
-  }}
->
-  <StatsCard
-    title="Available Documents"
-    value="12"
-    subtitle="Employment records"
-    accentColor="#2563EB"
-  />
-
-  <StatsCard
-    title="Recently Added"
-    value="2"
-    subtitle="New this month"
-    accentColor="#16A34A"
-  />
-
-  <StatsCard
-    title="Downloads"
-    value="18"
-    subtitle="This month"
-    accentColor="#D97706"
-  />
-
-  <StatsCard
-    title="Last Updated"
-    value="30 Mar"
-    subtitle="Latest upload"
-    accentColor="#9333EA"
-  />
-</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "32px" }}>
+        <StatsCard title="Available Documents" value={documents.length.toString()} subtitle="Employment records" accentColor="#2563EB" />
+        <StatsCard title="Recently Added" value="2" subtitle="New this month" accentColor="#16A34A" />
+        <StatsCard title="Downloads" value="18" subtitle="This month" accentColor="#D97706" />
+        <StatsCard title="Last Updated" value="30 Mar" subtitle="Latest upload" accentColor="#9333EA" />
+      </div>
 
       {/* Main Repository Section */}
       <SectionCard title="My Documents">
         <div style={{ marginBottom: "22px" }}>
-          <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "18px", flexWrap: "wrap", alignItems: "center" }}>
             <div style={{ flex: 1, minWidth: "320px" }}>
-              <SearchBar
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-              />
+              <SearchBar value={searchText} onChange={(e) => setSearchText(e.target.value)} />
             </div>
 
+            {/* Category Filter */}
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              style={{
-                padding: "12px 16px",
-                borderRadius: "12px",
-                border: `1px solid ${COLORS.border}`,
-                minWidth: "220px",
-                background: COLORS.surface,
-                color: COLORS.text,
-              }}
+              style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "220px", background: COLORS.surface, color: COLORS.text }}
             >
-             <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
-             <div style={{ flex: 1, minWidth: "320px" }}>
-            <SearchBar
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-          </div>
+              <option value="All Categories">All Categories</option>
+              <option value="Employment Record">Employment Record</option>
+              <option value="Payroll">Payroll</option>
+              <option value="Tax Document">Tax Document</option>
+            </select>
 
-          {/* Category Filter */}
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{
-              padding: "12px 16px",
-              borderRadius: "12px",
-              border: `1px solid ${COLORS.border}`,
-              minWidth: "220px",
-              background: COLORS.surface,
-              color: COLORS.text,
-            }}
-          >
-            <option value="All Categories">All Categories</option>
-            <option value="Employment Record">Employment Record</option>
-            <option value="Payroll">Payroll</option>
-            <option value="Tax Document">Tax Document</option>
-            <option value="Settlement">Settlement</option>
-            <option value="Provident Fund">Provident Fund</option>
-          </select>
-          {/* Sort By */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            style={{
-              padding: "12px 16px",
-              borderRadius: "12px",
-              border: `1px solid ${COLORS.border}`,
-              minWidth: "180px",
-              background: COLORS.surface,
-              color: COLORS.text,
-            }}
-          >
-    <option value="Latest">Latest</option>
-    <option value="Oldest">Oldest</option>
-    <option value="A-Z">A-Z</option>
-    <option value="Z-A">Z-A</option>
-  </select>
-</div> 
-      <option value="All Categories">All Categories</option>
-      <option value="Employment Record">Employment Record</option>
-      <option value="Payroll">Payroll</option>
-      <option value="Tax Document">Tax Document</option>
-   </select>
-  </div>
-</div>
+            {/* Sort By */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "180px", background: COLORS.surface, color: COLORS.text }}
+            >
+              <option value="Latest">Latest</option>
+              <option value="Oldest">Oldest</option>
+              <option value="A-Z">A-Z</option>
+              <option value="Z-A">Z-A</option>
+            </select>
+          </div>
+        </div>
+
         {/* Data Table */}
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
-           <thead>
-              <tr
-                style={{ textAlign: "left", borderBottom: `1px solid ${COLORS.border}`,  }}>         
+            <thead>
+              <tr style={{ textAlign: "left", borderBottom: `1px solid ${COLORS.border}` }}>
                 <th style={{ padding: "12px" }}>Document ID</th>
                 <th style={{ padding: "12px" }}>Document</th>
                 <th style={{ padding: "12px" }}>Category</th>
@@ -327,49 +167,37 @@ const sortedDocuments = useMemo(() => {
               </tr>
             </thead>
             <tbody>
-              {filteredDocuments.length === 0 ? (
+              {sortedDocuments.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={6}
-                    style={{
-                      textAlign: "center",
-                      padding: "40px",
-                      color: COLORS.textSecondary,
-                    }}
-                  >
-                    No documents found.
+                  <td colSpan={8} style={{ textAlign: "center", padding: "40px", color: COLORS.textSecondary }}>
+                    No documents match your current search or filter criteria.
                   </td>
                 </tr>
               ) : (
                 sortedDocuments.map((doc) => (
-                  <tr key={doc.name} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                  <tr key={doc.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
                     <td style={{ padding: "12px" }}>{doc.id}</td>
-                    <td style={{ padding: "12px", fontWeight: 700 }}> {doc.name}</td>                   
-                    <td style={{ padding: "12px" }}> {doc.category}</td>               
-                    <td style={{ padding: "12px" }}>{doc.date}</td>{fileSizes[doc.id] ?? "--"}                                       <td style={{ padding: "12px" }}>
-                      </td>
-                    <td style={{ padding: "12px" }}>   {doc.format}   
-                      </td>                 
-                    <td style={{ padding: "12px" }}>
-                        <StatusBadge status={doc.status} />
-                      </td>
+                    <td style={{ padding: "12px", fontWeight: 700 }}>{doc.name}</td>
+                    <td style={{ padding: "12px" }}>{doc.category}</td>
+                    <td style={{ padding: "12px" }}>{doc.date}</td>
+                    <td style={{ padding: "12px" }}>{fileSizes[doc.id] ?? "--"}</td>
+                    <td style={{ padding: "12px" }}>{doc.format}</td>
+                    <td style={{ padding: "12px" }}><StatusBadge status={doc.status} /></td>
                     <td style={{ padding: "12px" }}>
                       <div style={{ display: "flex", gap: "10px" }}>
                         <button
                           style={secondaryButtonStyle}
                           onClick={() => {
-                          setSelectedDocument({ title: doc.name, path: doc.path });
-                          logActivity(doc.name, "Previewed");
-                          setPreviewOpen(true);
-                        }}
+                            setSelectedDocument({ title: doc.name, path: doc.path });
+                            logActivity(doc.name, "Previewed");
+                            setPreviewOpen(true);
+                          }}
                         >
                           Preview
                         </button>
-                        <PrimaryButton
-                          onClick={() => handleDownload(doc)}
-                          >
-                              Download
-                          </PrimaryButton>
+                        <PrimaryButton onClick={() => handleDownload(doc)}>
+                          Download
+                        </PrimaryButton>
                       </div>
                     </td>
                   </tr>
@@ -377,83 +205,76 @@ const sortedDocuments = useMemo(() => {
               )}
             </tbody>
           </table>
+          <div style={{ marginTop: "20px", paddingTop: "18px", borderTop: `1px solid ${COLORS.border}`, color: COLORS.textSecondary, fontSize: "14px" }}>
+            All employment documents displayed in this repository are official records issued by PalC. Downloaded copies should be retained for your personal records.
+          </div>
         </div>
       </SectionCard>
 
+      {/* Repository Summary */}
       <SectionCard title="Repository Summary">
-  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "18px" }}>
-    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Documents Available</div>
-      <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700 }}>{documents.length}</div>
-    </div>
-    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Total Activity</div>
-      <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700 }}>{recentActivity.length}</div>
-    </div>
-    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Repository Status</div>
-      <div style={{ marginTop: "8px", fontSize: "20px", fontWeight: 700, color: "#16A34A" }}>Up to Date</div>
-    </div>
-  </div>
-</SectionCard>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "18px" }}>
+          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+            <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Documents Available</div>
+            <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700 }}>{documents.length}</div>
+          </div>
+          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+            <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Total Activity</div>
+            <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700 }}>{recentActivity.length}</div>
+          </div>
+          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+            <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Available Documents</div>
+            <div style={{ marginTop: "8px", fontSize: "20px", fontWeight: 700 }}>{documents.filter(doc => doc.status === "Available").length} Active</div>
+          </div>
+        </div>
+      </SectionCard>
+
+      {/* Repository Information */}
+      <SectionCard title="Repository Information">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px" }}>
+          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+            <div style={{ fontWeight: 700, marginBottom: "10px" }}>Document Availability</div>
+            <div style={{ color: COLORS.textSecondary }}>Employment documents remain available for up to 24 months after your separation date.</div>
+          </div>
+          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+            <div style={{ fontWeight: 700, marginBottom: "10px" }}>Supported Formats</div>
+            <div style={{ color: COLORS.textSecondary }}>All employment records are provided in PDF format for consistency and long-term accessibility.</div>
+          </div>
+          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+            <div style={{ fontWeight: 700, marginBottom: "10px" }}>Security</div>
+            <div style={{ color: COLORS.textSecondary }}>Documents are securely stored and can only be accessed by authenticated alumni.</div>
+          </div>
+        </div>
+      </SectionCard>
       
       {/* Recent Activity Section */}
       <SectionCard title="Recent Activity">
         {recentActivity.length === 0 ? (
-         <p style={{ color: COLORS.textSecondary }}>No document activity yet. Preview or download a document to see your recent activity.</p>
-          ) : (
+          <p style={{ color: COLORS.textSecondary }}>No document activity yet. Preview or download a document to see your recent activity.</p>
+        ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {recentActivity.map((item,index)=>(
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderBottom: `1px solid ${COLORS.border}`,
-                  paddingBottom: "12px",
-                }}
-              >
-                <div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            {recentActivity.map((item, index) => (
+              <div key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${COLORS.border}`, paddingBottom: "12px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                  <span style={{ color: COLORS.primary, fontWeight: 600, fontSize: "13px" }}>{item.action}</span>
                   <strong style={{ color: COLORS.text }}>{item.name}</strong>
-                  <span style={{ color: COLORS.textSecondary, fontSize: "13px" }}>{item.action}</span></div>
                 </div>
-
-                <span
-                  style={{
-                    color: COLORS.textSecondary,
-                    fontSize: "13px",
-                  }}
-                >
-                  {formatRecentTime(item.time)}
-                </span>
+                <span style={{ color: COLORS.textSecondary, fontSize: "13px" }}>{formatRecentTime(item.time)}</span>
               </div>
             ))}
           </div>
         )}
       </SectionCard>
 
-  {/*Need Help Section*/}
-      <SectionCard title="Need Help?">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
-          <div>
-            <div style={{ fontWeight: 700, marginBottom: "8px" }}>Can't find a document?</div>
-            <div style={{ color: COLORS.textSecondary, maxWidth: "700px" }}>If a required employment document is unavailable or you have questions regarding tax records, payroll documents or settlement statements, our Helpdesk team can assist you.</div>
-          </div>
-          <PrimaryButton onClick={() => window.location.href = "/helpdesk"}>
-            Go to Helpdesk
-          </PrimaryButton>
-        </div>
-      </SectionCard>
-
-      {/* Document Preview Overlay Panel */}
-      <DocumentPreviewModal
-        open={previewOpen}
-        onClose={() => setPreviewOpen(false)}
-        pdfPath={selectedDocument.path}
-        title={selectedDocument.title}
-      />
+      {/* Structural Modal Mount Component */}
+      {previewOpen && (
+        <DocumentPreviewModal
+          isOpen={previewOpen}
+          onClose={() => setPreviewOpen(false)}
+          title={selectedDocument.title}
+          path={selectedDocument.path}
+        />
+      )}
     </div>
   );
 }
