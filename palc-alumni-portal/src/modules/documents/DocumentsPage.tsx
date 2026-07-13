@@ -115,7 +115,7 @@ export default function DocumentsPage() {
         <StatsCard title="Available Documents" value={documents.length.toString()} subtitle="Employment records" accentColor="#2563EB" />
         <StatsCard title="Recently Added" value="2" subtitle="New this month" accentColor="#16A34A" />
         <StatsCard title="Downloads" value="18" subtitle="This month" accentColor="#D97706" />
-        <StatsCard title="Last Updated" value="30 Mar" subtitle="Latest upload" accentColor="#9333EA" />
+        <StatsCard title="Latest Upload" value="30 Mar" subtitle="Latest upload" accentColor="#9333EA" />
       </div>
 
       {/* Main Repository Section */}
@@ -135,7 +135,7 @@ export default function DocumentsPage() {
               <option value="All Categories">All Categories</option>
               <option value="Employment">Employment</option>
               <option value="Payroll">Payroll</option>
-              <option value="Tax">Tax</option>
+              <option value="Tax Document">Tax Document</option>
               <option value="Settlement">Settlement</option>
               <option value="Provident Fund">Provident Fund</option>
             </select>
