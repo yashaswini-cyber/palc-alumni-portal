@@ -10,6 +10,7 @@ import DocumentPreviewModal from "../../shared/components/DocumentPreviewModal";
 
 const documents = [
   {
+    id: "DOC-001",
     name: "Experience Certificate",
     category: "Employment Record",
     date: "12-Jan-2025",
@@ -18,6 +19,7 @@ const documents = [
     path: "/downloads/Form16.pdf",
   },
   {
+    id: "DOC-002",
     name: "Relieving Letter",
     category: "Employment Record",
     date: "15-Jan-2025",
@@ -26,6 +28,7 @@ const documents = [
     path: "/downloads/Form16.pdf",
   },
   {
+    id: "DOC-003",
     name: "Form 16",
     category: "Tax Document",
     date: "30-Mar-2025",
@@ -34,9 +37,28 @@ const documents = [
     path: "/downloads/Form16.pdf",
   },
   {
+    id: "DOC-004",
     name: "Last Payslip",
     category: "Payroll",
     date: "31-Dec-2024",
+    format: "PDF",
+    status: "Available",
+    path: "/downloads/Form16.pdf",
+  },
+  {
+    id: "DOC-005",
+    name: "Full & Final (F&F) Settlement Statement",
+    category: "Settlement",
+    date: "18-Jan-2025",
+    format: "PDF",
+    status: "Available",
+    path: "/downloads/Form16.pdf",
+  },
+  {
+    id: "DOC-006",
+    name: "PF Transfer Documents",
+    category: "Provident Fund",
+    date: "20-Jan-2025",
     format: "PDF",
     status: "Available",
     path: "/downloads/Form16.pdf",
@@ -87,20 +109,37 @@ export default function DocumentsPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
-
+  const [sortBy, setSortBy] = useState("Latest"); /*for sorting state*/
+  const [fileSizes, setFileSizes] = useState<Record<string, string>>({}); /*dynamic downloaded file size*/
   const filteredDocuments = useMemo(() => {
-    return documents.filter((doc) => {
-      const matchesSearch = doc.name
-        .toLowerCase()
-        .includes(searchText.toLowerCase());
+  return documents.filter((doc) => {
+    const matchesSearch =
+      doc.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      doc.category.toLowerCase().includes(searchText.toLowerCase()) ||
+      doc.id.toLowerCase().includes(searchText.toLowerCase());
 
-      const matchesCategory =
-        selectedCategory === "All Categories" ||
-        doc.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === "All Categories" ||
+      doc.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+}, [searchText, selectedCategory]);
 
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchText, selectedCategory]);
+const sortedDocuments = useMemo(() => {
+  return [...filteredDocuments].sort((a, b) => {
+    switch (sortBy) {
+      case "A-Z":
+        return a.name.localeCompare(b.name);
+      case "Z-A":
+        return b.name.localeCompare(a.name);
+      case "Oldest":
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      case "Latest":
+      default:
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+    }
+  });
+}, [filteredDocuments, sortBy]);
 
   const [selectedDocument, setSelectedDocument] = useState({
     title: "",
@@ -124,6 +163,26 @@ export default function DocumentsPage() {
       );
     }
   }, []);
+  useEffect(() => {
+  async function loadSizes() {
+    const sizes: Record<string, string> = {};
+    for (const doc of documents) {
+      try {
+        const response = await fetch(doc.path);
+        const blob = await response.blob();
+        const kb = blob.size / 1024;
+        sizes[doc.id] =
+          kb >= 1024
+            ? `${(kb / 1024).toFixed(2)} MB`
+            : `${kb.toFixed(0)} KB`;
+      } catch {
+        sizes[doc.id] = "--";
+      }
+    }
+    setFileSizes(sizes);
+  }
+  loadSizes();
+}, []);
 
   const handleDownload = (doc: any) => {
     const link = document.createElement("a");
@@ -209,22 +268,71 @@ export default function DocumentsPage() {
                 color: COLORS.text,
               }}
             >
-              <option value="All Categories">All Categories</option>
-              <option value="Employment Record">Employment Record</option>
-              <option value="Payroll">Payroll</option>
-              <option value="Tax Document">Tax Document</option>
-            </select>
-          </div>
-        </div>
+             <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
+  <div style={{ flex: 1, minWidth: "320px" }}>
+    <SearchBar
+      value={searchText}
+      onChange={(e) => setSearchText(e.target.value)}
+    />
+  </div>
 
+  {/* Category Filter */}
+  <select
+    value={selectedCategory}
+    onChange={(e) => setSelectedCategory(e.target.value)}
+    style={{
+      padding: "12px 16px",
+      borderRadius: "12px",
+      border: `1px solid ${COLORS.border}`,
+      minWidth: "220px",
+      background: COLORS.surface,
+      color: COLORS.text,
+    }}
+  >
+    <option value="All Categories">All Categories</option>
+    <option value="Employment Record">Employment Record</option>
+    <option value="Payroll">Payroll</option>
+    <option value="Tax Document">Tax Document</option>
+    <option value="Settlement">Settlement</option>
+    <option value="Provident Fund">Provident Fund</option>
+  </select>
+  {/* Sort By */}
+  <select
+    value={sortBy}
+    onChange={(e) => setSortBy(e.target.value)}
+    style={{
+      padding: "12px 16px",
+      borderRadius: "12px",
+      border: `1px solid ${COLORS.border}`,
+      minWidth: "180px",
+      background: COLORS.surface,
+      color: COLORS.text,
+    }}
+  >
+    <option value="Latest">Latest</option>
+    <option value="Oldest">Oldest</option>
+    <option value="A-Z">A-Z</option>
+    <option value="Z-A">Z-A</option>
+  </select>
+</div> 
+      <option value="All Categories">All Categories</option>
+      <option value="Employment Record">Employment Record</option>
+      <option value="Payroll">Payroll</option>
+      <option value="Tax Document">Tax Document</option>
+   </select>
+  </div>
+</div>
         {/* Data Table */}
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ textAlign: "left", borderBottom: `1px solid ${COLORS.border}` }}>
+           <thead>
+              <tr
+                style={{ textAlign: "left", borderBottom: `1px solid ${COLORS.border}`,  }}>         
+                <th style={{ padding: "12px" }}>Document ID</th>
                 <th style={{ padding: "12px" }}>Document</th>
                 <th style={{ padding: "12px" }}>Category</th>
                 <th style={{ padding: "12px" }}>Issue Date</th>
+                <th style={{ padding: "12px" }}>File Size</th>
                 <th style={{ padding: "12px" }}>Format</th>
                 <th style={{ padding: "12px" }}>Status</th>
                 <th style={{ padding: "12px" }}>Actions</th>
@@ -245,15 +353,18 @@ export default function DocumentsPage() {
                   </td>
                 </tr>
               ) : (
-                filteredDocuments.map((doc) => (
+                sortedDocuments.map((doc) => (
                   <tr key={doc.name} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
-                    <td style={{ padding: "12px", fontWeight: 700 }}>{doc.name}</td>
-                    <td style={{ padding: "12px" }}>{doc.category}</td>
-                    <td style={{ padding: "12px" }}>{doc.date}</td>
-                    <td style={{ padding: "12px" }}>{doc.format}</td>
+                    <td style={{ padding: "12px" }}>{doc.id}</td>
+                    <td style={{ padding: "12px", fontWeight: 700 }}> {doc.name}</td>                   
+                    <td style={{ padding: "12px" }}> {doc.category}</td>               
+                    <td style={{ padding: "12px" }}>{doc.date}</td>{fileSizes[doc.id] ?? "--"}                                       <td style={{ padding: "12px" }}>
+                      </td>
+                    <td style={{ padding: "12px" }}>   {doc.format}   
+                      </td>                 
                     <td style={{ padding: "12px" }}>
-                      <StatusBadge status={doc.status} />
-                    </td>
+                        <StatusBadge status={doc.status} />
+                      </td>
                     <td style={{ padding: "12px" }}>
                       <div style={{ display: "flex", gap: "10px" }}>
                         <button
