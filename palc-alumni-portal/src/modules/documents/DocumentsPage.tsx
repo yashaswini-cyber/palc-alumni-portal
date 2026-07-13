@@ -4,6 +4,7 @@ import PageHeader from "../../shared/components/PageHeader";
 import SearchBar from "../../shared/components/SearchBar";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
+import DetailsModal from "../../shared/components/DetailsModal";
 import { COLORS } from "../../shared/theme/colors";
 import { useEffect, useMemo, useState } from "react";
 import DocumentPreviewModal from "../../shared/components/DocumentPreviewModal";
@@ -266,15 +267,23 @@ export default function DocumentsPage() {
         )}
       </SectionCard>
 
-      {/* Structural Modal Mount Component */}
-      {previewOpen && (
-        <DocumentPreviewModal
-          isOpen={previewOpen}
-          onClose={() => setPreviewOpen(false)}
-          title={selectedDocument.title}
-          path={selectedDocument.path}
-        />
-      )}
+    {/* Structural Modal Mount Component */}
+    {previewOpen && (
+      <DetailsModal
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        title={selectedDocument.title}
+      >
+        {/* Pass the preview frame as children right here! */}
+        <div style={{ width: "100%", height: "500px" }}>
+          <iframe
+            src={selectedDocument.path}
+            title={selectedDocument.title}
+            style={{ width: "100%", height: "100%", border: "none", borderRadius: "8px" }}
+          />
+        </div>
+      </DetailsModal>
+    )}
     </div>
   );
 }
