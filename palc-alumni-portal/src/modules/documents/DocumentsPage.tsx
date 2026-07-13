@@ -145,24 +145,14 @@ const sortedDocuments = useMemo(() => {
     title: "",
     path: "",
   });
-  const [recentDownloads, setRecentDownloads] = useState<
-    {
-      name: string;
-      time: number;
-    }[]
-  >([]);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("recentDownloads");
-    if (stored) {
-      setRecentDownloads(
-        JSON.parse(stored) as {
-          name: string;
-          time: number;
-        }[]
-      );
-    }
-  }, []);
+  const [recentActivity, setRecentActivity] = useState<{ name: string; action: "Downloaded" | "Previewed"; time: number; }[]>([]);
+ useEffect(() => {
+  const stored = localStorage.getItem("recentActivity");
+  if (stored) {
+    setRecentActivity(JSON.parse(stored));
+  }
+}, []);
+  
   useEffect(() => {
   async function loadSizes() {
     const sizes: Record<string, string> = {};
@@ -184,20 +174,18 @@ const sortedDocuments = useMemo(() => {
   loadSizes();
 }, []);
 
+  const logActivity = (name: string, action: "Downloaded" | "Previewed") => {
+  const activity = { name, action, time: Date.now() };
+  const updated = [activity, ...recentActivity].slice(0, 8);
+  setRecentActivity(updated);
+  localStorage.setItem("recentActivity", JSON.stringify(updated));
+};
   const handleDownload = (doc: any) => {
     const link = document.createElement("a");
     link.href = doc.path;
     link.download = doc.name + ".pdf";
     link.click();
-
-    const newDownload = {
-      name: doc.name,
-      time: Date.now(),
-    };
-
-    const updatedDownloads = [newDownload, ...recentDownloads].slice(0, 5);
-    setRecentDownloads(updatedDownloads);
-    localStorage.setItem("recentDownloads", JSON.stringify(updatedDownloads));
+    logActivity(doc.name, "Downloaded");
   };
 
   return (
@@ -269,46 +257,46 @@ const sortedDocuments = useMemo(() => {
               }}
             >
              <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
-  <div style={{ flex: 1, minWidth: "320px" }}>
-    <SearchBar
-      value={searchText}
-      onChange={(e) => setSearchText(e.target.value)}
-    />
-  </div>
+             <div style={{ flex: 1, minWidth: "320px" }}>
+            <SearchBar
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </div>
 
-  {/* Category Filter */}
-  <select
-    value={selectedCategory}
-    onChange={(e) => setSelectedCategory(e.target.value)}
-    style={{
-      padding: "12px 16px",
-      borderRadius: "12px",
-      border: `1px solid ${COLORS.border}`,
-      minWidth: "220px",
-      background: COLORS.surface,
-      color: COLORS.text,
-    }}
-  >
-    <option value="All Categories">All Categories</option>
-    <option value="Employment Record">Employment Record</option>
-    <option value="Payroll">Payroll</option>
-    <option value="Tax Document">Tax Document</option>
-    <option value="Settlement">Settlement</option>
-    <option value="Provident Fund">Provident Fund</option>
-  </select>
-  {/* Sort By */}
-  <select
-    value={sortBy}
-    onChange={(e) => setSortBy(e.target.value)}
-    style={{
-      padding: "12px 16px",
-      borderRadius: "12px",
-      border: `1px solid ${COLORS.border}`,
-      minWidth: "180px",
-      background: COLORS.surface,
-      color: COLORS.text,
-    }}
-  >
+          {/* Category Filter */}
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            style={{
+              padding: "12px 16px",
+              borderRadius: "12px",
+              border: `1px solid ${COLORS.border}`,
+              minWidth: "220px",
+              background: COLORS.surface,
+              color: COLORS.text,
+            }}
+          >
+            <option value="All Categories">All Categories</option>
+            <option value="Employment Record">Employment Record</option>
+            <option value="Payroll">Payroll</option>
+            <option value="Tax Document">Tax Document</option>
+            <option value="Settlement">Settlement</option>
+            <option value="Provident Fund">Provident Fund</option>
+          </select>
+          {/* Sort By */}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            style={{
+              padding: "12px 16px",
+              borderRadius: "12px",
+              border: `1px solid ${COLORS.border}`,
+              minWidth: "180px",
+              background: COLORS.surface,
+              color: COLORS.text,
+            }}
+          >
     <option value="Latest">Latest</option>
     <option value="Oldest">Oldest</option>
     <option value="A-Z">A-Z</option>
@@ -370,12 +358,10 @@ const sortedDocuments = useMemo(() => {
                         <button
                           style={secondaryButtonStyle}
                           onClick={() => {
-                            setSelectedDocument({
-                              title: doc.name,
-                              path: doc.path,
-                            });
-                            setPreviewOpen(true);
-                          }}
+                          setSelectedDocument({ title: doc.name, path: doc.path });
+                          logActivity(doc.name, "Previewed");
+                          setPreviewOpen(true);
+                        }}
                         >
                           Preview
                         </button>
@@ -394,13 +380,30 @@ const sortedDocuments = useMemo(() => {
         </div>
       </SectionCard>
 
-      {/* Recent Downloads Section */}
-      <SectionCard title="Recent Downloads">
-        {recentDownloads.length === 0 ? (
-          <p style={{ color: COLORS.textSecondary }}>No recent downloads.</p>
-        ) : (
+      <SectionCard title="Repository Summary">
+  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "18px" }}>
+    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Documents Available</div>
+      <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700 }}>{documents.length}</div>
+    </div>
+    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Total Activity</div>
+      <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700 }}>{recentActivity.length}</div>
+    </div>
+    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Repository Status</div>
+      <div style={{ marginTop: "8px", fontSize: "20px", fontWeight: 700, color: "#16A34A" }}>Up to Date</div>
+    </div>
+  </div>
+</SectionCard>
+      
+      {/* Recent Activity Section */}
+      <SectionCard title="Recent Activity">
+        {recentActivity.length === 0 ? (
+         <p style={{ color: COLORS.textSecondary }}>No document activity yet. Preview or download a document to see your recent activity.</p>
+          ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {recentDownloads.map((item, index) => (
+            {recentActivity.map((item,index)=>(
               <div
                 key={index}
                 style={{
@@ -412,7 +415,9 @@ const sortedDocuments = useMemo(() => {
                 }}
               >
                 <div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                   <strong style={{ color: COLORS.text }}>{item.name}</strong>
+                  <span style={{ color: COLORS.textSecondary, fontSize: "13px" }}>{item.action}</span></div>
                 </div>
 
                 <span
@@ -427,6 +432,19 @@ const sortedDocuments = useMemo(() => {
             ))}
           </div>
         )}
+      </SectionCard>
+
+  {/*Need Help Section*/}
+      <SectionCard title="Need Help?">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+          <div>
+            <div style={{ fontWeight: 700, marginBottom: "8px" }}>Can't find a document?</div>
+            <div style={{ color: COLORS.textSecondary, maxWidth: "700px" }}>If a required employment document is unavailable or you have questions regarding tax records, payroll documents or settlement statements, our Helpdesk team can assist you.</div>
+          </div>
+          <PrimaryButton onClick={() => window.location.href = "/helpdesk"}>
+            Go to Helpdesk
+          </PrimaryButton>
+        </div>
       </SectionCard>
 
       {/* Document Preview Overlay Panel */}
