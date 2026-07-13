@@ -14,8 +14,8 @@ const documents = [
   { id: "DOC-002", name: "Relieving Letter", category: "Employment Record", date: "15-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
   { id: "DOC-003", name: "Form 16", category: "Tax Document", date: "30-Mar-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
   { id: "DOC-004", name: "Last Payslip", category: "Payroll", date: "31-Dec-2024", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-005", name: "Full & Final (F&F) Settlement Statement", category: "Employment Record", date: "18-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-006", name: "PF Transfer Documents", category: "Employment Record", date: "20-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-005", name: "Full & Final (F&F) Settlement Statement", category: "Settlement", date: "18-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-006", name: "PF Transfer Documents", category: "Provident Fund", date: "20-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
 ];
 
 const secondaryButtonStyle = { background: "#EFF6FF", color: COLORS.primary, boxShadow: "none", border: `1px solid ${COLORS.border}`, padding: "10px 18px", borderRadius: "10px", cursor: "pointer" };
@@ -57,7 +57,7 @@ export default function DocumentsPage() {
     return [...filteredDocuments].sort((a, b) => {
       switch (sortBy) {
         case "A-Z": return a.name.localeCompare(b.name);
-        case "Z-A": return b.name.localeCompare(b.name);
+        case "Z-A": return b.name.localeCompare(a.name);
         case "Oldest": return new Date(a.date).getTime() - new Date(b.date).getTime();
         case "Latest":
         default: return new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -90,7 +90,7 @@ export default function DocumentsPage() {
 
   const logActivity = (name: string, action: "Downloaded" | "Previewed") => {
     const activity = { name, action, time: Date.now() };
-    const updated = [activity, ...recentActivity].slice(0, 8);
+    const updated = [activity, ...recentActivity].slice(0, 5);
     setRecentActivity(updated);
     localStorage.setItem("recentActivity", JSON.stringify(updated));
   };
@@ -133,9 +133,11 @@ export default function DocumentsPage() {
               style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "220px", background: COLORS.surface, color: COLORS.text }}
             >
               <option value="All Categories">All Categories</option>
-              <option value="Employment Record">Employment Record</option>
+              <option value="Employment">Employment</option>
               <option value="Payroll">Payroll</option>
-              <option value="Tax Document">Tax Document</option>
+              <option value="Tax">Tax</option>
+              <option value="Settlement">Settlement</option>
+              <option value="Provident Fund">Provident Fund</option>
             </select>
 
             {/* Sort By */}
