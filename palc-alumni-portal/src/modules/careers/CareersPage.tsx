@@ -21,6 +21,8 @@ const cardStyle = {
 
 export default function CareersPage() {
   const jobsSectionRef = useRef<HTMLDivElement>(null);
+  const rehireSectionRef = useRef<HTMLDivElement>(null);
+  const alertsSectionRef = useRef<HTMLDivElement>(null);
   const [searchText, setSearchText] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("All Departments");
   const [selectedLocation, setSelectedLocation] = useState("All Locations");
@@ -99,8 +101,14 @@ export default function CareersPage() {
             title: "View Open Positions",
             onClick: () => jobsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
           },
-          { title: "Rehire Opportunities", onClick: () => {} },
-          { title: "Job Alerts", onClick: () => {} }
+          {
+            title: "Continue Your Journey",
+            onClick: () => rehireSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+          },
+          {
+            title: "Job Alerts",
+            onClick: () => alertsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+          },
         ]}
         pills={[
           { title: "Open Roles", value: `${careerStats.openPositions}`, color: "#38BDF8" },
@@ -129,6 +137,7 @@ export default function CareersPage() {
         <StatsCard title="Remote / Hybrid" value={careerStats.flexibleRoles.toString()} subtitle="Flexible opportunities" accentColor="#D97706" />
       </div>
 
+      {/* Current Opportunities */}
       <SectionCard
         title="Current Opportunities"
         subtitle="Explore active openings across PalC Networks. Use search and filters to quickly find roles that match your interests and experience."
@@ -227,6 +236,171 @@ export default function CareersPage() {
           )}
         </div>
       </SectionCard>
+
+      {/* Rehire Opportunities */}
+      <SectionCard
+        title="Continue Your Journey with PalC"
+        subtitle="Explore new opportunities and reconnect with the teams, culture, and values that helped shape your professional journey."
+      >
+        <div ref={rehireSectionRef}>
+          <p
+            style={{
+              margin: "0 0 36px",
+              color: COLORS.textSecondary,
+              fontSize: "15px",
+              lineHeight: 1.8,
+              maxWidth: "900px",
+            }}
+          >
+            Your experience with PalC is part of your professional story, and we'd be
+            delighted to welcome you back. Explore exciting opportunities across teams
+            and discover where your next chapter could begin.
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
+              gap: "22px",
+              marginBottom: "36px",
+            }}
+          >
+            <div
+              style={{
+                background: "#fff",
+                border: `1px solid ${COLORS.border}`,
+                borderRadius: "16px",
+                padding: "24px",
+              }}
+            >
+              <h3
+                style={{
+                  marginTop: 0,
+                  color: COLORS.primary,
+                }}
+              >
+                Already Familiar
+              </h3>
+              <p
+                style={{
+                  marginBottom: 0,
+                  color: COLORS.textSecondary,
+                  lineHeight: 1.7,
+                }}
+              >
+                Your understanding of PalC's culture, values and ways of working allows
+                you to settle into new opportunities with confidence.
+              </p>
+            </div>
+
+            <div
+              style={{
+                background: "#fff",
+                border: `1px solid ${COLORS.border}`,
+                borderRadius: "16px",
+                padding: "24px",
+              }}
+            >
+              <h3
+                style={{
+                  marginTop: 0,
+                  color: COLORS.primary,
+                }}
+              >
+                Build on Your Experience
+              </h3>
+              <p
+                style={{
+                  marginBottom: 0,
+                  color: COLORS.textSecondary,
+                  lineHeight: 1.7,
+                }}
+              >
+                Continue growing your career while working on innovative technologies,
+                exciting projects and meaningful business challenges.
+              </p>
+            </div>
+
+            <div
+              style={{
+                background: "#fff",
+                border: `1px solid ${COLORS.border}`,
+                borderRadius: "16px",
+                padding: "24px",
+              }}
+            >
+              <h3
+                style={{
+                  marginTop: 0,
+                  color: COLORS.primary,
+                }}
+              >
+                Stay Connected
+              </h3>
+              <p
+                style={{
+                  marginBottom: 0,
+                  color: COLORS.textSecondary,
+                  lineHeight: 1.7,
+                }}
+              >
+                Whether you're exploring opportunities today or in the future, we're
+                always delighted to stay connected with our alumni community.
+              </p>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "18px",
+            }}
+          >
+            <PrimaryButton
+              onClick={() =>
+                jobsSectionRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                })
+              }
+            >
+              Explore Current Opportunities
+            </PrimaryButton>
+            
+            <p
+              style={{
+                margin: 0,
+                textAlign: "left",
+                alignSelf: "stretch",
+                color: COLORS.textSecondary,
+                lineHeight: 1.7,
+              }}
+            >
+              New opportunities are added regularly. Stay connected, explore current
+              openings, and continue growing your career with PalC whenever the time is
+              right.
+            </p>
+          </div>
+          
+        </div>
+      </SectionCard>
+
+      {/* Job Alerts Section */}
+      <div ref={alertsSectionRef}>
+        <SectionCard
+          title="Job Alerts"
+          subtitle="Get notified when new jobs matching your skills are posted."
+        >
+          <div style={{ background: "#FAFBFC", border: `1px solid ${COLORS.border}`, borderRadius: "18px", padding: "36px", textAlign: "center" }}>
+            <h3 style={{ margin: "0 0 12px", color: COLORS.text }}>Never Miss an Opening</h3>
+            <p style={{ color: COLORS.textSecondary, marginBottom: "24px" }}>
+              Set up personalized notifications to hear about new roles the moment they go live.
+            </p>
+            <PrimaryButton onClick={() => {}}>Subscribe to Job Alerts</PrimaryButton>
+          </div>
+        </SectionCard>
+      </div>
     </div>
   );
 }
