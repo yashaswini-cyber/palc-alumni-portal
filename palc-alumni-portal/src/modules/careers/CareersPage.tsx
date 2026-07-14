@@ -29,6 +29,17 @@ export default function CareersPage() {
   const [selectedWorkMode, setSelectedWorkMode] = useState("All Work Modes");
   const [selectedEmploymentType, setSelectedEmploymentType] = useState("All Types");
   const [sortBy, setSortBy] = useState("Newest");
+  const [alertDepartment, setAlertDepartment] = useState("All Departments");
+  const [alertWorkMode, setAlertWorkMode] = useState("All Work Modes");
+  const [alertFrequency, setAlertFrequency] = useState("Weekly");
+  const [jobAlert, setJobAlert] = useState<{
+    department: string;
+    workMode: string;
+    frequency: string;
+    active: boolean;
+  } | null>(null);
+  const [isEditingAlert, setIsEditingAlert] = useState(false);
+const [alertMessage, setAlertMessage] = useState("");
 
   // Cache static options to avoid unnecessary recalculations on state changes
   const departmentOptions = useMemo(() => ["All Departments", ...new Set(jobs.map((job) => job.department))], []);
@@ -163,6 +174,21 @@ export default function CareersPage() {
             <option>Department</option>
           </select>
         </div>
+        {alertMessage && (
+        <div
+          style={{
+            background: "#EFFAF3",
+            border: "1px solid #B7E4C7",
+            color: "#166534",
+            padding: "14px 18px",
+            borderRadius: "12px",
+            marginBottom: "22px",
+            fontWeight: 500,
+          }}
+        >
+          {alertMessage}
+        </div>
+      )}
 
         {/* Counter and Clear Filters Row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
@@ -403,21 +429,174 @@ export default function CareersPage() {
         </div>
       </SectionCard>
 
-      {/* Job Alerts Section */}
+{/* Job Alerts Section */}
       <div ref={alertsSectionRef}>
-        <SectionCard
-          title="Job Alerts"
-          subtitle="Get notified when new jobs matching your skills are posted."
-        >
-          <div style={{ background: "#FAFBFC", border: `1px solid ${COLORS.border}`, borderRadius: "18px", padding: "36px", textAlign: "center" }}>
-            <h3 style={{ margin: "0 0 12px", color: COLORS.text }}>Never Miss an Opening</h3>
-            <p style={{ color: COLORS.textSecondary, marginBottom: "24px" }}>
-              Set up personalized notifications to hear about new roles the moment they go live.
-            </p>
-            <PrimaryButton onClick={() => {}}>Subscribe to Job Alerts</PrimaryButton>
+      <SectionCard
+        title="Stay Updated with New Opportunities"
+        subtitle="Create personalized job alerts and stay informed whenever opportunities matching your interests become available."
+      >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "18px", marginBottom: "28px" }}>
+          <select value={alertDepartment} onChange={(e) => setAlertDepartment(e.target.value)}>
+            {departmentOptions.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+
+          <select value={alertWorkMode} onChange={(e) => setAlertWorkMode(e.target.value)}>
+            {workModeOptions.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+
+          <select value={alertFrequency} onChange={(e) => setAlertFrequency(e.target.value)}>
+            <option>Immediately</option>
+            <option>Daily</option>
+            <option>Weekly</option>
+          </select>
+          <PrimaryButton
+            onClick={() => {
+              if (
+                alertDepartment === "All Departments" &&
+                alertWorkMode === "All Work Modes"
+              ) {
+                setAlertMessage(
+                  "Please select at least a department or work mode before creating an alert."
+                );
+                return;
+              }
+              setJobAlert({
+                department: alertDepartment,
+                workMode: alertWorkMode,
+                frequency: alertFrequency,
+                active: true,
+              });
+              setAlertMessage(
+                isEditingAlert
+                  ? "Your job alert has been updated successfully."
+                  : "Your personalized job alert has been created successfully."
+              );
+              setIsEditingAlert(false);
+            }}>
+            {isEditingAlert ? "Update Job Alert" : "Create Job Alert"}
+          </PrimaryButton>
+        </div>
+
+        {jobAlert ? (
+          <div style={{ background: "#F8FBFF", border: `1px solid ${COLORS.border}`, borderRadius: "18px", padding: "28px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+              <div>
+                <h3 style={{ margin: 0, color: COLORS.text }}>
+                  Your Job Alert
+                </h3>
+
+                <p style={{ marginTop: "8px", color: COLORS.textSecondary }}>
+                  We'll notify you whenever matching opportunities become available.
+                </p>
+              </div>
+
+              <span
+                style={{
+                  background: jobAlert.active ? "#DCFCE7" : "#F3F4F6",
+                  color: jobAlert.active ? "#15803D" : "#6B7280",
+                  padding: "8px 14px",
+                  borderRadius: "999px",
+                  fontWeight: 600,
+                  fontSize: "13px",
+                }}
+              >
+                {jobAlert.active ? "Active" : "Disabled"}
+              </span>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: "18px", marginBottom: "28px" }}>
+              <div>
+                <strong>Department</strong>
+                <p>{jobAlert.department}</p>
+              </div>
+
+              <div>
+                <strong>Work Mode</strong>
+                <p>{jobAlert.workMode}</p>
+              </div>
+
+              <div>
+                <strong>Frequency</strong>
+                <p>{jobAlert.frequency}</p>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+            <PrimaryButton
+              onClick={() => {
+                setAlertDepartment(jobAlert.department);
+                setAlertWorkMode(jobAlert.workMode);
+                setAlertFrequency(jobAlert.frequency);
+                setIsEditingAlert(true);
+                alertsSectionRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }}
+            > Edit Alert
+            </PrimaryButton>
+
+            <button
+              onClick={() =>
+                setJobAlert({
+                  ...jobAlert,
+                  active: !jobAlert.active,
+                })
+              }
+              style={{
+                padding: "11px 20px",
+                borderRadius: "10px",
+                border: `1px solid ${COLORS.border}`,
+                background: "#fff",
+                color: COLORS.primary,
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              {jobAlert.active ? "Disable Alert" : "Enable Alert"}
+            </button>
+
+            <button
+              onClick={() => {
+                setJobAlert(null);
+                setAlertDepartment("All Departments");
+                setAlertWorkMode("All Work Modes");
+                setAlertFrequency("Weekly");
+                setAlertMessage("Job alert deleted successfully.");
+                setIsEditingAlert(false);
+              }}
+              style={{
+                padding: "11px 20px",
+                borderRadius: "10px",
+                border: "1px solid #FECACA",
+                background: "#FEF2F2",
+                color: "#B91C1C",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              Delete Alert
+            </button>
           </div>
-        </SectionCard>
-      </div>
+          </div>
+        ) : (
+          <div style={{ background: "#FAFBFC", border: `1px dashed ${COLORS.border}`, borderRadius: "18px", padding: "40px", textAlign: "center" }}>
+            <h3 style={{ marginTop: 0 }}>
+              No Job Alerts Created
+            </h3>
+
+            <p style={{ color: COLORS.textSecondary, marginBottom: 0 }}>
+              Create a personalized alert to stay informed about opportunities that
+              match your skills and career interests.
+            </p>
+          </div>
+        )}
+      </SectionCard>
     </div>
+      </div>
   );
 }
