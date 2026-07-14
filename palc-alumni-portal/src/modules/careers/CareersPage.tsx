@@ -596,6 +596,30 @@ const [alertMessage, setAlertMessage] = useState("");
           </div>
         )}
       </SectionCard>
+
+  {/*Need Career Assistance Section*/}
+    <SectionCard
+    title="Need Career Assistance?"
+    subtitle="Our team is here to help if you have questions about career opportunities, applications, or returning to PalC."
+  >
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "32px", flexWrap: "wrap", background: "#F8FBFF", border: `1px solid ${COLORS.border}`, borderRadius: "18px", padding: "32px" }}>
+      
+      <div style={{ flex: 1, minWidth: "300px" }}>
+        <h3 style={{ margin: "0 0 14px", color: COLORS.text }}>
+          We're Happy to Help
+        </h3>
+        <p style={{ margin: 0, color: COLORS.textSecondary, lineHeight: 1.8 }}>
+          Whether you have questions about current opportunities, your application, or returning to PalC, our Helpdesk is here to assist you. Reach out anytime and we'll guide you in the right direction.
+        </p>
+      </div>
+      <PrimaryButton
+        onClick={() => window.location.href = "/helpdesk"}
+      >
+        Go to Helpdesk
+      </PrimaryButton>
+
+    </div>
+  </SectionCard>
     </div>
       </div>
   );
