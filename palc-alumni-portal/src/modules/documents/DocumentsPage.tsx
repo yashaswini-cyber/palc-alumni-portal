@@ -8,6 +8,7 @@ import InfoCard from "../../shared/components/InfoCard";
 import DetailsModal from "../../shared/components/DetailsModal";
 import { COLORS } from "../../shared/theme/colors";
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DocumentPreviewModal from "../../shared/components/DocumentPreviewModal";
 
 const documents = [
@@ -32,6 +33,7 @@ function formatRecentTime(time: number) {
 }
 
 export default function DocumentsPage() {
+  const navigate = useNavigate();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -115,7 +117,7 @@ export default function DocumentsPage() {
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
       <PageHeader
         title="Document Repository"
-        subtitle="Download and manage your employment records, tax documents and settlement statements — available for up to 24 months after separation."
+        subtitle="Access and download your official employment records, payroll documents, tax forms and settlement statements securely from one place."
       />
 
       {/* Metrics Grid */}
@@ -223,22 +225,32 @@ export default function DocumentsPage() {
       </SectionCard>
 
       {/* Repository Summary */}
-      <SectionCard title="Repository Summary">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "18px" }}>
-          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-            <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Documents Available</div>
-            <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700 }}>{documents.length}</div>
-          </div>
-          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-            <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Total Activity</div>
-            <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700 }}>{recentActivity.length}</div>
-          </div>
-          <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-            <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Available Documents</div>
-            <div style={{ marginTop: "8px", fontSize: "20px", fontWeight: 700 }}>{documents.filter(doc => doc.status === "Available").length} Active</div>
-          </div>
-        </div>
-      </SectionCard>
+<SectionCard title="Repository Summary">
+  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "18px" }}>
+    
+    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Documents Available</div>
+      <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700, color: COLORS.primary }}>
+        {documents.length}
+      </div>
+    </div>
+
+    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Total Activity</div>
+      <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700, color: "#D97706" }}>
+        {recentActivity.length}
+      </div>
+    </div>
+
+    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Repository Status</div>
+      <div style={{ marginTop: "8px", fontSize: "20px", fontWeight: 700, color: "#16A34A" }}>
+        {documents.filter(doc => doc.status === "Available").length} Active
+      </div>
+    </div>
+
+  </div>
+</SectionCard>
 
   {/* Repository Information */}
     <SectionCard title="Repository Information">
@@ -279,6 +291,97 @@ export default function DocumentsPage() {
           </div>
         )}
       </SectionCard>
+
+    {/* Help & Support */}
+    <SectionCard
+      title="Need Help with Your Documents?"
+      subtitle="Find guidance for accessing employment records, payroll documents and tax forms. If you still need assistance, our Alumni Support Team is here to help.">
+      <div
+        style={{ display: "grid",gridTemplateColumns: "2fr 1fr",gap: "24px",}}>
+      
+        {/* Left Column */}
+        <div
+          style={{display: "grid",gap: "18px"}}>
+          {[
+            {
+              title: "Document Availability",description:"Employment records remain available for up to 24 months after your separation date. Download important documents before the retention period ends.",  
+            },
+            {
+              title: "Before You Download", description: "Verify that you are downloading the correct document, such as your Experience Certificate, Form 16 or Last Payslip, before sharing it with employers or financial institutions.",
+            },
+            {
+              title: "Document Security", description:  "All documents are official records issued by PalC Networks. They are securely stored and intended for personal reference and professional verification purposes.",
+            },
+            {
+              title: "Finding Your Documents",description: "Use the search bar, category filter and sorting options to quickly locate employment records, payroll documents, settlement statements and tax forms.",
+            },
+          ].map((item) => (
+            <InfoCard
+              key={item.title}
+              hoverable
+              title={item.title}
+              subtitle={item.description}
+            />
+          ))}
+        </div>
+
+        {/* Right Column */}
+        <div
+          style={{
+            border: `1px solid ${COLORS.border}`,
+            borderRadius: "18px",
+            padding: "24px",
+            background: "#F8FBFF",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            <h3
+              style={{
+                marginTop: 0,
+                marginBottom: "12px",
+                color: COLORS.text,
+              }}
+            >
+              Can't Locate a Document?
+            </h3>
+
+            <p
+              style={{
+                color: COLORS.textSecondary,
+                lineHeight: 1.7,
+                marginBottom: "20px",
+              }}
+            >
+              If a required employment record is unavailable or you need assistance
+              with payroll, tax or settlement documents, our Alumni Support Team
+              will be happy to assist you.
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                marginBottom: "24px",
+                color: COLORS.text,
+              }}
+            >
+              <span>• Missing employment records</span>
+              <span>• Payroll document enquiries</span>
+              <span>• Tax document assistance</span>
+              <span>• Full & Final settlement support</span>
+            </div>
+          </div>
+
+          <PrimaryButton onClick={() => navigate("/helpdesk")}>
+            Contact Alumni Helpdesk
+          </PrimaryButton>
+        </div>
+      </div>
+    </SectionCard>
 
     {/* Structural Modal Mount Component */}
     {previewOpen && (
