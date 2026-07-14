@@ -102,7 +102,7 @@ export default function CareersPage() {
             onClick: () => jobsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
           },
           {
-            title: "Continue Your Journey",
+            title: "Continue Your Journey with PalC",
             onClick: () => rehireSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
           },
           {
@@ -170,11 +170,28 @@ export default function CareersPage() {
             Showing {filteredJobs.length} of {jobs.length} opportunities
           </span>
           <button
-            onClick={handleClearFilters}
-            style={{ border: `1px solid ${COLORS.border}`, background: "#fff", borderRadius: "10px", padding: "10px 18px", cursor: "pointer", fontWeight: 600 }}
-          >
-            Clear Filters
-          </button>
+  onClick={handleClearFilters}
+  style={{
+    border: `1px solid ${COLORS.border}`,
+    background: "#fff",
+    color: COLORS.primary,
+    borderRadius: "10px",
+    padding: "10px 18px",
+    cursor: "pointer",
+    fontWeight: 600,
+    transition: "all 0.2s ease",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.background = "#EFF6FF";
+    e.currentTarget.style.borderColor = COLORS.primary;
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.background = "#fff";
+    e.currentTarget.style.borderColor = COLORS.border;
+  }}
+>
+  Clear Filters
+</button>
         </div>
 
         {/* Jobs List Container */}
