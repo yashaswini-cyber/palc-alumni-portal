@@ -30,15 +30,6 @@ export const quickActions = [
     icon: "🤝",
     route: "/referrals",
   },
-
-  {
-    title: "Stay Connected with PalC",
-    description:
-      "Explore updates, videos and social channels",
-    icon: "🎁",
-    route: "/benefits",
-  },
-
   {
     title: "Helpdesk",
     description:
@@ -46,21 +37,13 @@ export const quickActions = [
     icon: "🎫",
     route: "/helpdesk",
   },
-
-  {
-    title: "Digital Exit Archive",
-    description:
-      "View exit records, F&F details and clearance documents.",
-    icon: "📂",
-    route: "/archive",
-  },
-
   {
     title: "Engagement Hub",
     description:
       "Announcements, newsletters, leadership messages and alumni events.",
     icon: "🌐",
-    route: "/engagement",
+    route: "",
+    action: "engagementHub",
   },
 ];
 export const overviewStats = [

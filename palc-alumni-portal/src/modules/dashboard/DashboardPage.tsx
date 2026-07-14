@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRef } from "react";
 import HeroBanner from "../../shared/components/HeroBanner";
 import PrimaryButton from "../../shared/components/PrimaryButton";
 import DashboardCard from "../../shared/components/DashboardCard";
@@ -90,7 +91,7 @@ function Glyph({ label }: { label: string }) {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const [showLeadership, setShowLeadership] = useState(false);
-
+  const engagementHubRef = useRef<HTMLDivElement>(null);
   return (
     <div
       style={{
@@ -265,11 +266,20 @@ export default function DashboardPage() {
         >
           {quickActions.map((item) => (
             <QuickActionCard
-              key={item.title}
-              title={item.title}
-              subtitle={item.description}
-              onClick={() => navigate(item.route)}
-            />
+  key={item.title}
+  title={item.title}
+  subtitle={item.description}
+  onClick={() => {
+    if (item.action === "engagementHub") {
+      engagementHubRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    } else {
+      navigate(item.route);
+    }
+  }}
+/>
           ))}
         </div>
       </section>
@@ -664,7 +674,10 @@ export default function DashboardPage() {
   </div>
 </DashboardSection>
       {/* Alumni Engagement Hub */}
-      <section style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+      <section
+        ref={engagementHubRef}
+        style={{ display: "flex", flexDirection: "column", gap: "28px" }}
+      >     
         <PageHeader
           title="Alumni Engagement Hub"
           subtitle="Stay connected with PalC through leadership updates, community news, featured technologies, events and alumni success stories."
