@@ -9,7 +9,7 @@ type SearchBarProps = {
 export default function SearchBar({
   value,
   onChange,
-  placeholder = "Search Document Name...",
+  placeholder = "Search Document Name, ID, or, Category",
 }: SearchBarProps) {
   return (
     <label

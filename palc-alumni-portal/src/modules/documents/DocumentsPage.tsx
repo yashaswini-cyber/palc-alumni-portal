@@ -143,7 +143,7 @@ export default function DocumentsPage() {
               style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "220px", background: COLORS.surface, color: COLORS.text }}
             >
               <option value="All Categories">All Categories</option>
-              <option value="Employment">Employment</option>
+              <option value="Employment Record">Employment Record</option>
               <option value="Payroll">Payroll</option>
               <option value="Tax Document">Tax Document</option>
               <option value="Settlement">Settlement</option>
