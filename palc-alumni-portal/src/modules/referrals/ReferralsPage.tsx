@@ -7,6 +7,7 @@ import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
 import SearchBar from "../../shared/components/SearchBar";
 import { COLORS } from "../../shared/theme/colors";
+import ReferralFormModal from "../../shared/components/ReferralFormModal";
 
 const initialReferrals = [
   { id: "REF001", candidate: "John Doe", position: "AI Engineer", date: "20 Jun 2026", updated: "21 Jun 2026", status: "Pending" },
@@ -33,10 +34,9 @@ export default function ReferralsPage() {
   const scrollToReferrals = () => {
     referralsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-
-  const openReferralForm = () => {
-    // Logic implementation placeholder
-  };
+  const [formOpen, setFormOpen] = useState(false);
+  const openReferralForm = () => setFormOpen(true);
+  const closeReferralForm = () => setFormOpen(false);
 
   const openReferralDetails = (referral: typeof initialReferrals[number]) => {
     setSelectedReferral(referral);
@@ -204,6 +204,22 @@ export default function ReferralsPage() {
           </div>
         </SectionCard>
       </div>
+      <ReferralFormModal
+        open={formOpen}
+        onClose={closeReferralForm}
+        onSubmit={(data: {
+          candidate: string;
+          email: string;
+          phone: string;
+          company: string;
+          experience: string;
+          position: string;
+          linkedin: string;
+          notes: string;
+        }) => {
+          console.log(data);
+        }}
+      />
     </div>
   );
 }
