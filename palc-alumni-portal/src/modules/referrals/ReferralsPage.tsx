@@ -1,66 +1,209 @@
+import { useMemo, useRef, useState } from "react";
+import HeroBanner from "../../shared/components/HeroBanner";
+import StatsCard from "../../shared/components/StatsCard";
+import PrimaryButton from "../../shared/components/PrimaryButton";
 import PageHeader from "../../shared/components/PageHeader";
 import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
+import SearchBar from "../../shared/components/SearchBar";
+import { COLORS } from "../../shared/theme/colors";
 
-const referrals = [
-  {
-    id: "REF001",
-    candidate: "John Doe",
-    position: "AI Engineer",
-    date: "20 Jun 2026",
-    status: "Pending",
-  },
-  {
-    id: "REF002",
-    candidate: "Sarah Smith",
-    position: "Software Engineer",
-    date: "18 Jun 2026",
-    status: "Approved",
-  },
+const initialReferrals = [
+  { id: "REF001", candidate: "John Doe", position: "AI Engineer", date: "20 Jun 2026", updated: "21 Jun 2026", status: "Pending" },
+  { id: "REF002", candidate: "Sarah Smith", position: "Software Engineer", date: "18 Jun 2026", updated: "20 Jun 2026", status: "Approved" },
+  { id: "REF003", candidate: "Rahul Sharma", position: "Frontend Developer", date: "15 Jun 2026", updated: "19 Jun 2026", status: "Interview Scheduled" }
 ];
 
+const referralStats = {
+  total: initialReferrals.length,
+  pending: initialReferrals.filter((r) => r.status === "Pending").length,
+  approved: initialReferrals.filter((r) => r.status === "Approved").length,
+  rewards: "₹12,500",
+};
+
 export default function ReferralsPage() {
+  const [referrals, setReferrals] = useState(initialReferrals);
+  const [searchText, setSearchText] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("All Statuses");
+  const [sortBy, setSortBy] = useState("Latest");
+  const [selectedReferral, setSelectedReferral] = useState<typeof initialReferrals[number] | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+
+  const referralsSectionRef = useRef<HTMLDivElement>(null);
+  const scrollToReferrals = () => {
+    referralsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const openReferralForm = () => {
+    // Logic implementation placeholder
+  };
+
+  const openReferralDetails = (referral: typeof initialReferrals[number]) => {
+    setSelectedReferral(referral);
+    setDetailsOpen(true);
+  };
+
+  const filteredReferrals = useMemo(() => {
+    let data = referrals.filter(referral => {
+      const search = searchText.toLowerCase();
+      const matchesSearch = referral.id.toLowerCase().includes(search) || 
+                            referral.candidate.toLowerCase().includes(search) || 
+                            referral.position.toLowerCase().includes(search);
+      const matchesStatus = selectedStatus === "All Statuses" || referral.status === selectedStatus;
+      return matchesSearch && matchesStatus;
+    });
+
+    if (sortBy === "Candidate") {
+      data.sort((a, b) => a.candidate.localeCompare(b.candidate));
+    } else if (sortBy === "Oldest") {
+      data.reverse();
+    }
+
+    return data;
+  }, [referrals, searchText, selectedStatus, sortBy]);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-      <PageHeader
-        title="Referral Program"
-        subtitle="Refer talented professionals and track referral progress."
+      <PageHeader 
+        title="Referral Management" 
+        subtitle="Manage and track your candidate referrals." 
       />
 
-      <SectionCard title="My Referrals">
-        <div style={{ marginBottom: "20px" }}>
-          <button>Submit New Referral</button>
-        </div>
+      <HeroBanner
+        badge="Talent Referral Program"
+        title="Help Build the Future of PalC"
+        subtitle="Refer skilled professionals from your network, monitor every referral throughout the hiring process, and earn rewards for successful hires."
+        actions={[
+          {
+            title: "Submit Referral",
+            onClick: openReferralForm,
+          },
+          {
+            title: "View My Referrals",
+            onClick: scrollToReferrals,
+          },
+        ]}
+        pills={[
+          {
+            title: "Active Referrals",
+            value: "12",
+            color: "#38BDF8",
+          },
+          {
+            title: "Success Rate",
+            value: "78%",
+            color: "#22C55E",
+          },
+        ]}
+        summaryCard={
+          <>
+            <div style={{ fontSize: "14px", color: "#64748B", fontWeight: 600 }}>
+              Referral Success Rate
+            </div>
 
-        <div style={{ overflowX: "auto" }}>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Candidate</th>
-                <th>Position</th>
-                <th>Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
+            <div style={{ fontSize: "44px", fontWeight: 800, color: "#2563EB", marginTop: "8px" }}>
+              78%
+            </div>
 
-            <tbody>
-              {referrals.map((referral) => (
-                <tr key={referral.id}>
-                  <td style={{ fontWeight: 800 }}>{referral.id}</td>
-                  <td>{referral.candidate}</td>
-                  <td>{referral.position}</td>
-                  <td>{referral.date}</td>
+            <div style={{ marginTop: "14px", fontSize: "14px", color: "#475569", lineHeight: 1.6 }}>
+              Successful referrals converted into PalC employees.
+            </div>
 
-                  <td>
-                    <StatusBadge status={referral.status} />
-                  </td>
+            <div style={{ marginTop: "24px", display: "flex", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontSize: "12px", color: "#94A3B8" }}>Rewards Earned</div>
+                <div style={{ fontSize: "18px", fontWeight: 700 }}>₹18,000</div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: "12px", color: "#94A3B8" }}>Successful Hires</div>
+                <div style={{ fontSize: "18px", fontWeight: 700 }}>6</div>
+              </div>
+            </div>
+          </>
+        }
+      />
+
+      {/* Stats Cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "20px" }}>
+        <StatsCard title="Total Referrals" value="12" subtitle="Submitted referrals" accentColor="#2563EB" />
+        <StatsCard title="Pending" value="4" subtitle="Awaiting recruiter review" accentColor="#D97706" />
+        <StatsCard title="Successful Hires" value="6" subtitle="Converted to employees" accentColor="#16A34A" />
+        <StatsCard title="Rewards Earned" value="₹18,000" subtitle="Referral incentives" accentColor="#9333EA" />
+      </div>
+
+      <div ref={referralsSectionRef}>
+        <SectionCard title="My Referrals">
+          <div style={{ display: "flex", gap: "18px", flexWrap: "wrap", marginBottom: "24px" }}>
+            <div style={{ flex: 1, minWidth: "320px" }}>
+              <SearchBar value={searchText} onChange={(e) => setSearchText(e.target.value)} />
+            </div>
+
+            <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "210px", background: COLORS.surface, color: COLORS.text }}>
+              <option>All Statuses</option>
+              <option>Pending</option>
+              <option>Interview Scheduled</option>
+              <option>Approved</option>
+              <option>Rejected</option>
+              <option>Hired</option>
+            </select>
+
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "180px", background: COLORS.surface, color: COLORS.text }}>
+              <option>Latest</option>
+              <option>Oldest</option>
+              <option>Candidate</option>
+            </select>
+
+            <PrimaryButton onClick={openReferralForm}>
+              Submit Referral
+            </PrimaryButton>
+          </div>
+
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ borderBottom: `2px solid ${COLORS.border}` }}>
+                  <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Referral ID</th>
+                  <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Candidate</th>
+                  <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Position</th>
+                  <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Submitted</th>
+                  <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Last Updated</th>
+                  <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Status</th>
+                  <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </SectionCard>
+              </thead>
+
+              <tbody>
+                {filteredReferrals.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} style={{ padding: "48px", textAlign: "center", color: COLORS.textSecondary }}>
+                      No referrals found.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredReferrals.map((referral) => (
+                    <tr key={referral.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                      <td style={{ padding: "14px", color: COLORS.text }}>{referral.id}</td>
+                      <td style={{ padding: "14px", color: COLORS.text, fontWeight: 500 }}>{referral.candidate}</td>
+                      <td style={{ padding: "14px", color: COLORS.text }}>{referral.position}</td>
+                      <td style={{ padding: "14px", color: COLORS.textSecondary }}>{referral.date}</td>
+                      <td style={{ padding: "14px", color: COLORS.textSecondary }}>{referral.updated}</td>
+                      <td style={{ padding: "14px" }}>
+                        <StatusBadge status={referral.status} />
+                      </td>
+                      <td style={{ padding: "14px" }}>
+                        <PrimaryButton onClick={() => openReferralDetails(referral)}>
+                          View Details
+                        </PrimaryButton>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </SectionCard>
+      </div>
     </div>
   );
 }
