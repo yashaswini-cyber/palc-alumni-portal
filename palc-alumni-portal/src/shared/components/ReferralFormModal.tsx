@@ -33,17 +33,23 @@ const emptyForm: ReferralForm = {
 
 export default function ReferralFormModal({ open, onClose, onSubmit }: Props) {
   const [form, setForm] = useState(emptyForm);
-
+  const [validationError, setValidationError] = useState("");
   const updateField = (key: keyof ReferralForm, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  setForm((prev) => ({ ...prev, [key]: value }));
+  if (validationError) setValidationError("");
+};
 
   const handleSubmit = () => {
-    if (!form.candidate.trim() || !form.email.trim() || !form.position.trim()) return;
-    onSubmit(form);
-    setForm(emptyForm);
-    onClose();
-  };
+  if (!form.candidate.trim() || !form.email.trim() || !form.phone.trim() || !form.position.trim()) {
+    setValidationError("Please fill all the mandatory fields.");
+    return;
+  }
+
+  setValidationError("");
+  onSubmit(form);
+  setForm(emptyForm);
+  onClose();
+};
 
   const inputStyle = { width: "100%", padding: "12px 14px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, fontSize: "14px", outline: "none", boxSizing: "border-box" } as const;
 
@@ -67,15 +73,20 @@ export default function ReferralFormModal({ open, onClose, onSubmit }: Props) {
             <div style={{ background: "#FFFFFF", border: `1px solid ${COLORS.border}`, borderRadius: "18px", padding: "24px", display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: "18px", boxShadow: "0 6px 18px rgba(15,76,129,0.08)" }}>
           <input placeholder="Candidate Name *" value={form.candidate} onChange={(e) => updateField("candidate", e.target.value)} style={inputStyle} />
           <input placeholder="Email *" value={form.email} onChange={(e) => updateField("email", e.target.value)} style={inputStyle} />
-          <input placeholder="Phone Number" value={form.phone} onChange={(e) => updateField("phone", e.target.value)} style={inputStyle} />
+          <input placeholder="Phone Number *" value={form.phone} onChange={(e) => updateField("phone", e.target.value)} style={inputStyle} />
           <input placeholder="Current Company" value={form.company} onChange={(e) => updateField("company", e.target.value)} style={inputStyle} />
-          <input placeholder="Years of Experience" value={form.experience} onChange={(e) => updateField("experience", e.target.value)} style={inputStyle} />
-          <input placeholder="Job Position *" value={form.position} onChange={(e) => updateField("position", e.target.value)} style={inputStyle} />
+          <input placeholder="Years of Experience (if any)" value={form.experience} onChange={(e) => updateField("experience", e.target.value)} style={inputStyle} />
+          <input placeholder="Position Applied For *" value={form.position} onChange={(e) => updateField("position", e.target.value)} style={inputStyle} />
           <input placeholder="LinkedIn Profile" value={form.linkedin} onChange={(e) => updateField("linkedin", e.target.value)} style={{ ...inputStyle, gridColumn: "1 / span 2" }} />
           <textarea placeholder="Additional Notes" value={form.notes} onChange={(e) => updateField("notes", e.target.value)} rows={4} style={{ ...inputStyle, resize: "vertical", gridColumn: "1 / span 2" }} />
         </div>
             </div>
 
+        {validationError && (
+        <div style={{ padding: "0 28px 16px", color: "#DC2626", fontSize: "14px", fontWeight: 500 }}>
+          {validationError}
+        </div>
+      )}
         <div style={{ padding: "20px 28px", display: "flex", justifyContent: "flex-end", gap: "12px", borderTop: `1px solid ${COLORS.border}`, background: "#F8FAFC" }}>
           <button onClick={onClose} style={{ minWidth: "110px", height: "44px", padding: "0 20px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: "#FFFFFF", color: COLORS.text, fontSize: "14px", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s ease" }} onMouseEnter={(e) => { e.currentTarget.style.background = "#F8FAFC"; }} onMouseLeave={(e) => { e.currentTarget.style.background = "#FFFFFF"; }}>
             Cancel

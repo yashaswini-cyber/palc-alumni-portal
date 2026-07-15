@@ -15,13 +15,6 @@ const initialReferrals = [
   { id: "REF003", candidate: "Rahul Sharma", position: "Frontend Developer", date: "15 Jun 2026", updated: "19 Jun 2026", status: "Interview Scheduled" }
 ];
 
-const referralStats = {
-  total: initialReferrals.length,
-  pending: initialReferrals.filter((r) => r.status === "Pending").length,
-  approved: initialReferrals.filter((r) => r.status === "Approved").length,
-  rewards: "₹12,500",
-};
-
 export default function ReferralsPage() {
   const [referrals, setReferrals] = useState(initialReferrals);
   const [searchText, setSearchText] = useState("");
@@ -35,7 +28,37 @@ export default function ReferralsPage() {
     referralsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const [formOpen, setFormOpen] = useState(false);
+  
   const openReferralForm = () => setFormOpen(true);
+  const handleReferralSubmitted = (formData: {
+  candidate: string;
+  email: string;
+  phone: string;
+  company: string;
+  experience: string;
+  position: string;
+  linkedin: string;
+  notes: string;
+}) => {
+  const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+  const referral = {
+    id: `REF${String(referrals.length + 1).padStart(3, "0")}`,
+    candidate: formData.candidate,
+    position: formData.position,
+    date: today,
+    updated: today,
+    status: "Pending",
+    email: formData.email,
+    phone: formData.phone,
+    company: formData.company,
+    experience: formData.experience,
+    linkedin: formData.linkedin,
+    notes: formData.notes,
+  };
+
+  setReferrals((prev) => [referral, ...prev]);
+};
   const closeReferralForm = () => setFormOpen(false);
 
   const openReferralDetails = (referral: typeof initialReferrals[number]) => {
@@ -61,6 +84,13 @@ export default function ReferralsPage() {
 
     return data;
   }, [referrals, searchText, selectedStatus, sortBy]);
+
+  const referralStats = useMemo(() => ({
+    total: referrals.length,
+    pending: referrals.filter(r => r.status === "Pending").length,
+    hired: referrals.filter(r => r.status === "Hired").length,
+    rewards: `₹${(referrals.filter(r => r.status === "Hired").length * 3000).toLocaleString()}`
+  }), [referrals]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
@@ -126,10 +156,10 @@ export default function ReferralsPage() {
 
       {/* Stats Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "20px" }}>
-        <StatsCard title="Total Referrals" value="12" subtitle="Submitted referrals" accentColor="#2563EB" />
-        <StatsCard title="Pending" value="4" subtitle="Awaiting recruiter review" accentColor="#D97706" />
-        <StatsCard title="Successful Hires" value="6" subtitle="Converted to employees" accentColor="#16A34A" />
-        <StatsCard title="Rewards Earned" value="₹18,000" subtitle="Referral incentives" accentColor="#9333EA" />
+        <StatsCard title="Total Referrals" value={String(referralStats.total)} subtitle="Submitted referrals" accentColor="#2563EB" />
+        <StatsCard title="Pending" value={String(referralStats.pending)} subtitle="Awaiting recruiter review" accentColor="#D97706" />
+        <StatsCard title="Successful Hires" value={String(referralStats.hired)} subtitle="Converted to employees" accentColor="#16A34A" />
+        <StatsCard title="Rewards Earned" value={referralStats.rewards} subtitle="Referral incentives" accentColor="#9333EA" />
       </div>
 
       <div ref={referralsSectionRef}>
@@ -155,6 +185,7 @@ export default function ReferralsPage() {
             </select>
 
             <PrimaryButton onClick={openReferralForm}>
+
               Submit Referral
             </PrimaryButton>
           </div>
@@ -204,22 +235,11 @@ export default function ReferralsPage() {
           </div>
         </SectionCard>
       </div>
-      <ReferralFormModal
-        open={formOpen}
-        onClose={closeReferralForm}
-        onSubmit={(data: {
-          candidate: string;
-          email: string;
-          phone: string;
-          company: string;
-          experience: string;
-          position: string;
-          linkedin: string;
-          notes: string;
-        }) => {
-          console.log(data);
-        }}
-      />
+     <ReferralFormModal
+      open={formOpen}
+      onClose={closeReferralForm}
+      onSubmit={handleReferralSubmitted}
+    />
     </div>
   );
 }
