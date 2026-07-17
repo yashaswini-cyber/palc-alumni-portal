@@ -9,6 +9,7 @@ import SearchBar from "../../shared/components/SearchBar";
 import { COLORS } from "../../shared/theme/colors";
 import ReferralFormModal from "../../shared/components/ReferralFormModal";
 import DetailsModal from "../../shared/components/DetailsModal";
+import { getReferrals, saveReferrals } from "../../shared/utils/storage";
 
 interface Referral {
   id: string;
@@ -33,13 +34,14 @@ const initialReferrals: Referral[] = [
 ];
 
 export default function ReferralsPage() {
-  const [referrals, setReferrals] = useState<Referral[]>(initialReferrals);
+  const [referrals, setReferrals] = useState<Referral[]>(() => getReferrals(initialReferrals));
   const [searchText, setSearchText] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [sortBy, setSortBy] = useState("Latest");
   const [selectedReferral, setSelectedReferral] = useState<Referral | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [showAllReferrals, setShowAllReferrals] = useState(false);
 
   const referralsSectionRef = useRef<HTMLDivElement>(null);
   const scrollToReferrals = () => referralsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -72,7 +74,11 @@ export default function ReferralsPage() {
       linkedin: formData.linkedin,
       notes: formData.notes,
     };
-    setReferrals((prev) => [referral, ...prev]);
+    setReferrals((prev) => {
+      const updated = [referral, ...prev];
+      saveReferrals(updated);
+      return updated;
+    });
     setFormOpen(false);
   };
 
@@ -90,7 +96,7 @@ export default function ReferralsPage() {
       const matchesStatus = selectedStatus === "All Statuses" || referral.status === selectedStatus;
       return matchesSearch && matchesStatus;
     });
-
+    
     if (sortBy === "Candidate") {
       data.sort((a, b) => a.candidate.localeCompare(b.candidate));
     } else if (sortBy === "Oldest") {
@@ -98,6 +104,11 @@ export default function ReferralsPage() {
     }
     return data;
   }, [referrals, searchText, selectedStatus, sortBy]);
+
+  const visibleReferrals = useMemo(
+    () => (showAllReferrals ? filteredReferrals : filteredReferrals.slice(0, 5)),
+    [filteredReferrals, showAllReferrals]
+  );
 
   const referralStats = useMemo(() => ({
     total: referrals.length,
@@ -193,7 +204,7 @@ export default function ReferralsPage() {
                     <td colSpan={7} style={{ padding: "48px", textAlign: "center", color: COLORS.textSecondary }}>No referrals found.</td>
                   </tr>
                 ) : (
-                  filteredReferrals.map((referral) => (
+                  visibleReferrals.map((referral) => (
                     <tr key={referral.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
                       <td style={{ padding: "14px", color: COLORS.text }}>{referral.id}</td>
                       <td style={{ padding: "14px", color: COLORS.text, fontWeight: 500 }}>{referral.candidate}</td>
@@ -209,6 +220,13 @@ export default function ReferralsPage() {
                 )}
               </tbody>
             </table>
+            {filteredReferrals.length > 5 && (
+              <div style={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+                <PrimaryButton onClick={() => setShowAllReferrals((prev) => !prev)}>
+                  {showAllReferrals ? "Show Less" : `View (${filteredReferrals.length}) More Referrals `}
+                </PrimaryButton>
+              </div>
+            )}
           </div>
         </SectionCard>
       </div>

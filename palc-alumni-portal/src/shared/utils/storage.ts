@@ -1,7 +1,7 @@
 export function getStorageItem<T>(key: string, defaultValue: T): T {
   try {
     const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) as T : defaultValue;
+    return item ? (JSON.parse(item) as T) : defaultValue;
   } catch (error) {
     console.error(`Error reading "${key}" from localStorage.`, error);
     return defaultValue;
@@ -30,4 +30,22 @@ export function clearStorage(): void {
   } catch (error) {
     console.error("Error clearing localStorage.", error);
   }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Referral Storage                              */
+/* -------------------------------------------------------------------------- */
+
+const REFERRALS_KEY = "palc_referrals";
+
+export function getReferrals<T>(defaultValue: T): T {
+  return getStorageItem(REFERRALS_KEY, defaultValue);
+}
+
+export function saveReferrals<T>(referrals: T): void {
+  setStorageItem(REFERRALS_KEY, referrals);
+}
+
+export function clearReferrals(): void {
+  removeStorageItem(REFERRALS_KEY);
 }
