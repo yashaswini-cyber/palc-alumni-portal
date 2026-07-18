@@ -311,7 +311,7 @@ const confirmWithdrawReferral = () => {
             <button onClick={closeWithdrawDialog} style={{ padding: "12px 20px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, cursor: "pointer", fontWeight: 600 }}>
               Cancel
             </button>
-
+            
             <PrimaryButton onClick={confirmWithdrawReferral}>
               Withdraw Referral
             </PrimaryButton>
