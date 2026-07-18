@@ -41,6 +41,8 @@ export default function ReferralsPage() {
   const [selectedReferral, setSelectedReferral] = useState<Referral | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [withdrawTarget, setWithdrawTarget] = useState<Referral | null>(null);
+const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [showAllReferrals, setShowAllReferrals] = useState(false);
 
   const referralsSectionRef = useRef<HTMLDivElement>(null);
@@ -86,6 +88,26 @@ export default function ReferralsPage() {
     setSelectedReferral(referral);
     setDetailsOpen(true);
   };
+
+  const openWithdrawDialog = (referral: Referral) => {
+  setWithdrawTarget(referral);
+  setWithdrawOpen(true);
+};
+
+const closeWithdrawDialog = () => {
+  setWithdrawTarget(null);
+  setWithdrawOpen(false);
+};
+
+const confirmWithdrawReferral = () => {
+  if (!withdrawTarget) return;
+  setReferrals(prev => {
+    const updated = prev.filter(r => r.id !== withdrawTarget.id);
+    saveReferrals(updated);
+    return updated;
+  });
+  closeWithdrawDialog();
+};
 
   const filteredReferrals = useMemo(() => {
     let data = referrals.filter(referral => {
@@ -213,8 +235,13 @@ export default function ReferralsPage() {
                       <td style={{ padding: "14px", color: COLORS.textSecondary }}>{referral.updated}</td>
                       <td style={{ padding: "14px" }}><StatusBadge status={referral.status} /></td>
                       <td style={{ padding: "14px" }}>
-                        <PrimaryButton onClick={() => openReferralDetails(referral)}>View Details</PrimaryButton>
-                      </td>
+                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                        <PrimaryButton onClick={() => openReferralDetails(referral)}>   View Details</PrimaryButton>
+                        {referral.status === "Pending" && (
+                          <button onClick={() => openWithdrawDialog(referral)} style={{ padding: "10px 16px", borderRadius: "8px", border: "1px solid #EF4444", background: "#FEF2F2", color: "#DC2626", cursor: "pointer", fontWeight: 600 }}>   Withdraw</button>
+                          )}
+                      </div>
+                    </td>
                     </tr>
                   ))
                 )}
@@ -273,6 +300,23 @@ export default function ReferralsPage() {
             </div>
           </>
         )}
+      </DetailsModal>
+      <DetailsModal open={withdrawOpen} title="Withdraw Referral" onClose={closeWithdrawDialog}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ color: COLORS.textSecondary, lineHeight: 1.7 }}>
+            Are you sure you want to withdraw the referral for <strong>{withdrawTarget?.candidate}</strong>? This action removes the referral from your referral history.
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+            <button onClick={closeWithdrawDialog} style={{ padding: "12px 20px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, cursor: "pointer", fontWeight: 600 }}>
+              Cancel
+            </button>
+
+            <PrimaryButton onClick={confirmWithdrawReferral}>
+              Withdraw Referral
+            </PrimaryButton>
+          </div>
+        </div>
       </DetailsModal>
     </div>
   );
