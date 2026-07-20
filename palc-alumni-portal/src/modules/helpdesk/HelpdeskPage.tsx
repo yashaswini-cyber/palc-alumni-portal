@@ -1,6 +1,70 @@
 import { useRef, useState } from "react";
 import HeroBanner from "../../shared/components/HeroBanner";
 import PrimaryButton from "../../shared/components/PrimaryButton";
+import StatsCard from "../../shared/components/StatsCard";
+
+const tickets = [
+  {
+    id: "TKT001",
+    subject: "Unable to access VPN",
+    category: "IT",
+    priority: "High",
+    status: "Open",
+    createdOn: "08 Jul 2026",
+    updatedOn: "08 Jul 2026",
+  },
+  {
+    id: "TKT002",
+    subject: "Payslip not available",
+    category: "Payroll",
+    priority: "Medium",
+    status: "Resolved",
+    createdOn: "05 Jul 2026",
+    updatedOn: "07 Jul 2026",
+  },
+  {
+    id: "TKT003",
+    subject: "Email password reset",
+    category: "IT",
+    priority: "Low",
+    status: "In Progress",
+    createdOn: "04 Jul 2026",
+    updatedOn: "06 Jul 2026",
+  }
+];
+const helpdeskStats = {
+  totalTickets: tickets.length,
+  openTickets: tickets.filter(ticket => ticket.status === "Open").length,
+  inProgressTickets: tickets.filter(ticket => ticket.status === "In Progress").length,
+  resolvedTickets: tickets.filter(ticket => ticket.status === "Resolved").length,
+};
+
+const statsCards = [
+  {
+    title: "Total Tickets",
+    value: helpdeskStats.totalTickets.toString(),
+    subtitle: "Support requests submitted",
+    accentColor: "#2563EB",
+  },
+  {
+    title: "Open Tickets",
+    value: helpdeskStats.openTickets.toString(),
+    subtitle: "Awaiting resolution",
+    accentColor: "#D97706",
+  },
+  {
+    title: "In Progress",
+    value: helpdeskStats.inProgressTickets.toString(),
+    subtitle: "Currently being worked on",
+    accentColor: "#0891B2",
+  },
+  {
+    title: "Resolved",
+    value: helpdeskStats.resolvedTickets.toString(),
+    subtitle: "Successfully completed",
+    accentColor: "#16A34A",
+  },
+];
 
 export default function HelpdeskPage() {
   const [showCreateTicket, setShowCreateTicket] = useState(false);
@@ -52,6 +116,17 @@ export default function HelpdeskPage() {
           </>
         }
       />
+     <div style={{display: "grid",gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",gap: "20px", }}
+       >{statsCards.map((card) => (
+          <StatsCard
+            key={card.title}
+            title={card.title}
+            value={card.value}
+            subtitle={card.subtitle}
+            accentColor={card.accentColor}
+          />
+        ))}
+      </div>
     </div>
   );
 }
