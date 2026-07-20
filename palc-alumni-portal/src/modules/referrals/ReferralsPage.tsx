@@ -74,7 +74,9 @@ export default function ReferralsPage() {
   const [rewardDetailsOpen, setRewardDetailsOpen] = useState(false);
 
   const referralsSectionRef = useRef<HTMLDivElement>(null);
+  const rewardsSectionRef = useRef<HTMLDivElement>(null);
   const scrollToReferrals = () => referralsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const scrollToRewards = () =>rewardsSectionRef.current?.scrollIntoView({behavior: "smooth",block: "start",});
 
   const openReferralForm = () => setFormOpen(true);
   const closeReferralForm = () => setFormOpen(false);
@@ -205,6 +207,7 @@ export default function ReferralsPage() {
         actions={[
           { title: "Submit Referral", onClick: openReferralForm },
           { title: "View My Referrals", onClick: scrollToReferrals },
+          { title: "Referral Rewards", onClick: scrollToRewards },
         ]}
         pills={[
           { title: "Active Referrals", value: "12", color: "#38BDF8" },
@@ -314,6 +317,7 @@ export default function ReferralsPage() {
       </div>
 
       {/* Referral Rewards */}
+      <div ref={rewardsSectionRef}>
       <SectionCard title="Referral Rewards">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px", marginBottom: "32px" }}>
           <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -379,6 +383,7 @@ export default function ReferralsPage() {
           </table>
         </div>
       </SectionCard>
+    </div>
 
       <SectionCard title="Referral Leaderboard" subtitle="See how your successful referrals compare with other alumni.">
         <div style={{ overflowX: "auto" }}>
