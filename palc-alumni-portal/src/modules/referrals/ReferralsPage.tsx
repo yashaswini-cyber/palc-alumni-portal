@@ -9,7 +9,7 @@ import SearchBar from "../../shared/components/SearchBar";
 import { COLORS } from "../../shared/theme/colors";
 import ReferralFormModal from "../../shared/components/ReferralFormModal";
 import DetailsModal from "../../shared/components/DetailsModal";
-import { getReferrals, saveReferrals, getRewardHistory, saveRewardHistory} from "../../shared/utils/storage";
+import { getReferrals, saveReferrals, getRewardHistory, saveRewardHistory } from "../../shared/utils/storage";
 
 interface Referral {
   id: string;
@@ -26,6 +26,7 @@ interface Referral {
   notes?: string;
   resumeName?: string;
 }
+
 interface RewardHistory {
   id: string;
   referralId: string;
@@ -34,20 +35,15 @@ interface RewardHistory {
   status: "Pending" | "Paid";
   earnedOn: string;
 }
+
 const initialReferrals: Referral[] = [
   { id: "REF001", candidate: "John Doe", position: "AI Engineer", date: "20 Jun 2026", updated: "21 Jun 2026", status: "Pending" },
   { id: "REF002", candidate: "Sarah Smith", position: "Software Engineer", date: "18 Jun 2026", updated: "20 Jun 2026", status: "Approved" },
   { id: "REF003", candidate: "Rahul Sharma", position: "Frontend Developer", date: "15 Jun 2026", updated: "19 Jun 2026", status: "Interview Scheduled" }
 ];
+
 const initialRewards: RewardHistory[] = [
-  {
-    id: "RW001",
-    referralId: "REF002",
-    candidate: "Sarah Smith",
-    amount: 3000,
-    status: "Paid",
-    earnedOn: "20 Jun 2026",
-  },
+  { id: "RW001", referralId: "REF002", candidate: "Sarah Smith", amount: 3000, status: "Paid", earnedOn: "20 Jun 2026" }
 ];
 
 export default function ReferralsPage() {
@@ -61,9 +57,9 @@ export default function ReferralsPage() {
   const [withdrawTarget, setWithdrawTarget] = useState<Referral | null>(null);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [showAllReferrals, setShowAllReferrals] = useState(false);
-  const [rewardHistory, setRewardHistory] = useState<RewardHistory[]>(() =>
-  getRewardHistory(initialRewards)
-);
+  const [rewardHistory, setRewardHistory] = useState<RewardHistory[]>(() => getRewardHistory(initialRewards));
+  const [selectedReward, setSelectedReward] = useState<RewardHistory | null>(null);
+  const [rewardDetailsOpen, setRewardDetailsOpen] = useState(false);
 
   const referralsSectionRef = useRef<HTMLDivElement>(null);
   const scrollToReferrals = () => referralsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -110,24 +106,29 @@ export default function ReferralsPage() {
   };
 
   const openWithdrawDialog = (referral: Referral) => {
-  setWithdrawTarget(referral);
-  setWithdrawOpen(true);
-};
+    setWithdrawTarget(referral);
+    setWithdrawOpen(true);
+  };
 
-const closeWithdrawDialog = () => {
-  setWithdrawTarget(null);
-  setWithdrawOpen(false);
-};
+  const closeWithdrawDialog = () => {
+    setWithdrawTarget(null);
+    setWithdrawOpen(false);
+  };
 
-const confirmWithdrawReferral = () => {
-  if (!withdrawTarget) return;
-  setReferrals(prev => {
-    const updated = prev.filter(r => r.id !== withdrawTarget.id);
-    saveReferrals(updated);
-    return updated;
-  });
-  closeWithdrawDialog();
-};
+  const confirmWithdrawReferral = () => {
+    if (!withdrawTarget) return;
+    setReferrals(prev => {
+      const updated = prev.filter(r => r.id !== withdrawTarget.id);
+      saveReferrals(updated);
+      return updated;
+    });
+    closeWithdrawDialog();
+  };
+
+  const openRewardDetails = (reward: RewardHistory) => {
+    setSelectedReward(reward);
+    setRewardDetailsOpen(true);
+  };
 
   const filteredReferrals = useMemo(() => {
     let data = referrals.filter(referral => {
@@ -255,13 +256,13 @@ const confirmWithdrawReferral = () => {
                       <td style={{ padding: "14px", color: COLORS.textSecondary }}>{referral.updated}</td>
                       <td style={{ padding: "14px" }}><StatusBadge status={referral.status} /></td>
                       <td style={{ padding: "14px" }}>
-                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                        <PrimaryButton onClick={() => openReferralDetails(referral)}>   View Details</PrimaryButton>
-                        {referral.status === "Pending" && (
-                          <button onClick={() => openWithdrawDialog(referral)} style={{ padding: "10px 16px", borderRadius: "8px", border: "1px solid #EF4444", background: "#FEF2F2", color: "#DC2626", cursor: "pointer", fontWeight: 600 }}>   Withdraw</button>
+                        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
+                          <PrimaryButton onClick={() => openReferralDetails(referral)}>View Details</PrimaryButton>
+                          {referral.status === "Pending" && (
+                            <button onClick={() => openWithdrawDialog(referral)} style={{ padding: "10px 16px", borderRadius: "8px", border: "1px solid #EF4444", background: "#FEF2F2", color: "#DC2626", cursor: "pointer", fontWeight: 600 }}>Withdraw</button>
                           )}
-                      </div>
-                    </td>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -277,92 +278,82 @@ const confirmWithdrawReferral = () => {
           </div>
         </SectionCard>
       </div>
-  {/*Refferal Rewards*/}
-    <SectionCard title="Referral Rewards">
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px", marginBottom: "32px" }}>
-        <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
-          <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Total Rewards Earned</div>
-          <div style={{ fontSize: "32px", fontWeight: 700, color: "#16A34A" }}>
-            ₹{rewardHistory.reduce((sum, reward) => sum + reward.amount, 0).toLocaleString()}
+
+      {/* Referral Rewards */}
+      <SectionCard title="Referral Rewards">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px", marginBottom: "32px" }}>
+          <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Total Rewards Earned</div>
+            <div style={{ fontSize: "32px", fontWeight: 700, color: "#16A34A" }}>
+              ₹{rewardHistory.reduce((sum, reward) => sum + reward.amount, 0).toLocaleString()}
+            </div>
+            <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>Total rewards credited from successful referrals.</div>
           </div>
-          <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>
-            Total rewards credited from successful referrals.
+
+          <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Paid Rewards</div>
+            <div style={{ fontSize: "32px", fontWeight: 700, color: "#2563EB" }}>
+              {rewardHistory.filter(reward => reward.status === "Paid").length}
+            </div>
+            <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>Rewards successfully credited.</div>
+          </div>
+
+          <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Pending Rewards</div>
+            <div style={{ fontSize: "32px", fontWeight: 700, color: "#D97706" }}>
+              {rewardHistory.filter(reward => reward.status === "Pending").length}
+            </div>
+            <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>Awaiting payout approval.</div>
           </div>
         </div>
 
-        <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
-          <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Paid Rewards</div>
-          <div style={{ fontSize: "32px", fontWeight: 700, color: "#2563EB" }}>
-            {rewardHistory.filter(reward => reward.status === "Paid").length}
-          </div>
-          <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>
-            Rewards successfully credited.
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", flexWrap: "wrap", gap: "12px" }}>
+          <div>
+            <div style={{ fontSize: "20px", fontWeight: 700, color: COLORS.text }}>Reward History</div>
+            <div style={{ fontSize: "14px", color: COLORS.textSecondary, marginTop: "4px" }}>View all referral rewards earned through successful hires.</div>
           </div>
         </div>
 
-        <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
-          <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Pending Rewards</div>
-          <div style={{ fontSize: "32px", fontWeight: 700, color: "#D97706" }}>
-            {rewardHistory.filter(reward => reward.status === "Pending").length}
-          </div>
-          <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>
-            Awaiting payout approval.
-          </div>
-        </div>
-      </div>
-
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", flexWrap: "wrap", gap: "12px" }}>
-        <div>
-          <div style={{ fontSize: "20px", fontWeight: 700, color: COLORS.text }}>
-            Reward History
-          </div>
-
-          <div style={{ fontSize: "14px", color: COLORS.textSecondary, marginTop: "4px" }}>
-            View all referral rewards earned through successful hires.
-          </div>
-        </div>
-      </div>
-
-      <div style={{ overflowX: "auto", border: `1px solid ${COLORS.border}`, borderRadius: "14px" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ background: COLORS.surfaceSecondary, borderBottom: `1px solid ${COLORS.border}` }}>
-              <th style={{ padding: "14px", textAlign: "left" }}>Reward ID</th>
-              <th style={{ padding: "14px", textAlign: "left" }}>Referral ID</th>
-              <th style={{ padding: "14px", textAlign: "left" }}>Candidate</th>
-              <th style={{ padding: "14px", textAlign: "left" }}>Reward</th>
-              <th style={{ padding: "14px", textAlign: "left" }}>Earned On</th>
-              <th style={{ padding: "14px", textAlign: "left" }}>Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {rewardHistory.length === 0 ? (
-              <tr>
-                <td colSpan={6} style={{ padding: "40px", textAlign: "center", color: COLORS.textSecondary }}>
-                  No rewards available.
-                </td>
+        <div style={{ overflowX: "auto", border: `1px solid ${COLORS.border}`, borderRadius: "14px" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: COLORS.surface, borderBottom: `1px solid ${COLORS.border}` }}>
+                <th style={{ padding: "14px", textAlign: "left" }}>Reward ID</th>
+                <th style={{ padding: "14px", textAlign: "left" }}>Referral ID</th>
+                <th style={{ padding: "14px", textAlign: "left" }}>Candidate</th>
+                <th style={{ padding: "14px", textAlign: "left" }}>Reward</th>
+                <th style={{ padding: "14px", textAlign: "left" }}>Earned On</th>
+                <th style={{ padding: "14px", textAlign: "left" }}>Status</th>
+                <th style={{ padding: "14px", textAlign: "left" }}>Actions</th>
               </tr>
-            ) : (
-              rewardHistory.map((reward) => (
-                <tr key={reward.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
-                  <td style={{ padding: "14px", fontWeight: 600 }}>{reward.id}</td>
-                  <td style={{ padding: "14px" }}>{reward.referralId}</td>
-                  <td style={{ padding: "14px" }}>{reward.candidate}</td>
-                  <td style={{ padding: "14px", fontWeight: 600, color: "#16A34A" }}>₹{reward.amount.toLocaleString()}</td>
-                  <td style={{ padding: "14px" }}>{reward.earnedOn}</td>
-                  <td style={{ padding: "14px" }}>
-                    <StatusBadge status={reward.status} />
-                  </td>
+            </thead>
+            <tbody>
+              {rewardHistory.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ padding: "40px", textAlign: "center", color: COLORS.textSecondary }}>No rewards available.</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </SectionCard>
+              ) : (
+                rewardHistory.map((reward) => (
+                  <tr key={reward.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                    <td style={{ padding: "14px", fontWeight: 600 }}>{reward.id}</td>
+                    <td style={{ padding: "14px" }}>{reward.referralId}</td>
+                    <td style={{ padding: "14px" }}>{reward.candidate}</td>
+                    <td style={{ padding: "14px", fontWeight: 600, color: "#16A34A" }}>₹{reward.amount.toLocaleString()}</td>
+                    <td style={{ padding: "14px" }}>{reward.earnedOn}</td>
+                    <td style={{ padding: "14px" }}><StatusBadge status={reward.status} /></td>
+                    <td style={{ padding: "14px" }}>
+                      <PrimaryButton onClick={() => openRewardDetails(reward)}>Details</PrimaryButton>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </SectionCard>
 
-    <ReferralFormModal open={formOpen} onClose={closeReferralForm} onSubmit={handleReferralSubmitted} />
+      <ReferralFormModal open={formOpen} onClose={closeReferralForm} onSubmit={handleReferralSubmitted} />
+      
       <DetailsModal open={detailsOpen} title="Referral Details" onClose={() => setDetailsOpen(false)}>
         {selectedReferral && (
           <>
@@ -393,33 +384,42 @@ const confirmWithdrawReferral = () => {
                 <div style={{ color: COLORS.text }}>{selectedReferral.resumeName || "No resume uploaded"}</div>
               </div>
               <div style={{ display: "flex", gap: "12px" }}>
-                <PrimaryButton disabled={!selectedReferral.resumeName} onClick={() => { /* Download logic later */ }}>
-                  Download Resume
-                </PrimaryButton>
-                <button onClick={() => setDetailsOpen(false)} style={{ padding: "12px 24px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, fontWeight: 600, cursor: "pointer" }}>
-                  Close
-                </button>
+                <PrimaryButton disabled={!selectedReferral.resumeName} onClick={() => { /* Download logic later */ }}>Download Resume</PrimaryButton>
+                <button onClick={() => setDetailsOpen(false)} style={{ padding: "12px 24px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, fontWeight: 600, cursor: "pointer" }}>Close</button>
               </div>
             </div>
           </>
         )}
       </DetailsModal>
+
       <DetailsModal open={withdrawOpen} title="Withdraw Referral" onClose={closeWithdrawDialog}>
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           <div style={{ color: COLORS.textSecondary, lineHeight: 1.7 }}>
             Are you sure you want to withdraw the referral for <strong>{withdrawTarget?.candidate}</strong>? This action removes the referral from your referral history.
           </div>
-
           <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-            <button onClick={closeWithdrawDialog} style={{ padding: "12px 20px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, cursor: "pointer", fontWeight: 600 }}>
-              Cancel
-            </button>
-            
-            <PrimaryButton onClick={confirmWithdrawReferral}>
-              Withdraw Referral
-            </PrimaryButton>
+            <button onClick={closeWithdrawDialog} style={{ padding: "12px 20px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, cursor: "pointer", fontWeight: 600 }}>Cancel</button>
+            <PrimaryButton onClick={confirmWithdrawReferral}>Withdraw Referral</PrimaryButton>
           </div>
         </div>
+      </DetailsModal>
+
+      <DetailsModal open={rewardDetailsOpen} title="Reward Details" onClose={() => setRewardDetailsOpen(false)}>
+        {selectedReward && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: "16px" }}>
+              <DetailItem label="Reward ID" value={selectedReward.id} />
+              <DetailItem label="Referral ID" value={selectedReward.referralId} />
+              <DetailItem label="Candidate Name" value={selectedReward.candidate} />
+              <DetailItem label="Amount" value={`₹${selectedReward.amount.toLocaleString()}`} />
+              <DetailItem label="Earned On" value={selectedReward.earnedOn} />
+              <DetailItem label="Payout Status" value={selectedReward.status} />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "12px" }}>
+              <button onClick={() => setRewardDetailsOpen(false)} style={{ padding: "12px 24px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, fontWeight: 600, cursor: "pointer" }}>Close</button>
+            </div>
+          </div>
+        )}
       </DetailsModal>
     </div>
   );
