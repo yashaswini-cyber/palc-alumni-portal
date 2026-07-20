@@ -277,6 +277,41 @@ const confirmWithdrawReferral = () => {
           </div>
         </SectionCard>
       </div>
+  {/*Refferal Rewards*/}
+    <SectionCard title="Referral Rewards">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px", marginBottom: "28px" }}>
+         <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Total Rewards Earned</div>
+          <div style={{ fontSize: "32px", fontWeight: 700, color: "#16A34A" }}>
+            ₹{rewardHistory.reduce((sum, reward) => sum + reward.amount, 0).toLocaleString()}
+          </div>
+          <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>
+            Total rewards credited from successful referrals.
+          </div>
+        </div>
+
+        <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Paid Rewards</div>
+          <div style={{ fontSize: "32px", fontWeight: 700, color: "#2563EB" }}>
+            {rewardHistory.filter(reward => reward.status === "Paid").length}
+          </div>
+          <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>
+            Rewards successfully credited.
+          </div>
+        </div>
+
+        <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Pending Rewards</div>
+          <div style={{ fontSize: "32px", fontWeight: 700, color: "#D97706" }}>
+            {rewardHistory.filter(reward => reward.status === "Pending").length}
+          </div>
+          <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>
+            Awaiting payout approval.
+          </div>
+        </div>
+      </div>
+    </SectionCard>
+
       <ReferralFormModal open={formOpen} onClose={closeReferralForm} onSubmit={handleReferralSubmitted} />
 
       <DetailsModal open={detailsOpen} title="Referral Details" onClose={() => setDetailsOpen(false)}>
