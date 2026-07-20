@@ -518,30 +518,57 @@ export default function ReferralsPage() {
       </SectionCard>
 
 {/*Need Help Section*/}
-     <SectionCard title="Need Assistance?" subtitle="Our support team is here to help with any questions related to referrals and referral rewards.">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "32px", flexWrap: "wrap" }}>
-        <div style={{ flex: 1, minWidth: "340px" }}>
-          <div style={{ fontSize: "18px", fontWeight: 700, color: COLORS.text, marginBottom: "10px" }}>
-            Referral Support
-          </div>
-
-          <div style={{ color: COLORS.textSecondary, lineHeight: 1.7, marginBottom: "18px", maxWidth: "760px" }}>
-            If you need assistance with referral submissions, candidate status updates, reward eligibility, reward payouts, or any other referral-related queries, our support team is here to help.
-          </div>
-          <div style={{ color: COLORS.textSecondary, lineHeight: 1.7 }}>
-            Submit a support request through the Helpdesk and we'll review your request and respond within <strong>2 business days</strong>.
-          </div>
+     <SectionCard
+  title="Need Assistance?"
+  subtitle="Get help with referrals, candidate status updates and referral rewards."
+  ><div style={{ display: "flex", justifyContent: "space-between", alignItems: "stretch", gap: "36px", flexWrap: "wrap" }}>
+    <div style={{ flex: 1, minWidth: "420px", display: "flex", flexDirection: "column", gap: "24px" }}>
+      <div>
+        <div style={{ fontSize: "18px", fontWeight: 700, color: COLORS.text, marginBottom: "10px" }}>
+          How can we help?
         </div>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "12px" }}>
-          <PrimaryButton onClick={() => window.location.href = "/helpdesk"}>
-            Contact Helpdesk
-          </PrimaryButton>
-          <div style={{ fontSize: "13px", color: COLORS.textSecondary, textAlign: "right", maxWidth: "220px" }}>
-            Typical response time: <strong>Within 2 business days</strong>
-          </div>
+
+        <div style={{ color: COLORS.textSecondary, lineHeight: 1.8 }}>
+          Our support team can assist you with:
+        </div>
+
+        <ul style={{ margin: "14px 0 0", paddingLeft: "22px", color: COLORS.textSecondary, lineHeight: 2 }}>
+          <li>Referral submissions and candidate information</li>
+          <li>Referral status updates and hiring progress</li>
+          <li>Reward eligibility and payout enquiries</li>
+          <li>General questions about the referral programme</li>
+        </ul>
+      </div>
+      <div style={{ padding: "18px 22px", border: `1px solid ${COLORS.border}`, borderRadius: "14px", background: COLORS.surface }}>
+        <div style={{ fontSize: "15px", fontWeight: 700, color: COLORS.text, marginBottom: "8px" }}>
+          What happens after I contact the Helpdesk?
+        </div>
+        <div style={{ color: COLORS.textSecondary, lineHeight: 1.7 }}>
+          Once you submit your request, our team will review the details and respond within <strong>2 business days</strong>. You'll receive updates through the Helpdesk as your request is being processed.
         </div>
       </div>
-    </SectionCard>
+
+    </div>
+    <div style={{ width: "300px", minWidth: "260px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: "100%", padding: "28px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, textAlign: "center" }}>
+        <div style={{ fontSize: "14px", color: COLORS.textSecondary, marginBottom: "10px" }}>
+          Need personal assistance?
+        </div>
+       <div style={{ fontSize: "17px", fontWeight: 700, color: COLORS.text, marginBottom: "22px" }}>
+          Contact the Helpdesk
+        </div>
+        <PrimaryButton onClick={() => window.location.href = "/helpdesk"}>
+          Contact Helpdesk
+        </PrimaryButton>
+        <div style={{ marginTop: "18px", fontSize: "13px", color: COLORS.textSecondary, lineHeight: 1.6 }}>
+          Typical response time
+          <br />
+          <strong>Within 2 business days</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</SectionCard>
 
       <ReferralFormModal open={formOpen} onClose={closeReferralForm} onSubmit={handleReferralSubmitted} />
   {/* Referral Details Modal */}
