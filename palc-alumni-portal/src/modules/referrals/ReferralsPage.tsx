@@ -279,8 +279,8 @@ const confirmWithdrawReferral = () => {
       </div>
   {/*Refferal Rewards*/}
     <SectionCard title="Referral Rewards">
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px", marginBottom: "28px" }}>
-         <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px", marginBottom: "32px" }}>
+        <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
           <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Total Rewards Earned</div>
           <div style={{ fontSize: "32px", fontWeight: 700, color: "#16A34A" }}>
             ₹{rewardHistory.reduce((sum, reward) => sum + reward.amount, 0).toLocaleString()}
@@ -310,10 +310,59 @@ const confirmWithdrawReferral = () => {
           </div>
         </div>
       </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", flexWrap: "wrap", gap: "12px" }}>
+        <div>
+          <div style={{ fontSize: "20px", fontWeight: 700, color: COLORS.text }}>
+            Reward History
+          </div>
+
+          <div style={{ fontSize: "14px", color: COLORS.textSecondary, marginTop: "4px" }}>
+            View all referral rewards earned through successful hires.
+          </div>
+        </div>
+      </div>
+
+      <div style={{ overflowX: "auto", border: `1px solid ${COLORS.border}`, borderRadius: "14px" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: COLORS.surfaceSecondary, borderBottom: `1px solid ${COLORS.border}` }}>
+              <th style={{ padding: "14px", textAlign: "left" }}>Reward ID</th>
+              <th style={{ padding: "14px", textAlign: "left" }}>Referral ID</th>
+              <th style={{ padding: "14px", textAlign: "left" }}>Candidate</th>
+              <th style={{ padding: "14px", textAlign: "left" }}>Reward</th>
+              <th style={{ padding: "14px", textAlign: "left" }}>Earned On</th>
+              <th style={{ padding: "14px", textAlign: "left" }}>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {rewardHistory.length === 0 ? (
+              <tr>
+                <td colSpan={6} style={{ padding: "40px", textAlign: "center", color: COLORS.textSecondary }}>
+                  No rewards available.
+                </td>
+              </tr>
+            ) : (
+              rewardHistory.map((reward) => (
+                <tr key={reward.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                  <td style={{ padding: "14px", fontWeight: 600 }}>{reward.id}</td>
+                  <td style={{ padding: "14px" }}>{reward.referralId}</td>
+                  <td style={{ padding: "14px" }}>{reward.candidate}</td>
+                  <td style={{ padding: "14px", fontWeight: 600, color: "#16A34A" }}>₹{reward.amount.toLocaleString()}</td>
+                  <td style={{ padding: "14px" }}>{reward.earnedOn}</td>
+                  <td style={{ padding: "14px" }}>
+                    <StatusBadge status={reward.status} />
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </SectionCard>
 
-      <ReferralFormModal open={formOpen} onClose={closeReferralForm} onSubmit={handleReferralSubmitted} />
-
+    <ReferralFormModal open={formOpen} onClose={closeReferralForm} onSubmit={handleReferralSubmitted} />
       <DetailsModal open={detailsOpen} title="Referral Details" onClose={() => setDetailsOpen(false)}>
         {selectedReferral && (
           <>
