@@ -6,6 +6,7 @@ type DetailsModalProps = {
   title: string;
   onClose: () => void;
   children: ReactNode;
+  maxWidth?: string;
 };
 
 export default function DetailsModal({
@@ -13,6 +14,7 @@ export default function DetailsModal({
   title,
   onClose,
   children,
+  maxWidth,
 }: DetailsModalProps) {
   if (!open) return null;
 

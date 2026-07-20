@@ -34,6 +34,8 @@ interface RewardHistory {
   amount: number;
   status: "Pending" | "Paid";
   earnedOn: string;
+  paymentDate?: string;
+  remarks?: string;
 }
 
 const initialReferrals: Referral[] = [
@@ -43,7 +45,9 @@ const initialReferrals: Referral[] = [
 ];
 
 const initialRewards: RewardHistory[] = [
-  { id: "RW001", referralId: "REF002", candidate: "Sarah Smith", amount: 3000, status: "Paid", earnedOn: "20 Jun 2026" }
+  {
+    id: "RW001",referralId: "REF002", candidate: "Sarah Smith", amount: 3000, status: "Paid", earnedOn: "20 Jun 2026", paymentDate: "25 Jun 2026", remarks: "Reward successfully credited after candidate completed joining formalities."
+  }
 ];
 
 export default function ReferralsPage() {
@@ -404,21 +408,35 @@ export default function ReferralsPage() {
         </div>
       </DetailsModal>
 
-      <DetailsModal open={rewardDetailsOpen} title="Reward Details" onClose={() => setRewardDetailsOpen(false)}>
+      <DetailsModal open={rewardDetailsOpen} title="Reward Details" maxWidth="820px" onClose={() => setRewardDetailsOpen(false)}>
         {selectedReward && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: "16px" }}>
-              <DetailItem label="Reward ID" value={selectedReward.id} />
-              <DetailItem label="Referral ID" value={selectedReward.referralId} />
-              <DetailItem label="Candidate Name" value={selectedReward.candidate} />
-              <DetailItem label="Amount" value={`₹${selectedReward.amount.toLocaleString()}`} />
-              <DetailItem label="Earned On" value={selectedReward.earnedOn} />
-              <DetailItem label="Payout Status" value={selectedReward.status} />
+          <>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "20px", marginBottom: "28px" }}>
+            <DetailItem label="Reward ID" value={selectedReward.id} />
+            <DetailItem label="Referral ID" value={selectedReward.referralId} />
+            <DetailItem label="Candidate Name" value={selectedReward.candidate} />
+            <DetailItem label="Reward Amount" value={`₹${selectedReward.amount.toLocaleString()}`} />
+            <DetailItem label="Payout Status" value={selectedReward.status} />
+            <DetailItem label="Reward Earned On" value={selectedReward.earnedOn} />
+            <DetailItem label="Payment Date" value={selectedReward.paymentDate || "-"} />
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "24px" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: COLORS.textSecondary }}>
+              Remarks
             </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "12px" }}>
-              <button onClick={() => setRewardDetailsOpen(false)} style={{ padding: "12px 24px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, fontWeight: 600, cursor: "pointer" }}>Close</button>
+
+            <div style={{ padding: "16px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+              {selectedReward.remarks || "No remarks available for this reward."}
             </div>
           </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button onClick={() => setRewardDetailsOpen(false)} style={{ padding: "12px 24px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, fontWeight: 600, cursor: "pointer" }}>
+              Close
+            </button>
+          </div>
+        </>
         )}
       </DetailsModal>
     </div>
