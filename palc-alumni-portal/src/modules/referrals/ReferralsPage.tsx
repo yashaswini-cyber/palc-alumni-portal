@@ -418,6 +418,98 @@ export default function ReferralsPage() {
           </div>
         </div>
       </SectionCard>
+{/*Referral Guidelines*/}
+      <SectionCard
+        title="Referral Guidelines"
+        subtitle="Everything you need to know before submitting and tracking referrals."
+      ><div style={{ marginBottom: "28px", color: COLORS.textSecondary, lineHeight: 1.7, maxWidth: "900px" }}>
+          The PalC Referral Program enables alumni to recommend qualified professionals from their network.
+          Review the eligibility criteria, referral process, reward policy and common questions before submitting a referral.
+        </div>
+
+        <div
+          style={{display: "grid",gridTemplateColumns: "repeat(auto-fit,minmax(340px,1fr))",gap: "24px",marginBottom: "28px"}}>
+          <div style={{ padding: "26px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface }}>
+            <div style={{ fontSize: "19px", fontWeight: 700, color: COLORS.text, marginBottom: "20px" }}>
+              Who Can Be Referred?
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px", color: COLORS.textSecondary, lineHeight: 1.7 }}>
+              <div>• Refer experienced professionals who match the job requirements.</div>
+              <div>• Candidates should not already exist in the recruitment pipeline.</div>
+              <div>• Employees cannot refer themselves for open positions.</div>
+              <div>• Ensure all candidate information is accurate before submission.</div>
+            </div>
+          </div>
+
+          <div style={{ padding: "26px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface }}>
+            <div style={{ fontSize: "19px", fontWeight: 700, color: COLORS.text, marginBottom: "20px" }}>
+              Referral Process
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+              <div><strong>1.</strong> Submit your referral.</div>
+              <div><strong>2.</strong> Recruitment reviews the application.</div>
+              <div><strong>3.</strong> Eligible candidates proceed through interviews.</div>
+              <div><strong>4.</strong> Hiring status is updated in your referral dashboard.</div>
+              <div><strong>5.</strong> Rewards are processed after successful onboarding.</div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{padding: "28px",border: `1px solid ${COLORS.border}`,borderRadius: "16px",background: COLORS.surface,marginBottom: "28px"}}>
+            <div style={{ fontSize: "19px", fontWeight: 700, color: COLORS.text, marginBottom: "20px" }}>
+            Reward Eligibility
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "18px" }}>
+            <div style={{ color: COLORS.textSecondary }}>✓ Rewards are issued after the referred candidate successfully joins PalC.</div>
+            <div style={{ color: COLORS.textSecondary }}>✓ Reward amounts follow the company's referral policy.</div>
+            <div style={{ color: COLORS.textSecondary }}>✓ One reward is applicable for each successful referral.</div>
+            <div style={{ color: COLORS.textSecondary }}>✓ Payment is processed after HR verification and approval.</div>
+          </div>
+        </div>
+
+        <div style={{padding: "28px",border: `1px solid ${COLORS.border}`,borderRadius: "16px",background: COLORS.surface}}>
+            <div style={{ fontSize: "19px", fontWeight: 700, color: COLORS.text, marginBottom: "24px" }}>
+            Frequently Asked Questions
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
+            <div>
+              <div style={{ fontWeight: 700, color: COLORS.text, marginBottom: "8px" }}>
+                How can I track my referral?
+              </div>
+
+              <div style={{ color: COLORS.textSecondary, lineHeight: 1.7 }}>
+                Track the latest referral status anytime from the <strong>My Referrals</strong> section.
+              </div>
+            </div>
+
+            <div style={{ borderTop: `1px solid ${COLORS.border}` }} />
+            <div>
+              <div style={{ fontWeight: 700, color: COLORS.text, marginBottom: "8px" }}>
+                When will I receive my reward?
+              </div>
+
+              <div style={{ color: COLORS.textSecondary, lineHeight: 1.7 }}>
+                Rewards are processed after the referred candidate successfully joins and completes HR verification.
+              </div>
+            </div>
+
+            <div style={{ borderTop: `1px solid ${COLORS.border}` }} />
+            <div>
+              <div style={{ fontWeight: 700, color: COLORS.text, marginBottom: "8px" }}>
+                Can I edit or withdraw a referral?
+              </div>
+
+              <div style={{ color: COLORS.textSecondary, lineHeight: 1.7 }}>
+                Pending referrals can be withdrawn. Submitted referral information cannot be edited once it has been sent for review.
+              </div>
+            </div>
+          </div>
+        </div>
+      </SectionCard>
 
       <ReferralFormModal open={formOpen} onClose={closeReferralForm} onSubmit={handleReferralSubmitted} />
       
@@ -503,7 +595,6 @@ export default function ReferralsPage() {
     </div>
   );
 }
-
 function DetailItem({ label, value }: { label: string; value?: string }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
