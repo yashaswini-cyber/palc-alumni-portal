@@ -9,7 +9,7 @@ import SearchBar from "../../shared/components/SearchBar";
 import { COLORS } from "../../shared/theme/colors";
 import ReferralFormModal from "../../shared/components/ReferralFormModal";
 import DetailsModal from "../../shared/components/DetailsModal";
-import { getReferrals, saveReferrals } from "../../shared/utils/storage";
+import { getReferrals, saveReferrals, getRewardHistory, saveRewardHistory} from "../../shared/utils/storage";
 
 interface Referral {
   id: string;
@@ -26,11 +26,28 @@ interface Referral {
   notes?: string;
   resumeName?: string;
 }
-
+interface RewardHistory {
+  id: string;
+  referralId: string;
+  candidate: string;
+  amount: number;
+  status: "Pending" | "Paid";
+  earnedOn: string;
+}
 const initialReferrals: Referral[] = [
   { id: "REF001", candidate: "John Doe", position: "AI Engineer", date: "20 Jun 2026", updated: "21 Jun 2026", status: "Pending" },
   { id: "REF002", candidate: "Sarah Smith", position: "Software Engineer", date: "18 Jun 2026", updated: "20 Jun 2026", status: "Approved" },
   { id: "REF003", candidate: "Rahul Sharma", position: "Frontend Developer", date: "15 Jun 2026", updated: "19 Jun 2026", status: "Interview Scheduled" }
+];
+const initialRewards: RewardHistory[] = [
+  {
+    id: "RW001",
+    referralId: "REF002",
+    candidate: "Sarah Smith",
+    amount: 3000,
+    status: "Paid",
+    earnedOn: "20 Jun 2026",
+  },
 ];
 
 export default function ReferralsPage() {
@@ -42,8 +59,11 @@ export default function ReferralsPage() {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [withdrawTarget, setWithdrawTarget] = useState<Referral | null>(null);
-const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [showAllReferrals, setShowAllReferrals] = useState(false);
+  const [rewardHistory, setRewardHistory] = useState<RewardHistory[]>(() =>
+  getRewardHistory(initialRewards)
+);
 
   const referralsSectionRef = useRef<HTMLDivElement>(null);
   const scrollToReferrals = () => referralsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -257,7 +277,6 @@ const confirmWithdrawReferral = () => {
           </div>
         </SectionCard>
       </div>
-
       <ReferralFormModal open={formOpen} onClose={closeReferralForm} onSubmit={handleReferralSubmitted} />
 
       <DetailsModal open={detailsOpen} title="Referral Details" onClose={() => setDetailsOpen(false)}>
