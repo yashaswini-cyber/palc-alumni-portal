@@ -385,6 +385,7 @@ export default function ReferralsPage() {
       </SectionCard>
     </div>
 
+{/*Referrals Leaderboard section*/}
       <SectionCard title="Referral Leaderboard" subtitle="See how your successful referrals compare with other alumni.">
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -516,9 +517,34 @@ export default function ReferralsPage() {
         </div>
       </SectionCard>
 
+{/*Need Help Section*/}
+     <SectionCard title="Need Assistance?" subtitle="Our support team is here to help with any questions related to referrals and referral rewards.">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "32px", flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: "340px" }}>
+          <div style={{ fontSize: "18px", fontWeight: 700, color: COLORS.text, marginBottom: "10px" }}>
+            Referral Support
+          </div>
+
+          <div style={{ color: COLORS.textSecondary, lineHeight: 1.7, marginBottom: "18px", maxWidth: "760px" }}>
+            If you need assistance with referral submissions, candidate status updates, reward eligibility, reward payouts, or any other referral-related queries, our support team is here to help.
+          </div>
+          <div style={{ color: COLORS.textSecondary, lineHeight: 1.7 }}>
+            Submit a support request through the Helpdesk and we'll review your request and respond within <strong>2 business days</strong>.
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "12px" }}>
+          <PrimaryButton onClick={() => window.location.href = "/helpdesk"}>
+            Contact Helpdesk
+          </PrimaryButton>
+          <div style={{ fontSize: "13px", color: COLORS.textSecondary, textAlign: "right", maxWidth: "220px" }}>
+            Typical response time: <strong>Within 2 business days</strong>
+          </div>
+        </div>
+      </div>
+    </SectionCard>
+
       <ReferralFormModal open={formOpen} onClose={closeReferralForm} onSubmit={handleReferralSubmitted} />
-      
-      {/* Referral Details Modal */}
+  {/* Referral Details Modal */}
       <DetailsModal open={detailsOpen} title="Referral Details" onClose={() => setDetailsOpen(false)}>
         {selectedReferral && (
           <>
