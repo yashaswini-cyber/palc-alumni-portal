@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import HeroBanner from "../../shared/components/HeroBanner";
 import StatsCard from "../../shared/components/StatsCard";
 import PrimaryButton from "../../shared/components/PrimaryButton";
@@ -133,6 +133,28 @@ export default function ReferralsPage() {
     setSelectedReward(reward);
     setRewardDetailsOpen(true);
   };
+  const syncRewardsFromReferrals = () => {
+  const existingRewardIds = new Set(rewardHistory.map(reward => reward.referralId));
+  const generatedRewards = referrals
+    .filter(referral => referral.status === "Hired" && !existingRewardIds.has(referral.id))
+    .map(referral => ({
+      id: `RW${String(rewardHistory.length + existingRewardIds.size + 1).padStart(3, "0")}`,
+      referralId: referral.id,
+      candidate: referral.candidate,
+      amount: 3000,
+      status: "Pending" as const,
+      earnedOn: referral.updated,
+      remarks: "Reward is awaiting HR payout approval.",
+    }));
+
+  if (generatedRewards.length === 0) return;
+
+  setRewardHistory(prev => {
+    const updated = [...prev, ...generatedRewards];
+    saveRewardHistory(updated);
+    return updated;
+  });
+};
 
   const filteredReferrals = useMemo(() => {
     let data = referrals.filter(referral => {
@@ -163,6 +185,14 @@ export default function ReferralsPage() {
     hired: referrals.filter(r => r.status === "Hired").length,
     rewards: `₹${(referrals.filter(r => r.status === "Hired").length * 3000).toLocaleString()}`
   }), [referrals]);
+  const rewardSummary = useMemo(() => ({
+    totalAmount: rewardHistory.reduce((sum, reward) => sum + reward.amount, 0),
+    paidCount: rewardHistory.filter(reward => reward.status === "Paid").length,
+    pendingCount: rewardHistory.filter(reward => reward.status === "Pending").length,
+  }), [rewardHistory]);
+  useEffect(() => {
+  syncRewardsFromReferrals();
+}, [referrals]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
@@ -289,7 +319,7 @@ export default function ReferralsPage() {
           <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Total Rewards Earned</div>
             <div style={{ fontSize: "32px", fontWeight: 700, color: "#16A34A" }}>
-              ₹{rewardHistory.reduce((sum, reward) => sum + reward.amount, 0).toLocaleString()}
+              ₹{rewardSummary.totalAmount.toLocaleString()}
             </div>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>Total rewards credited from successful referrals.</div>
           </div>
@@ -297,7 +327,7 @@ export default function ReferralsPage() {
           <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Paid Rewards</div>
             <div style={{ fontSize: "32px", fontWeight: 700, color: "#2563EB" }}>
-              {rewardHistory.filter(reward => reward.status === "Paid").length}
+              {rewardSummary.paidCount}
             </div>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>Rewards successfully credited.</div>
           </div>
@@ -305,7 +335,7 @@ export default function ReferralsPage() {
           <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Pending Rewards</div>
             <div style={{ fontSize: "32px", fontWeight: 700, color: "#D97706" }}>
-              {rewardHistory.filter(reward => reward.status === "Pending").length}
+              {rewardSummary.pendingCount}
             </div>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>Awaiting payout approval.</div>
           </div>
