@@ -44,10 +44,18 @@ const initialReferrals: Referral[] = [
   { id: "REF003", candidate: "Rahul Sharma", position: "Frontend Developer", date: "15 Jun 2026", updated: "19 Jun 2026", status: "Interview Scheduled" }
 ];
 
+const leaderboardData = [
+  { rank: 1, name: "Priya Sharma", successfulReferrals: 24, rewards: 72000 },
+  { rank: 2, name: "Amit Verma", successfulReferrals: 20, rewards: 60000 },
+  { rank: 3, name: "Neha Rao", successfulReferrals: 18, rewards: 54000 },
+  { rank: 4, name: "Karthik Iyer", successfulReferrals: 15, rewards: 45000 },
+  { rank: 5, name: "Sneha Kulkarni", successfulReferrals: 12, rewards: 36000 },
+  { rank: 6, name: "Rahul Mehta", successfulReferrals: 9, rewards: 27000 },
+  { rank: 7, name: "You", successfulReferrals: 6, rewards: 18000 }
+];
+
 const initialRewards: RewardHistory[] = [
-  {
-    id: "RW001", referralId: "REF002", candidate: "Sarah Smith", amount: 3000, status: "Paid", earnedOn: "20 Jun 2026", paymentDate: "25 Jun 2026", remarks: "Reward successfully credited after candidate completed joining formalities."
-  }
+  { id: "RW001", referralId: "REF002", candidate: "Sarah Smith", amount: 3000, status: "Paid", earnedOn: "20 Jun 2026", paymentDate: "25 Jun 2026", remarks: "Reward successfully credited after candidate completed joining formalities." }
 ];
 
 export default function ReferralsPage() {
@@ -71,16 +79,7 @@ export default function ReferralsPage() {
   const openReferralForm = () => setFormOpen(true);
   const closeReferralForm = () => setFormOpen(false);
 
-  const handleReferralSubmitted = (formData: {
-    candidate: string;
-    email: string;
-    phone: string;
-    company: string;
-    experience: string;
-    position: string;
-    linkedin: string;
-    notes: string;
-  }) => {
+  const handleReferralSubmitted = (formData: Omit<Referral, "id" | "date" | "updated" | "status"> & { candidate: string; email: string; phone: string; company: string; experience: string; position: string; linkedin: string; notes: string; }) => {
     const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
     const referral: Referral = {
       id: `REF${String(referrals.length + 1).padStart(3, "0")}`,
@@ -133,35 +132,38 @@ export default function ReferralsPage() {
     setSelectedReward(reward);
     setRewardDetailsOpen(true);
   };
+
   const syncRewardsFromReferrals = () => {
-  const existingRewardIds = new Set(rewardHistory.map(reward => reward.referralId));
-  const generatedRewards = referrals
-    .filter(referral => referral.status === "Hired" && !existingRewardIds.has(referral.id))
-    .map(referral => ({
-      id: `RW${String(rewardHistory.length + existingRewardIds.size + 1).padStart(3, "0")}`,
-      referralId: referral.id,
-      candidate: referral.candidate,
-      amount: 3000,
-      status: "Pending" as const,
-      earnedOn: referral.updated,
-      remarks: "Reward is awaiting HR payout approval.",
-    }));
+    const existingRewardIds = new Set(rewardHistory.map(reward => reward.referralId));
+    const generatedRewards = referrals
+      .filter(referral => referral.status === "Hired" && !existingRewardIds.has(referral.id))
+      .map((referral, index) => ({
+        id: `RW${String(rewardHistory.length + existingRewardIds.size + index + 1).padStart(3, "0")}`,
+        referralId: referral.id,
+        candidate: referral.candidate,
+        amount: 3000,
+        status: "Pending" as const,
+        earnedOn: referral.updated,
+        remarks: "Reward is awaiting HR payout approval.",
+      }));
 
-  if (generatedRewards.length === 0) return;
+    if (generatedRewards.length === 0) return;
 
-  setRewardHistory(prev => {
-    const updated = [...prev, ...generatedRewards];
-    saveRewardHistory(updated);
-    return updated;
-  });
-};
+    setRewardHistory(prev => {
+      const updated = [...prev, ...generatedRewards];
+      saveRewardHistory(updated);
+      return updated;
+    });
+  };
+
+  useEffect(() => {
+    syncRewardsFromReferrals();
+  }, [referrals]);
 
   const filteredReferrals = useMemo(() => {
     let data = referrals.filter(referral => {
       const search = searchText.toLowerCase();
-      const matchesSearch = referral.id.toLowerCase().includes(search) ||
-                            referral.candidate.toLowerCase().includes(search) ||
-                            referral.position.toLowerCase().includes(search);
+      const matchesSearch = referral.id.toLowerCase().includes(search) || referral.candidate.toLowerCase().includes(search) || referral.position.toLowerCase().includes(search);
       const matchesStatus = selectedStatus === "All Statuses" || referral.status === selectedStatus;
       return matchesSearch && matchesStatus;
     });
@@ -169,7 +171,7 @@ export default function ReferralsPage() {
     if (sortBy === "Candidate") {
       data.sort((a, b) => a.candidate.localeCompare(b.candidate));
     } else if (sortBy === "Oldest") {
-      data.reverse();
+      data = [...data].reverse();
     }
     return data;
   }, [referrals, searchText, selectedStatus, sortBy]);
@@ -185,14 +187,12 @@ export default function ReferralsPage() {
     hired: referrals.filter(r => r.status === "Hired").length,
     rewards: `₹${(referrals.filter(r => r.status === "Hired").length * 3000).toLocaleString()}`
   }), [referrals]);
+
   const rewardSummary = useMemo(() => ({
     totalAmount: rewardHistory.reduce((sum, reward) => sum + reward.amount, 0),
     paidCount: rewardHistory.filter(reward => reward.status === "Paid").length,
     pendingCount: rewardHistory.filter(reward => reward.status === "Pending").length,
   }), [rewardHistory]);
-  useEffect(() => {
-  syncRewardsFromReferrals();
-}, [referrals]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
@@ -318,25 +318,19 @@ export default function ReferralsPage() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px", marginBottom: "32px" }}>
           <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Total Rewards Earned</div>
-            <div style={{ fontSize: "32px", fontWeight: 700, color: "#16A34A" }}>
-              ₹{rewardSummary.totalAmount.toLocaleString()}
-            </div>
+            <div style={{ fontSize: "32px", fontWeight: 700, color: "#16A34A" }}>₹{rewardSummary.totalAmount.toLocaleString()}</div>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>Total rewards credited from successful referrals.</div>
           </div>
 
           <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Paid Rewards</div>
-            <div style={{ fontSize: "32px", fontWeight: 700, color: "#2563EB" }}>
-              {rewardSummary.paidCount}
-            </div>
+            <div style={{ fontSize: "32px", fontWeight: 700, color: "#2563EB" }}>{rewardSummary.paidCount}</div>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>Rewards successfully credited.</div>
           </div>
 
           <div style={{ padding: "22px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: COLORS.surface, display: "flex", flexDirection: "column", gap: "10px" }}>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary, fontWeight: 600 }}>Pending Rewards</div>
-            <div style={{ fontSize: "32px", fontWeight: 700, color: "#D97706" }}>
-              {rewardSummary.pendingCount}
-            </div>
+            <div style={{ fontSize: "32px", fontWeight: 700, color: "#D97706" }}>{rewardSummary.pendingCount}</div>
             <div style={{ fontSize: "13px", color: COLORS.textSecondary }}>Awaiting payout approval.</div>
           </div>
         </div>
@@ -383,6 +377,45 @@ export default function ReferralsPage() {
               )}
             </tbody>
           </table>
+        </div>
+      </SectionCard>
+
+      <SectionCard title="Referral Leaderboard" subtitle="See how your successful referrals compare with other alumni.">
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: `2px solid ${COLORS.border}` }}>
+                <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Rank</th>
+                <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Alumni</th>
+                <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Successful Referrals</th>
+                <th style={{ padding: "14px", textAlign: "left", color: COLORS.text }}>Rewards Earned</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaderboardData.length === 0 ? (
+                <tr>
+                  <td colSpan={4} style={{ padding: "40px", textAlign: "center", color: COLORS.textSecondary }}>Leaderboard data is currently unavailable.</td>
+                </tr>
+              ) : (
+                leaderboardData.map((member) => (
+                  <tr key={member.rank} style={{ borderBottom: `1px solid ${COLORS.border}`, background: member.name === "You" ? "linear-gradient(90deg,#DBEAFE,#EFF6FF)" : "transparent" }}>
+                    <td style={{ padding: "14px", fontWeight: 700, color: COLORS.text }}>#{member.rank}</td>
+                    <td style={{ padding: "14px", color: COLORS.text, fontWeight: member.name === "You" ? 700 : 500 }}>
+                      {member.name}
+                      {member.name === "You" && (
+                        <span style={{ marginLeft: "10px", padding: "3px 10px", borderRadius: "999px", background: "#2563EB", color: "#FFFFFF", fontSize: "12px", fontWeight: 600 }}>You</span>
+                      )}
+                    </td>
+                    <td style={{ padding: "14px", color: COLORS.text }}>{member.successfulReferrals}</td>
+                    <td style={{ padding: "14px", color: COLORS.text }}>₹{member.rewards.toLocaleString()}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+          <div style={{ marginTop: "20px", fontSize: "13px", color: COLORS.textSecondary, lineHeight: 1.7 }}>
+            Rankings are based on successful referrals and total rewards earned. The leaderboard will automatically reflect the latest data once the HR Portal and backend are integrated.
+          </div>
         </div>
       </SectionCard>
 
@@ -462,9 +495,7 @@ export default function ReferralsPage() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button onClick={() => setRewardDetailsOpen(false)} style={{ padding: "12px 24px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, fontWeight: 600, cursor: "pointer" }}>
-                Close
-              </button>
+              <button onClick={() => setRewardDetailsOpen(false)} style={{ padding: "12px 24px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, fontWeight: 600, cursor: "pointer" }}>Close</button>
             </div>
           </>
         )}
