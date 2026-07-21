@@ -52,7 +52,6 @@ const getPriorityStyle = (priority: string) => {
 };
 
 export default function HelpdeskPage() {
-  const [showCreateTicket, setShowCreateTicket] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Statuses");
   const [categoryFilter, setCategoryFilter] = useState("All Categories");
@@ -76,12 +75,9 @@ export default function HelpdeskPage() {
   const ticketsSectionRef = useRef<HTMLDivElement>(null);
 
   const openCreateTicket = () => {
-    setShowCreateTicket(true);
-    requestAnimationFrame(() => document.getElementById("create-ticket")?.scrollIntoView({ behavior: "smooth", block: "start" }));
-  };
-
-  const cancelCreateTicket = () => { resetTicketForm(); setShowCreateTicket(false); };
-
+  document.getElementById("create-ticket")?.scrollIntoView({ behavior: "smooth",block: "start", });};
+  
+  const cancelCreateTicket = () => {resetTicketForm();};
   const handleSubmitTicket = () => {
     if (!ticketForm.subject.trim() || !ticketForm.description.trim() || !requiredBy) {
       alert("Please complete all mandatory fields.");
@@ -98,7 +94,6 @@ export default function HelpdeskPage() {
     };
     setTicketList((prev) => [newTicket, ...prev]);
     resetTicketForm();
-    setShowCreateTicket(false);
     requestAnimationFrame(() => ticketsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
 
@@ -157,7 +152,7 @@ export default function HelpdeskPage() {
         ))}
       </div>
 
-      {showCreateTicket && (
+      <div id="create-ticket">
         <div id="create-ticket">
           <SectionCard title="Create a New Support Ticket" subtitle="Provide the information below to help our support team understand and resolve your issue efficiently.">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "24px" }}>
@@ -237,7 +232,7 @@ export default function HelpdeskPage() {
             </div>
           </SectionCard>
         </div>
-      )}
+      </div>
 
       <div ref={ticketsSectionRef}>
         <SectionCard title="My Support Tickets">
