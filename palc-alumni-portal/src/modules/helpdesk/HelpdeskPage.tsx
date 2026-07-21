@@ -59,6 +59,7 @@ export default function HelpdeskPage() {
   const [ticketList, setTicketList] = useState(() => getHelpdeskTickets(tickets));
   const [showAllTickets, setShowAllTickets] = useState(false);
   const [requiredBy, setRequiredBy] = useState<Date | null>(null);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [ticketForm, setTicketForm] = useState({ category: "IT Support", priority: "Medium", subject: "", description: "", attachment: null as File | null });
 
@@ -79,23 +80,32 @@ export default function HelpdeskPage() {
   
   const cancelCreateTicket = () => {resetTicketForm();};
   const handleSubmitTicket = () => {
-    if (!ticketForm.subject.trim() || !ticketForm.description.trim() || !requiredBy) {
-      alert("Please complete all mandatory fields.");
-      return;
-    }
-    const newTicket = {
-      id: `HD-${Date.now()}`,
-      subject: ticketForm.subject,
-      category: ticketForm.category,
-      priority: ticketForm.priority,
-      status: "Open",
-      createdOn: new Date().toLocaleDateString(),
-      updatedOn: "Just now",
-    };
-    setTicketList((prev) => [newTicket, ...prev]);
-    resetTicketForm();
-    requestAnimationFrame(() => ticketsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  if (!ticketForm.subject.trim() || !ticketForm.description.trim() || !requiredBy) {
+    alert("Please complete all mandatory fields.");
+    return;
+  }
+
+  const ticketId = `HD-${Date.now()}`;
+  const newTicket = {
+    id: ticketId,
+    subject: ticketForm.subject,
+    category: ticketForm.category,
+    priority: ticketForm.priority,
+    status: "Open",
+    createdOn: new Date().toLocaleDateString(),
+    updatedOn: "Just now",
   };
+  setTicketList((prev) => [newTicket, ...prev]);
+  resetTicketForm();
+  setSuccessMessage(`✓ Ticket ${ticketId} has been created successfully.`);
+  requestAnimationFrame(() =>
+    ticketsSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    })
+  );
+  setTimeout(() => setSuccessMessage(""), 5000);
+};
 
   const openTicketDetails = (ticket: typeof tickets[number]) => { console.log(ticket); };
   const reopenTicket = (ticketId: string) => { console.log(ticketId); };
@@ -235,6 +245,12 @@ export default function HelpdeskPage() {
       </div>
 
       <div ref={ticketsSectionRef}>
+        {successMessage && (
+        <div style={{background: "#ECFDF5",border: "1px solid #BBF7D0",color: "#166534",padding: "16px 20px",borderRadius: "14px",fontWeight: 600,display: "flex",alignItems: "center",gap: "10px",boxShadow: "0 6px 18px rgba(22,101,52,.08)",}}>
+          <span style={{ fontSize: "18px" }}>✓</span>
+          {successMessage}
+        </div>
+      )}
         <SectionCard title="My Support Tickets">
           <div style={{ marginBottom: "22px" }}>
             <div style={{ display: "flex", gap: "18px", flexWrap: "wrap", alignItems: "center" }}>
