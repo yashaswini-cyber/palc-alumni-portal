@@ -226,7 +226,7 @@ export default function HelpdeskPage() {
             <div style={{ marginTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
               <span style={{ color: "#DC2626", fontSize: 13 }}>* Fields marked are mandatory.</span>
               <div style={{ display: "flex", gap: 12 }}>
-                <button onClick={cancelCreateTicket} style={{ padding: "10px 22px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: "#FFF", cursor: "pointer", fontWeight: 600 }}>Cancel</button>
+                <button onClick={cancelCreateTicket} style={{ padding: "10px 22px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: "#FFF", color: COLORS.text, cursor: "pointer", fontWeight: 600 }}>Cancel</button>
                 <PrimaryButton onClick={handleSubmitTicket}>Submit Ticket</PrimaryButton>
               </div>
             </div>
