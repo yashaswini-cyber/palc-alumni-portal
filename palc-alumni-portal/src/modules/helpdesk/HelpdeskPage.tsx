@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, forwardRef } from "react";
 import HeroBanner from "../../shared/components/HeroBanner";
 import PrimaryButton from "../../shared/components/PrimaryButton";
 import StatsCard from "../../shared/components/StatsCard";
@@ -6,6 +6,9 @@ import SectionCard from "../../shared/components/SectionCard";
 import SearchBar from "../../shared/components/SearchBar";
 import StatusBadge from "../../shared/components/StatusBadge";
 import { COLORS } from "../../shared/theme/colors";
+import { getHelpdeskTickets, saveHelpdeskTickets } from "../../shared/utils/storage";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const tickets = [
   { id: "TKT001", subject: "Unable to access VPN", category: "IT", priority: "High", status: "Open", createdOn: "08 Jul 2026", updatedOn: "08 Jul 2026" },
@@ -15,9 +18,9 @@ const tickets = [
 
 const helpdeskStats = {
   totalTickets: tickets.length,
-  openTickets: tickets.filter(ticket => ticket.status === "Open").length,
-  inProgressTickets: tickets.filter(ticket => ticket.status === "In Progress").length,
-  resolvedTickets: tickets.filter(ticket => ticket.status === "Resolved").length,
+  openTickets: tickets.filter((t) => t.status === "Open").length,
+  inProgressTickets: tickets.filter((t) => t.status === "In Progress").length,
+  resolvedTickets: tickets.filter((t) => t.status === "Resolved").length,
 };
 
 const statsCards = [
@@ -27,7 +30,17 @@ const statsCards = [
   { title: "Resolved", value: helpdeskStats.resolvedTickets.toString(), subtitle: "Successfully completed", accentColor: "#16A34A" },
 ];
 
+// Reusable Shared Styles
+const inputStyle = { width: "100%", padding: "12px 14px", borderRadius: 10, border: `1px solid ${COLORS.border}`, background: "#FFFFFF" };
+const labelStyle = { display: "block", marginBottom: 8, fontWeight: 600, color: COLORS.text };
+const sectionGap = { marginTop: 28 };
+const selectFilterStyle = { padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text };
 const secondaryButtonStyle = { padding: "10px 18px", borderRadius: "10px", border: "1px solid #CBD5E1", background: "#FFFFFF", color: "#1E293B", fontWeight: 600, cursor: "pointer", transition: ".2s" };
+
+const CustomDateInput = forwardRef<HTMLInputElement, { value?: string; onClick?: () => void }>(({ value, onClick }, ref) => (
+  <input ref={ref} onClick={onClick} value={value} readOnly placeholder="Select required completion date" style={inputStyle} />
+));
+CustomDateInput.displayName = "CustomDateInput";
 
 const getPriorityStyle = (priority: string) => {
   switch (priority) {
@@ -44,12 +57,51 @@ export default function HelpdeskPage() {
   const [statusFilter, setStatusFilter] = useState("All Statuses");
   const [categoryFilter, setCategoryFilter] = useState("All Categories");
   const [priorityFilter, setPriorityFilter] = useState("All Priorities");
-  const [ticketList, setTicketList] = useState(tickets);
+  const [ticketList, setTicketList] = useState(() => getHelpdeskTickets(tickets));
   const [showAllTickets, setShowAllTickets] = useState(false);
+  const [requiredBy, setRequiredBy] = useState<Date | null>(null);
 
+  const [ticketForm, setTicketForm] = useState({ category: "IT Support", priority: "Medium", subject: "", description: "", attachment: null as File | null });
+
+  const handleTicketChange = (field: keyof typeof ticketForm, value: string | File | null) => {
+    setTicketForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const resetTicketForm = () => {
+    setTicketForm({ category: "IT Support", priority: "Medium", subject: "", description: "", attachment: null });
+    setRequiredBy(null);
+  };
+
+  useEffect(() => { saveHelpdeskTickets(ticketList); }, [ticketList]);
   const ticketsSectionRef = useRef<HTMLDivElement>(null);
 
-  const openCreateTicket = () => setShowCreateTicket(true);
+  const openCreateTicket = () => {
+    setShowCreateTicket(true);
+    requestAnimationFrame(() => document.getElementById("create-ticket")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+
+  const cancelCreateTicket = () => { resetTicketForm(); setShowCreateTicket(false); };
+
+  const handleSubmitTicket = () => {
+    if (!ticketForm.subject.trim() || !ticketForm.description.trim() || !requiredBy) {
+      alert("Please complete all mandatory fields.");
+      return;
+    }
+    const newTicket = {
+      id: `HD-${Date.now()}`,
+      subject: ticketForm.subject,
+      category: ticketForm.category,
+      priority: ticketForm.priority,
+      status: "Open",
+      createdOn: new Date().toLocaleDateString(),
+      updatedOn: "Just now",
+    };
+    setTicketList((prev) => [newTicket, ...prev]);
+    resetTicketForm();
+    setShowCreateTicket(false);
+    requestAnimationFrame(() => ticketsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+
   const openTicketDetails = (ticket: typeof tickets[number]) => { console.log(ticket); };
   const reopenTicket = (ticketId: string) => { console.log(ticketId); };
   const scrollToTickets = () => { ticketsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); };
@@ -64,9 +116,7 @@ export default function HelpdeskPage() {
     });
   }, [ticketList, searchQuery, statusFilter, categoryFilter, priorityFilter]);
 
-  const visibleTickets = useMemo(() => {
-    return showAllTickets ? filteredTickets : filteredTickets.slice(0, 5);
-  }, [showAllTickets, filteredTickets]);
+  const visibleTickets = useMemo(() => showAllTickets ? filteredTickets : filteredTickets.slice(0, 5), [showAllTickets, filteredTickets]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
@@ -107,14 +157,96 @@ export default function HelpdeskPage() {
         ))}
       </div>
 
+      {showCreateTicket && (
+        <div id="create-ticket">
+          <SectionCard title="Create a New Support Ticket" subtitle="Provide the information below to help our support team understand and resolve your issue efficiently.">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "24px" }}>
+              <div>
+                <label style={labelStyle}>Category *</label>
+                <select value={ticketForm.category} onChange={(e) => handleTicketChange("category", e.target.value)} style={inputStyle}>
+                  <option>IT Support</option>
+                  <option>HR</option>
+                  <option>Payroll</option>
+                  <option>Benefits</option>
+                  <option>Documents</option>
+                  <option>Employment Verification</option>
+                  <option>Accounts</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={labelStyle}>Priority *</label>
+                <select value={ticketForm.priority} onChange={(e) => handleTicketChange("priority", e.target.value)} style={inputStyle}>
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Critical</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={labelStyle}>Subject *</label>
+                <input type="text" placeholder="Briefly describe your issue" value={ticketForm.subject} onChange={(e) => handleTicketChange("subject", e.target.value)} style={inputStyle} />
+              </div>
+
+              <div>
+                <label style={labelStyle}>Required By *</label>
+                <div style={{ width: "100%", marginTop: "8px" }}>
+                  <DatePicker selected={requiredBy} onChange={(date: Date | null) => setRequiredBy(date)} minDate={new Date()} dateFormat="d MMMM yyyy" customInput={<CustomDateInput />} wrapperClassName="verification-datepicker" />
+                </div>
+              </div>
+            </div>
+
+            <div style={sectionGap}>
+              <label style={labelStyle}>Issue Description *</label>
+              <textarea rows={5} placeholder="Describe the issue in detail. Include any error messages, steps you've already tried, or additional information that may help the support team resolve your request faster." value={ticketForm.description} onChange={(e) => handleTicketChange("description", e.target.value)} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit", fontSize: "14px" }} />
+            </div>
+
+            <div style={sectionGap}>
+              <label style={{ ...labelStyle, marginBottom: "10px" }}>Supporting Attachment (Optional)</label>
+              <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "10px", minHeight: "160px", border: `2px dashed ${COLORS.border}`, borderRadius: "14px", background: "#F8FAFC", cursor: "pointer", transition: ".2s", textAlign: "center", padding: "28px" }}>
+                <div style={{ fontSize: "36px" }}>📎</div>
+                <div style={{ fontWeight: 700, color: COLORS.text }}>Click to upload supporting files</div>
+                <div style={{ color: COLORS.textSecondary, fontSize: "14px", lineHeight: 1.6 }}>Screenshots, PDFs or documents help us resolve your issue faster.</div>
+                {ticketForm.attachment && (
+                  <div style={{ marginTop: "8px", padding: "8px 14px", borderRadius: "999px", background: "#DBEAFE", color: "#1D4ED8", fontWeight: 600, fontSize: "13px" }}>
+                    {ticketForm.attachment.name}
+                  </div>
+                )}
+                <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" onChange={(e) => handleTicketChange("attachment", e.target.files?.length ? e.target.files[0] : null)} />
+              </label>
+            </div>
+
+            <div style={{ marginTop: "30px", background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "20px" }}>
+              <h4 style={{ margin: "0 0 12px", color: COLORS.text, fontSize: "17px" }}>Support Guidelines</h4>
+              <ul style={{ margin: 0, paddingLeft: "20px", color: COLORS.textSecondary, lineHeight: 1.9 }}>
+                <li>Our support team aims to provide an initial response within <strong>24 business hours.</strong></li>
+                <li>Attach screenshots or supporting documents whenever possible for quicker resolution.</li>
+                <li>Track your ticket status anytime under <strong>My Support Tickets.</strong></li>
+                <li>You will receive notifications whenever there is an update or response to your ticket.</li>
+              </ul>
+            </div>
+
+            <div style={{ marginTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+              <span style={{ color: "#DC2626", fontSize: 13 }}>* Fields marked are mandatory.</span>
+              <div style={{ display: "flex", gap: 12 }}>
+                <button onClick={cancelCreateTicket} style={{ padding: "10px 22px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: "#FFF", cursor: "pointer", fontWeight: 600 }}>Cancel</button>
+                <PrimaryButton onClick={handleSubmitTicket}>Submit Ticket</PrimaryButton>
+              </div>
+            </div>
+          </SectionCard>
+        </div>
+      )}
+
       <div ref={ticketsSectionRef}>
         <SectionCard title="My Support Tickets">
           <div style={{ marginBottom: "22px" }}>
             <div style={{ display: "flex", gap: "18px", flexWrap: "wrap", alignItems: "center" }}>
               <div style={{ flex: 1, minWidth: "320px" }}>
-                <SearchBar value={searchQuery} placeholder="Search Ticket, ID, Name, or Category" onChange={(e) => setSearchQuery(e.target.value)}/>
+                <SearchBar value={searchQuery} placeholder="Search Ticket, ID, Name, or Category" onChange={(e) => setSearchQuery(e.target.value)} />
               </div>
-              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "180px", background: COLORS.surface, color: COLORS.text }}>
+              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ ...selectFilterStyle, minWidth: "180px" }}>
                 <option value="All Statuses">All Statuses</option>
                 <option value="Open">Open</option>
                 <option value="In Progress">In Progress</option>
@@ -123,7 +255,7 @@ export default function HelpdeskPage() {
                 <option value="Closed">Closed</option>
               </select>
 
-              <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)} style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "170px", background: COLORS.surface, color: COLORS.text }}>
+              <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)} style={{ ...selectFilterStyle, minWidth: "170px" }}>
                 <option value="All Priorities">All Priorities</option>
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
@@ -131,7 +263,7 @@ export default function HelpdeskPage() {
                 <option value="Critical">Critical</option>
               </select>
 
-              <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "190px", background: COLORS.surface, color: COLORS.text }}>
+              <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} style={{ ...selectFilterStyle, minWidth: "190px" }}>
                 <option value="All Categories">All Categories</option>
                 <option value="IT Support">IT Support</option>
                 <option value="HR">HR</option>

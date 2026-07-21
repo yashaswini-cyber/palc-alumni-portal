@@ -54,3 +54,18 @@ export const getRewardHistory = <T,>(initial: T): T => {
 export const saveRewardHistory = <T,>(data: T) => {
   localStorage.setItem("rewardHistory", JSON.stringify(data));
 };
+/* Helpdesk Storage */
+
+const HELPDESK_TICKETS_KEY = "palc_helpdesk_tickets";
+
+export function getHelpdeskTickets<T>(defaultValue: T): T {
+  return getStorageItem(HELPDESK_TICKETS_KEY, defaultValue);
+}
+
+export function saveHelpdeskTickets<T>(tickets: T): void {
+  setStorageItem(HELPDESK_TICKETS_KEY, tickets);
+}
+
+export function clearHelpdeskTickets(): void {
+  removeStorageItem(HELPDESK_TICKETS_KEY);
+}
