@@ -2,6 +2,11 @@ import { useRef, useState } from "react";
 import HeroBanner from "../../shared/components/HeroBanner";
 import PrimaryButton from "../../shared/components/PrimaryButton";
 import StatsCard from "../../shared/components/StatsCard";
+import { useMemo } from "react";
+import SectionCard from "../../shared/components/SectionCard";
+import SearchBar from "../../shared/components/SearchBar";
+import StatusBadge from "../../shared/components/StatusBadge";
+import { COLORS } from "../../shared/theme/colors";
 
 const tickets = [
   {
@@ -65,16 +70,83 @@ const statsCards = [
     accentColor: "#16A34A",
   },
 ];
+/*Can be used to make Secondary Button later on*/
+const secondaryButtonStyle = {
+  padding: "10px 18px",
+  borderRadius: "10px",
+  border: "1px solid #CBD5E1",
+  background: "#FFFFFF",
+  color: "#1E293B",
+  fontWeight: 600,
+  cursor: "pointer",
+  transition: ".2s",
+};
 
 export default function HelpdeskPage() {
   const [showCreateTicket, setShowCreateTicket] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+const [statusFilter, setStatusFilter] = useState("All Statuses");
+const [categoryFilter, setCategoryFilter] = useState("All Categories");
+const [priorityFilter, setPriorityFilter] = useState("All Priorities");
+const [sortBy, setSortBy] = useState("Latest");
   const ticketsSectionRef = useRef<HTMLDivElement>(null);
 
   const openCreateTicket = () => setShowCreateTicket(true);
+  const openTicketDetails = (ticket: typeof tickets[number]) => {
+  console.log(ticket);
+};
+  const [ticketList, setTicketList] = useState(tickets);
 
+const reopenTicket = (ticketId: string) => {
+    console.log(ticketId);
+};
   const scrollToTickets = () => {
     ticketsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+  const filteredTickets = tickets
+      .filter((ticket) => {
+        const matchesSearch =
+          ticket.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          ticket.subject.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus =
+          statusFilter === "All Statuses" ||
+          ticket.status === statusFilter;
+        const matchesCategory =
+          categoryFilter === "All Categories" ||
+          ticket.category === categoryFilter;
+        const matchesPriority =
+          priorityFilter === "All Priorities" ||
+          ticket.priority === priorityFilter;
+       
+        return (
+          matchesSearch &&
+          matchesStatus &&
+          matchesCategory &&
+          matchesPriority
+        );
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case "Oldest":
+            return new Date(a.createdOn).getTime() - new Date(b.createdOn).getTime();
+          case "Priority": {
+            const order = {
+              Critical: 4,
+              High: 3,
+              Medium: 2,
+              Low: 1,
+            };
+            return (
+              (order[b.priority as keyof typeof order] || 0) -
+              (order[a.priority as keyof typeof order] || 0)
+            );
+          }
+          case "Status":
+            return a.status.localeCompare(b.status);
+          default:
+            return new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime();
+        }
+      });
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
@@ -127,6 +199,133 @@ export default function HelpdeskPage() {
           />
         ))}
       </div>
+      <SectionCard title="My Support Tickets">
+        <div style={{ marginBottom: "22px" }}>
+          <div style={{ display: "flex", gap: "18px", flexWrap: "wrap", alignItems: "center" }}>
+            <div style={{ flex: 1, minWidth: "320px" }}>
+              <SearchBar value={searchQuery} placeholder="Search Ticket, ID, Name, or Category" onChange={(e) => setSearchQuery(e.target.value)}/>
+            </div>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "180px", background: COLORS.surface, color: COLORS.text }}
+            > <option value="All Statuses">All Statuses</option>
+              <option value="Open">Open</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Waiting for User">Waiting for User</option>
+              <option value="Resolved">Resolved</option>
+              <option value="Closed">Closed</option>
+            </select>
+
+            <select
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value)}
+              style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "170px", background: COLORS.surface, color: COLORS.text }}
+            > <option value="All Priorities">All Priorities</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+            </select>
+
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "190px", background: COLORS.surface, color: COLORS.text }}
+            > <option value="All Categories">All Categories</option>
+              <option value="IT Support">IT Support</option>
+              <option value="HR">HR</option>
+              <option value="Payroll">Payroll</option>
+              <option value="Documents">Documents</option>
+              <option value="Employment Verification">Employment Verification</option>
+              <option value="Benefits">Benefits</option>
+              <option value="Accounts">Accounts</option>
+            </select>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "170px", background: COLORS.surface, color: COLORS.text }}
+            > <option value="Latest">Latest</option>
+              <option value="Oldest">Oldest</option>
+              <option value="Priority">Priority</option>
+              <option value="Status">Status</option>
+            </select>
+            <PrimaryButton onClick={openCreateTicket}>
+              Create Ticket
+            </PrimaryButton>
+          </div>
+        </div>
+
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ textAlign: "left", borderBottom: `1px solid ${COLORS.border}` }}>
+                <th style={{ padding: "12px" }}>Ticket ID</th>
+                <th style={{ padding: "12px" }}>Subject</th>
+                <th style={{ padding: "12px" }}>Category</th>
+                <th style={{ padding: "12px" }}>Priority</th>
+                <th style={{ padding: "12px" }}>Status</th>
+                <th style={{ padding: "12px" }}>Created</th>
+                <th style={{ padding: "12px" }}>Last Updated</th>
+                <th style={{ padding: "12px" }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredTickets.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: "center", padding: "40px", color: COLORS.textSecondary }}>
+                    No support tickets match your current search or filter criteria.
+                  </td>
+                </tr>
+              ) : (
+                filteredTickets.map((ticket) => (
+                  <tr key={ticket.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                    <td style={{ padding: "12px", fontWeight: 700 }}>{ticket.id}</td>
+                    <td style={{ padding: "12px" }}>
+                      {ticket.subject}
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      {ticket.category}
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      {ticket.priority}
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      <StatusBadge status={ticket.status} />
+                    </td>
+                   <td style={{ padding: "12px" }}>
+                      {ticket.createdOn}
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      {ticket.updatedOn}
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                        <button
+                          style={secondaryButtonStyle}
+                          onClick={() => openTicketDetails(ticket)}
+                        >
+                          View Details
+                        </button>
+                        {ticket.status === "Resolved" && (
+                          <PrimaryButton onClick={() => reopenTicket(ticket.id)}>
+                            Reopen
+                          </PrimaryButton>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+
+          <div style={{ marginTop: "20px", paddingTop: "18px", borderTop: `1px solid ${COLORS.border}`, color: COLORS.textSecondary, fontSize: "14px" }}>
+            Track every support request submitted to PalC. View ticket progress, communicate with support teams, and monitor issue resolution from a single centralized workspace.
+          </div>
+        </div>
+      </SectionCard>
     </div>
   );
 }
