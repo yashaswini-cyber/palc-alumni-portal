@@ -82,6 +82,19 @@ const secondaryButtonStyle = {
   transition: ".2s",
 };
 
+const getPriorityStyle = (priority: string) => {
+  switch (priority) {
+    case "Critical":
+      return { background: "#FEE2E2", color: "#B91C1C" };
+    case "High":
+      return { background: "#FEF3C7", color: "#B45309" };
+    case "Medium":
+      return { background: "#DBEAFE", color: "#1D4ED8" };
+    default:
+      return { background: "#DCFCE7", color: "#15803D" };
+  }
+};
+
 export default function HelpdeskPage() {
   const [showCreateTicket, setShowCreateTicket] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -280,16 +293,31 @@ const reopenTicket = (ticketId: string) => {
                 </tr>
               ) : (
                 filteredTickets.map((ticket) => (
-                  <tr key={ticket.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
-                    <td style={{ padding: "12px", fontWeight: 700 }}>{ticket.id}</td>
-                    <td style={{ padding: "12px" }}>
-                      {ticket.subject}
+                  <tr key={ticket.id}
+                    style={{ borderBottom: `1px solid ${COLORS.border}`, transition: "background .2s ease" }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#F8FAFC";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent";
+                    }}
+                  >
+                    <td style={{ padding: "16px 12px" }}><span style={{ color: "#2563EB", fontWeight: 700 }}>{ticket.id} </span></td>
+                    <td style={{ padding: "16px 12px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}><span style={{ fontWeight: 600 }}>{ticket.subject} </span>
+                        <span style={{ fontSize: "12px", color: COLORS.textSecondary }}>
+                          {ticket.category}
+                        </span>
+                      </div>
                     </td>
                     <td style={{ padding: "12px" }}>
                       {ticket.category}
                     </td>
-                    <td style={{ padding: "12px" }}>
-                      {ticket.priority}
+                    <td style={{ padding: "16px 12px" }}>
+                      <span
+                        style={{display: "inline-flex",alignItems: "center",justifyContent: "center",minWidth: "82px",padding: "6px 12px",borderRadius: "999px",fontSize: "12px",fontWeight: 700,
+                           ...getPriorityStyle(ticket.priority),}}>{ticket.priority}
+                      </span>
                     </td>
                     <td style={{ padding: "12px" }}>
                       <StatusBadge status={ticket.status} />
