@@ -51,6 +51,48 @@ const getPriorityStyle = (priority: string) => {
   }
 };
 
+const relatedArticles: Record<string, string[]> = {
+  "IT Support": [
+    "VPN Connection Issues",
+    "Reset Corporate Password",
+    "Configure Outlook",
+  ],
+  HR: [
+    "Leave Policy",
+    "Employee Benefits",
+    "HR Portal Guide",
+  ],
+  Payroll: [
+    "Payslip Download",
+    "Tax Declaration",
+    "Salary Credit FAQ",
+  ],
+  Benefits: [
+    "Insurance Enrollment",
+    "Medical Claims",
+    "Wellness Benefits",
+  ],
+  Documents: [
+    "Download Experience Certificate",
+    "Request Form 16",
+    "Document Access Guide",
+  ],
+  "Employment Verification": [
+    "Employment Verification Process",
+    "Generate Verification Letter",
+    "Verification FAQs",
+  ],
+  Accounts: [
+    "Expense Reimbursement",
+    "Travel Claims",
+    "Finance Help",
+  ],
+  Other: [
+    "General Support",
+    "Helpdesk Guidelines",
+    "Contact Support",
+  ],
+};
 export default function HelpdeskPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Statuses");
@@ -221,9 +263,38 @@ export default function HelpdeskPage() {
                 )}
                 <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" onChange={(e) => handleTicketChange("attachment", e.target.files?.length ? e.target.files[0] : null)} />
               </label>
+              <div style={{marginTop: "12px",display: "flex",justifyContent: "space-between",flexWrap: "wrap",gap: "10px",color: COLORS.textSecondary,fontSize: "13px",}}>
+              <span>
+                <strong>Supported:</strong> PDF, PNG, JPG, DOC, DOCX
+              </span>
+
+              <span>
+                <strong>Maximum Size:</strong> 10 MB
+              </span>
+            </div>
             </div>
 
             <div style={{ marginTop: "30px", background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "20px" }}>
+              <div style={{marginTop: "30px",border: `1px solid ${COLORS.border}`,borderRadius: "14px",padding: "22px",background: "#FFFFFF",}}>
+              <h4 style={{margin: "0 0 14px",color: COLORS.text,fontSize: "17px",}}>
+                Related Help Articles
+              </h4>
+
+              <p style={{margin: "0 0 18px",color: COLORS.textSecondary,lineHeight: 1.6,}}>
+                These articles may help resolve your issue before submitting a support request.
+              </p>
+
+              <div style={{display: "flex",flexDirection: "column",gap: "10px",}}>
+                {relatedArticles[ticketForm.category].map((article) => (
+                  <div key={article}
+                    style={{ display: "flex",alignItems: "center",gap: "10px",padding: "12px 14px",borderRadius: "10px",background: "#F8FAFC",border: `1px solid ${COLORS.border}`,cursor: "pointer",transition: ".2s",}}>
+                    <span style={{ color: "#2563EB" }}>📄</span>
+
+                    <span>{article}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
               <h4 style={{ margin: "0 0 12px", color: COLORS.text, fontSize: "17px" }}>Support Guidelines</h4>
               <ul style={{ margin: 0, paddingLeft: "20px", color: COLORS.textSecondary, lineHeight: 1.9 }}>
                 <li>Our support team aims to provide an initial response within <strong>24 business hours.</strong></li>
