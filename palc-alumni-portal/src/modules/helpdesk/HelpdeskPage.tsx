@@ -101,8 +101,8 @@ export default function HelpdeskPage() {
 const [statusFilter, setStatusFilter] = useState("All Statuses");
 const [categoryFilter, setCategoryFilter] = useState("All Categories");
 const [priorityFilter, setPriorityFilter] = useState("All Priorities");
-const [sortBy, setSortBy] = useState("Latest");
-  const ticketsSectionRef = useRef<HTMLDivElement>(null);
+
+const ticketsSectionRef = useRef<HTMLDivElement>(null);
 
   const openCreateTicket = () => setShowCreateTicket(true);
   const openTicketDetails = (ticket: typeof tickets[number]) => {
@@ -116,8 +116,7 @@ const reopenTicket = (ticketId: string) => {
   const scrollToTickets = () => {
     ticketsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-  const filteredTickets = tickets
-      .filter((ticket) => {
+  const filteredTickets = tickets.filter((ticket) => {
         const matchesSearch =
           ticket.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
           ticket.subject.toLowerCase().includes(searchQuery.toLowerCase());
@@ -137,28 +136,6 @@ const reopenTicket = (ticketId: string) => {
           matchesCategory &&
           matchesPriority
         );
-      })
-      .sort((a, b) => {
-        switch (sortBy) {
-          case "Oldest":
-            return new Date(a.createdOn).getTime() - new Date(b.createdOn).getTime();
-          case "Priority": {
-            const order = {
-              Critical: 4,
-              High: 3,
-              Medium: 2,
-              Low: 1,
-            };
-            return (
-              (order[b.priority as keyof typeof order] || 0) -
-              (order[a.priority as keyof typeof order] || 0)
-            );
-          }
-          case "Status":
-            return a.status.localeCompare(b.status);
-          default:
-            return new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime();
-        }
       });
 
   return (
@@ -254,19 +231,6 @@ const reopenTicket = (ticketId: string) => {
               <option value="Benefits">Benefits</option>
               <option value="Accounts">Accounts</option>
             </select>
-
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              style={{ padding: "12px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, minWidth: "170px", background: COLORS.surface, color: COLORS.text }}
-            > <option value="Latest">Latest</option>
-              <option value="Oldest">Oldest</option>
-              <option value="Priority">Priority</option>
-              <option value="Status">Status</option>
-            </select>
-            <PrimaryButton onClick={openCreateTicket}>
-              Create Ticket
-            </PrimaryButton>
           </div>
         </div>
 
