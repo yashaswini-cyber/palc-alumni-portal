@@ -9,8 +9,21 @@ import { COLORS } from "../../shared/theme/colors";
 import { getHelpdeskTickets, saveHelpdeskTickets } from "../../shared/utils/storage";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import DetailsModal from "../../shared/components/DetailsModal";
 
-const tickets = [
+type HelpdeskTicket = {
+  id: string;
+  subject: string;
+  category: string;
+  priority: string;
+  status: string;
+  createdOn: string;
+  updatedOn: string;
+  description?: string;
+  attachment?: File | null;
+  requiredBy?: Date | null;
+};
+const tickets: HelpdeskTicket[] = [
   { id: "TKT001", subject: "Unable to access VPN", category: "IT", priority: "High", status: "Open", createdOn: "08 Jul 2026", updatedOn: "08 Jul 2026" },
   { id: "TKT002", subject: "Payslip not available", category: "Payroll", priority: "Medium", status: "Resolved", createdOn: "05 Jul 2026", updatedOn: "07 Jul 2026" },
   { id: "TKT003", subject: "Email password reset", category: "IT", priority: "Low", status: "In Progress", createdOn: "04 Jul 2026", updatedOn: "06 Jul 2026" }
@@ -93,6 +106,7 @@ const relatedArticles: Record<string, string[]> = {
     "Contact Support",
   ],
 };
+
 export default function HelpdeskPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Statuses");
@@ -102,7 +116,8 @@ export default function HelpdeskPage() {
   const [showAllTickets, setShowAllTickets] = useState(false);
   const [requiredBy, setRequiredBy] = useState<Date | null>(null);
   const [successMessage, setSuccessMessage] = useState("");
-
+  const [selectedTicket, setSelectedTicket] = useState<HelpdeskTicket | null>(null);
+  const [showTicketDetails, setShowTicketDetails] = useState(false);
   const [ticketForm, setTicketForm] = useState({ category: "IT Support", priority: "Medium", subject: "", description: "", attachment: null as File | null });
 
   const handleTicketChange = (field: keyof typeof ticketForm, value: string | File | null) => {
@@ -118,38 +133,52 @@ export default function HelpdeskPage() {
   const ticketsSectionRef = useRef<HTMLDivElement>(null);
 
   const openCreateTicket = () => {
-  document.getElementById("create-ticket")?.scrollIntoView({ behavior: "smooth",block: "start", });};
-  
-  const cancelCreateTicket = () => {resetTicketForm();};
-  const handleSubmitTicket = () => {
-  if (!ticketForm.subject.trim() || !ticketForm.description.trim() || !requiredBy) {
-    alert("Please complete all mandatory fields.");
-    return;
-  }
-
-  const ticketId = `HD-${Date.now()}`;
-  const newTicket = {
-    id: ticketId,
-    subject: ticketForm.subject,
-    category: ticketForm.category,
-    priority: ticketForm.priority,
-    status: "Open",
-    createdOn: new Date().toLocaleDateString(),
-    updatedOn: "Just now",
+    document.getElementById("create-ticket")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-  setTicketList((prev) => [newTicket, ...prev]);
-  resetTicketForm();
-  setSuccessMessage(`✓ Ticket ${ticketId} has been created successfully.`);
-  requestAnimationFrame(() =>
-    ticketsSectionRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    })
-  );
-  setTimeout(() => setSuccessMessage(""), 5000);
-};
+  
+  const cancelCreateTicket = () => { resetTicketForm(); };
+  
+  const handleSubmitTicket = () => {
+    if (!ticketForm.subject.trim() || !ticketForm.description.trim() || !requiredBy) {
+      alert("Please complete all mandatory fields.");
+      return;
+    }
 
-  const openTicketDetails = (ticket: typeof tickets[number]) => { console.log(ticket); };
+    const ticketId = `HD-${Date.now()}`;
+    const newTicket = {
+      id: ticketId,
+      subject: ticketForm.subject,
+      category: ticketForm.category,
+      priority: ticketForm.priority,
+      description: ticketForm.description,
+      attachment: ticketForm.attachment,
+      requiredBy,
+      status: "Open",
+      createdOn: new Date().toLocaleDateString(),
+      updatedOn: "Just now",
+    };
+    setTicketList((prev) => [newTicket, ...prev]);
+    resetTicketForm();
+    setSuccessMessage(`✓ Ticket ${ticketId} has been created successfully.`);
+    requestAnimationFrame(() =>
+      ticketsSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    );
+    setTimeout(() => setSuccessMessage(""), 5000);
+  };
+
+  const openTicketDetails = (ticket: HelpdeskTicket) => {
+    setSelectedTicket(ticket);
+    setShowTicketDetails(true);
+  };
+
+  const closeTicketDetails = () => {
+    setShowTicketDetails(false);
+    setSelectedTicket(null);
+  };
+
   const reopenTicket = (ticketId: string) => { console.log(ticketId); };
   const scrollToTickets = () => { ticketsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); };
 
@@ -205,65 +234,64 @@ export default function HelpdeskPage() {
       </div>
 
       <div id="create-ticket">
-        <div id="create-ticket">
-          <SectionCard title="Create a New Support Ticket" subtitle="Provide the information below to help our support team understand and resolve your issue efficiently.">
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "24px" }}>
-              <div>
-                <label style={labelStyle}>Category *</label>
-                <select value={ticketForm.category} onChange={(e) => handleTicketChange("category", e.target.value)} style={inputStyle}>
-                  <option>IT Support</option>
-                  <option>HR</option>
-                  <option>Payroll</option>
-                  <option>Benefits</option>
-                  <option>Documents</option>
-                  <option>Employment Verification</option>
-                  <option>Accounts</option>
-                  <option>Other</option>
-                </select>
-              </div>
+        <SectionCard title="Create a New Support Ticket" subtitle="Provide the information below to help our support team understand and resolve your issue efficiently.">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "24px" }}>
+            <div>
+              <label style={labelStyle}>Category *</label>
+              <select value={ticketForm.category} onChange={(e) => handleTicketChange("category", e.target.value)} style={inputStyle}>
+                <option>IT Support</option>
+                <option>HR</option>
+                <option>Payroll</option>
+                <option>Benefits</option>
+                <option>Documents</option>
+                <option>Employment Verification</option>
+                <option>Accounts</option>
+                <option>Other</option>
+              </select>
+            </div>
 
-              <div>
-                <label style={labelStyle}>Priority *</label>
-                <select value={ticketForm.priority} onChange={(e) => handleTicketChange("priority", e.target.value)} style={inputStyle}>
-                  <option>Low</option>
-                  <option>Medium</option>
-                  <option>High</option>
-                  <option>Critical</option>
-                </select>
-              </div>
+            <div>
+              <label style={labelStyle}>Priority *</label>
+              <select value={ticketForm.priority} onChange={(e) => handleTicketChange("priority", e.target.value)} style={inputStyle}>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Critical</option>
+              </select>
+            </div>
 
-              <div>
-                <label style={labelStyle}>Subject *</label>
-                <input type="text" placeholder="Briefly describe your issue" value={ticketForm.subject} onChange={(e) => handleTicketChange("subject", e.target.value)} style={inputStyle} />
-              </div>
+            <div>
+              <label style={labelStyle}>Subject *</label>
+              <input type="text" placeholder="Briefly describe your issue" value={ticketForm.subject} onChange={(e) => handleTicketChange("subject", e.target.value)} style={inputStyle} />
+            </div>
 
-              <div>
-                <label style={labelStyle}>Required By *</label>
-                <div style={{ width: "100%", marginTop: "8px" }}>
-                  <DatePicker selected={requiredBy} onChange={(date: Date | null) => setRequiredBy(date)} minDate={new Date()} dateFormat="d MMMM yyyy" customInput={<CustomDateInput />} wrapperClassName="verification-datepicker" />
+            <div>
+              <label style={labelStyle}>Required By *</label>
+              <div style={{ width: "100%", marginTop: "8px" }}>
+                <DatePicker selected={requiredBy} onChange={(date: Date | null) => setRequiredBy(date)} minDate={new Date()} dateFormat="d MMMM yyyy" customInput={<CustomDateInput />} wrapperClassName="verification-datepicker" />
+              </div>
+            </div>
+          </div>
+
+          <div style={sectionGap}>
+            <label style={labelStyle}>Issue Description *</label>
+            <textarea rows={5} placeholder="Describe the issue in detail. Include any error messages, steps you've already tried, or additional information that may help the support team resolve your request faster." value={ticketForm.description} onChange={(e) => handleTicketChange("description", e.target.value)} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit", fontSize: "14px" }} />
+          </div>
+
+          <div style={sectionGap}>
+            <label style={{ ...labelStyle, marginBottom: "10px" }}>Supporting Attachment (Optional)</label>
+            <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "10px", minHeight: "160px", border: `2px dashed ${COLORS.border}`, borderRadius: "14px", background: "#F8FAFC", cursor: "pointer", transition: ".2s", textAlign: "center", padding: "28px" }}>
+              <div style={{ fontSize: "36px" }}>📎</div>
+              <div style={{ fontWeight: 700, color: COLORS.text }}>Click to upload supporting files</div>
+              <div style={{ color: COLORS.textSecondary, fontSize: "14px", lineHeight: 1.6 }}>Screenshots, PDFs or documents help us resolve your issue faster.</div>
+              {ticketForm.attachment && (
+                <div style={{ marginTop: "8px", padding: "8px 14px", borderRadius: "999px", background: "#DBEAFE", color: "#1D4ED8", fontWeight: 600, fontSize: "13px" }}>
+                  {ticketForm.attachment.name}
                 </div>
-              </div>
-            </div>
-
-            <div style={sectionGap}>
-              <label style={labelStyle}>Issue Description *</label>
-              <textarea rows={5} placeholder="Describe the issue in detail. Include any error messages, steps you've already tried, or additional information that may help the support team resolve your request faster." value={ticketForm.description} onChange={(e) => handleTicketChange("description", e.target.value)} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit", fontSize: "14px" }} />
-            </div>
-
-            <div style={sectionGap}>
-              <label style={{ ...labelStyle, marginBottom: "10px" }}>Supporting Attachment (Optional)</label>
-              <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "10px", minHeight: "160px", border: `2px dashed ${COLORS.border}`, borderRadius: "14px", background: "#F8FAFC", cursor: "pointer", transition: ".2s", textAlign: "center", padding: "28px" }}>
-                <div style={{ fontSize: "36px" }}>📎</div>
-                <div style={{ fontWeight: 700, color: COLORS.text }}>Click to upload supporting files</div>
-                <div style={{ color: COLORS.textSecondary, fontSize: "14px", lineHeight: 1.6 }}>Screenshots, PDFs or documents help us resolve your issue faster.</div>
-                {ticketForm.attachment && (
-                  <div style={{ marginTop: "8px", padding: "8px 14px", borderRadius: "999px", background: "#DBEAFE", color: "#1D4ED8", fontWeight: 600, fontSize: "13px" }}>
-                    {ticketForm.attachment.name}
-                  </div>
-                )}
-                <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" onChange={(e) => handleTicketChange("attachment", e.target.files?.length ? e.target.files[0] : null)} />
-              </label>
-              <div style={{marginTop: "12px",display: "flex",justifyContent: "space-between",flexWrap: "wrap",gap: "10px",color: COLORS.textSecondary,fontSize: "13px",}}>
+              )}
+              <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" onChange={(e) => handleTicketChange("attachment", e.target.files?.length ? e.target.files[0] : null)} />
+            </label>
+            <div style={{ marginTop: "12px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", color: COLORS.textSecondary, fontSize: "13px" }}>
               <span>
                 <strong>Supported:</strong> PDF, PNG, JPG, DOC, DOCX
               </span>
@@ -272,56 +300,55 @@ export default function HelpdeskPage() {
                 <strong>Maximum Size:</strong> 10 MB
               </span>
             </div>
+          </div>
+
+          <div style={{ marginTop: "30px", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "22px", background: "#FFFFFF" }}>
+            <h4 style={{ margin: "0 0 14px", color: COLORS.text, fontSize: "17px" }}>
+              Related Help Articles
+            </h4>
+
+            <p style={{ margin: "0 0 18px", color: COLORS.textSecondary, lineHeight: 1.6 }}>
+              These articles may help resolve your issue before submitting a support request.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              {relatedArticles[ticketForm.category]?.map((article) => (
+                <div key={article}
+                  style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 14px", borderRadius: "10px", background: "#F8FAFC", border: `1px solid ${COLORS.border}`, cursor: "pointer", transition: ".2s" }}>
+                  <span style={{ color: "#2563EB" }}>📄</span>
+                  <span>{article}</span>
+                </div>
+              ))}
             </div>
+          </div>
 
-            <div style={{ marginTop: "30px", background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "20px" }}>
-              <div style={{marginTop: "30px",border: `1px solid ${COLORS.border}`,borderRadius: "14px",padding: "22px",background: "#FFFFFF",}}>
-              <h4 style={{margin: "0 0 14px",color: COLORS.text,fontSize: "17px",}}>
-                Related Help Articles
-              </h4>
+          <div style={{ marginTop: "30px", background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "20px" }}>
+            <h4 style={{ margin: "0 0 12px", color: COLORS.text, fontSize: "17px" }}>Support Guidelines</h4>
+            <ul style={{ margin: 0, paddingLeft: "20px", color: COLORS.textSecondary, lineHeight: 1.9 }}>
+              <li>Our support team aims to provide an initial response within <strong>24 business hours.</strong></li>
+              <li>Attach screenshots or supporting documents whenever possible for quicker resolution.</li>
+              <li>Track your ticket status anytime under <strong>My Support Tickets.</strong></li>
+              <li>You will receive notifications whenever there is an update or response to your ticket.</li>
+            </ul>
+          </div>
 
-              <p style={{margin: "0 0 18px",color: COLORS.textSecondary,lineHeight: 1.6,}}>
-                These articles may help resolve your issue before submitting a support request.
-              </p>
-
-              <div style={{display: "flex",flexDirection: "column",gap: "10px",}}>
-                {relatedArticles[ticketForm.category].map((article) => (
-                  <div key={article}
-                    style={{ display: "flex",alignItems: "center",gap: "10px",padding: "12px 14px",borderRadius: "10px",background: "#F8FAFC",border: `1px solid ${COLORS.border}`,cursor: "pointer",transition: ".2s",}}>
-                    <span style={{ color: "#2563EB" }}>📄</span>
-
-                    <span>{article}</span>
-                  </div>
-                ))}
-              </div>
+          <div style={{ marginTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+            <span style={{ color: "#DC2626", fontSize: 13 }}>* Fields marked are mandatory.</span>
+            <div style={{ display: "flex", gap: 12 }}>
+              <button onClick={cancelCreateTicket} style={{ padding: "10px 22px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: "#FFF", color: COLORS.text, cursor: "pointer", fontWeight: 600 }}>Cancel</button>
+              <PrimaryButton onClick={handleSubmitTicket}>Submit Ticket</PrimaryButton>
             </div>
-              <h4 style={{ margin: "0 0 12px", color: COLORS.text, fontSize: "17px" }}>Support Guidelines</h4>
-              <ul style={{ margin: 0, paddingLeft: "20px", color: COLORS.textSecondary, lineHeight: 1.9 }}>
-                <li>Our support team aims to provide an initial response within <strong>24 business hours.</strong></li>
-                <li>Attach screenshots or supporting documents whenever possible for quicker resolution.</li>
-                <li>Track your ticket status anytime under <strong>My Support Tickets.</strong></li>
-                <li>You will receive notifications whenever there is an update or response to your ticket.</li>
-              </ul>
-            </div>
-
-            <div style={{ marginTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-              <span style={{ color: "#DC2626", fontSize: 13 }}>* Fields marked are mandatory.</span>
-              <div style={{ display: "flex", gap: 12 }}>
-                <button onClick={cancelCreateTicket} style={{ padding: "10px 22px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: "#FFF", color: COLORS.text, cursor: "pointer", fontWeight: 600 }}>Cancel</button>
-                <PrimaryButton onClick={handleSubmitTicket}>Submit Ticket</PrimaryButton>
-              </div>
-            </div>
-          </SectionCard>
-        </div>
+          </div>
+        </SectionCard>
       </div>
 
       <div ref={ticketsSectionRef}>
         {successMessage && (
-        <div style={{background: "#ECFDF5",border: "1px solid #BBF7D0",color: "#166534",padding: "16px 20px",borderRadius: "14px",fontWeight: 600,display: "flex",alignItems: "center",gap: "10px",boxShadow: "0 6px 18px rgba(22,101,52,.08)",}}>
-          <span style={{ fontSize: "18px" }}>✓</span>
-          {successMessage}
-        </div>
-      )}
+          <div style={{ background: "#ECFDF5", border: "1px solid #BBF7D0", color: "#166534", padding: "16px 20px", borderRadius: "14px", fontWeight: 600, display: "flex", alignItems: "center", gap: "10px", boxShadow: "0 6px 18px rgba(22,101,52,.08)" }}>
+            <span style={{ fontSize: "18px" }}>✓</span>
+            {successMessage}
+          </div>
+        )}
         <SectionCard title="My Support Tickets">
           <div style={{ marginBottom: "22px" }}>
             <div style={{ display: "flex", gap: "18px", flexWrap: "wrap", alignItems: "center" }}>
@@ -428,6 +455,64 @@ export default function HelpdeskPage() {
           </div>
         </SectionCard>
       </div>
+
+      <DetailsModal open={showTicketDetails} onClose={closeTicketDetails} title={selectedTicket?.subject || "Ticket Details"} maxWidth="900px">
+        {selectedTicket && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "18px" }}>
+              <div>
+                <div style={{ fontSize: "13px", color: COLORS.textSecondary, marginBottom: "6px" }}>Ticket ID</div>
+                <div style={{ fontSize: "28px", fontWeight: 700, color: COLORS.text }}>{selectedTicket.id}</div>
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", padding: "8px 16px", borderRadius: "999px", fontWeight: 700, fontSize: "13px", ...getPriorityStyle(selectedTicket.priority) }}>
+                  {selectedTicket.priority}
+                </span>
+                <StatusBadge status={selectedTicket.status} />
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "18px" }}>
+              <div style={{ background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "18px" }}>
+                <div style={{ fontSize: "12px", color: COLORS.textSecondary }}>Category</div>
+                <div style={{ marginTop: "6px", fontWeight: 700 }}>{selectedTicket.category}</div>
+              </div>
+
+              <div style={{ background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "18px" }}>
+                <div style={{ fontSize: "12px", color: COLORS.textSecondary }}>Created On</div>
+                <div style={{ marginTop: "6px", fontWeight: 700 }}>{selectedTicket.createdOn}</div>
+              </div>
+              <div style={{ background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "18px" }}>
+                <div style={{ fontSize: "12px", color: COLORS.textSecondary }}>Last Updated</div>
+                <div style={{ marginTop: "6px", fontWeight: 700 }}>{selectedTicket.updatedOn}</div>
+              </div>
+            </div>
+
+            <div style={{ border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "22px" }}>
+              <div style={{ fontSize: "15px", fontWeight: 700, marginBottom: "14px" }}>Issue Description</div>
+              <p style={{ margin: 0, color: COLORS.textSecondary, lineHeight: 1.8 }}>
+                {selectedTicket.description || "No detailed description was provided for this support request."}
+              </p>
+            </div>
+
+            <div style={{ border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "22px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
+              <div>
+                <div style={{ fontSize: "15px", fontWeight: 700 }}>Supporting Attachment</div>
+                <div style={{ marginTop: "6px", color: COLORS.textSecondary }}>
+                  {selectedTicket.attachment ? selectedTicket.attachment.name : "No attachment uploaded."}
+                </div>
+              </div>
+
+              {selectedTicket.attachment && (
+                <PrimaryButton>
+                  Download
+                </PrimaryButton>
+              )}
+            </div>
+          </div>
+        )}
+      </DetailsModal>
     </div>
   );
 }
