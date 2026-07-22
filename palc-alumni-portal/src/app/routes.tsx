@@ -13,9 +13,16 @@ import ProfilePage from "../modules/profile/ProfilePage";
 import NotificationsPage from "../modules/notifications/NotificationsPage";
 import AdminDashboardPage from "../modules/admin/dashboard/AdminDashboardPage";
 import AdminLayout from "../layouts/AdminLayout";
+import LoginPage from "../auth/LoginPage";
+
+
 export const router = createBrowserRouter([
   {
     path: "/",
+    element: <LoginPage />,
+  },
+  {
+    path: "/dashboard",
     element: <AlumniLayout />,
     children: [
       {
