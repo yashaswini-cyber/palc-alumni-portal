@@ -11,18 +11,20 @@ import EventsPage from "../modules/events/EventsPage";
 import HelpdeskPage from "../modules/helpdesk/HelpdeskPage";
 import ProfilePage from "../modules/profile/ProfilePage";
 import NotificationsPage from "../modules/notifications/NotificationsPage";
+
 import AdminDashboardPage from "../modules/admin/dashboard/AdminDashboardPage";
 import AdminLayout from "../layouts/AdminLayout";
-import LoginPage from "../auth/LoginPage";
 
+import LoginPage from "../auth/LoginPage";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/login",
     element: <LoginPage />,
   },
+
   {
-    path: "/dashboard",
+    path: "/",
     element: <AlumniLayout />,
     children: [
       {
@@ -61,23 +63,17 @@ export const router = createBrowserRouter([
         path: "notifications",
         element: <NotificationsPage />,
       },
-      
-   ],
+    ],
   },
-  {
-  path: "/admin",
-  element: <AdminLayout />,
-  children: [
-    {
-      index: true,
-      element: <AdminDashboardPage />,
-    },
 
-    // Future admin pages
-    // users
-    // verification
-    // analytics
-    // settings
-  ],
-}
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        index: true,
+        element: <AdminDashboardPage />,
+      },
+    ],
+  },
 ]);
