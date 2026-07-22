@@ -11,22 +11,77 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import DetailsModal from "../../shared/components/DetailsModal";
 
-type HelpdeskTicket = {
-  id: string;
-  subject: string;
-  category: string;
-  priority: string;
-  status: string;
-  createdOn: string;
-  updatedOn: string;
-  description?: string;
-  attachment?: File | null;
-  requiredBy?: Date | null;
+type ConversationMessage = {
+  id:string;
+  sender:"Employee"|"Support";
+  message:string;
+  time:string;
 };
+
+type HelpdeskTicket={
+  id:string;
+  subject:string;
+  category:string;
+  priority:string;
+  status:string;
+  createdOn:string;
+  updatedOn:string;
+  description?:string;
+  attachment?:File|null;
+  requiredBy?:Date|null;
+  conversation?:ConversationMessage[];
+};
+
 const tickets: HelpdeskTicket[] = [
-  { id: "TKT001", subject: "Unable to access VPN", category: "IT", priority: "High", status: "Open", createdOn: "08 Jul 2026", updatedOn: "08 Jul 2026" },
-  { id: "TKT002", subject: "Payslip not available", category: "Payroll", priority: "Medium", status: "Resolved", createdOn: "05 Jul 2026", updatedOn: "07 Jul 2026" },
-  { id: "TKT003", subject: "Email password reset", category: "IT", priority: "Low", status: "In Progress", createdOn: "04 Jul 2026", updatedOn: "06 Jul 2026" }
+  {
+    id: "TKT001",
+    subject: "Unable to access VPN",
+    category: "IT",
+    priority: "High",
+    status: "Open",
+    createdOn: "08 Jul 2026",
+    updatedOn: "08 Jul 2026",
+    description: "Unable to establish VPN connection after changing my password.",
+    requiredBy: null,
+    attachment: null,
+    conversation: [
+      { id: "1", sender: "Employee", message: "Unable to establish VPN connection after changing my password.", time: "08 Jul 2026 • 09:15 AM" },
+      { id: "2", sender: "Support", message: "We've received your request. Our IT team is currently investigating the issue.", time: "08 Jul 2026 • 09:40 AM" }
+    ]
+  },
+  {
+    id: "TKT002",
+    subject: "Payslip not available",
+    category: "Payroll",
+    priority: "Medium",
+    status: "Resolved",
+    createdOn: "05 Jul 2026",
+    updatedOn: "07 Jul 2026",
+    description: "June payslip is missing from the employee portal.",
+    requiredBy: null,
+    attachment: null,
+    conversation: [
+      { id: "1", sender: "Employee", message: "My June payslip is not visible in the portal.", time: "05 Jul 2026 • 11:20 AM" },
+      { id: "2", sender: "Support", message: "The payroll system has been refreshed. Please check again.", time: "05 Jul 2026 • 01:05 PM" },
+      { id: "3", sender: "Employee", message: "I can see it now. Thank you.", time: "05 Jul 2026 • 01:18 PM" }
+    ]
+  },
+  {
+    id: "TKT003",
+    subject: "Email password reset",
+    category: "IT",
+    priority: "Low",
+    status: "In Progress",
+    createdOn: "04 Jul 2026",
+    updatedOn: "06 Jul 2026",
+    description: "Need to reset my corporate email password.",
+    requiredBy: null,
+    attachment: null,
+    conversation: [
+      { id: "1", sender: "Employee", message: "I forgot my Outlook password.", time: "04 Jul 2026 • 03:40 PM" },
+      { id: "2", sender: "Support", message: "Your password reset request has been assigned to the IT team.", time: "04 Jul 2026 • 04:05 PM" }
+    ]
+  }
 ];
 
 const helpdeskStats = {
@@ -153,17 +208,23 @@ export default function HelpdeskPage() {
     }
 
     const ticketId = `HD-${Date.now()}`;
-    const newTicket = {
-      id: ticketId,
-      subject: ticketForm.subject,
-      category: ticketForm.category,
-      priority: ticketForm.priority,
-      description: ticketForm.description,
-      attachment: ticketForm.attachment,
-      requiredBy,
-      status: "Open",
-      createdOn: new Date().toLocaleDateString(),
-      updatedOn: "Just now",
+    const newTicket: HelpdeskTicket={
+    id:ticketId,
+    subject:ticketForm.subject,
+    category:ticketForm.category,
+    priority:ticketForm.priority,
+    description:ticketForm.description,
+    attachment:ticketForm.attachment,
+    requiredBy,
+    status:"Open",
+    createdOn:new Date().toLocaleDateString(),
+    updatedOn:"Just now",
+    conversation:[{
+    id:crypto.randomUUID(),
+    sender:"Employee",
+    message:ticketForm.description,
+    time:new Date().toLocaleString()
+    }]
     };
     setTicketList((prev) => [newTicket, ...prev]);
     resetTicketForm();
