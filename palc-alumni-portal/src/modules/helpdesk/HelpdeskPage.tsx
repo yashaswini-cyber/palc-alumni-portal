@@ -566,7 +566,7 @@ export default function HelpdeskPage() {
           </div>
 
           <div style={{marginBottom:"28px"}}>
-          <div style={{fontSize:"16px",fontWeight:700,color:COLORS.text,marginBottom:"10px"}}> Conversation</div>
+          <div style={{fontSize:"16px",fontWeight:700,color:COLORS.textSecondary,marginBottom:"10px"}}> Conversation</div>
           <div style={{display:"flex",flexDirection:"column",gap:"14px",maxHeight:"220px",overflowY:"auto"}}>
             {selectedTicket.conversation?.map(msg=>(
               <div key={msg.id} style={{display:"flex",justifyContent:msg.sender==="Employee"?"flex-end":"flex-start"}}>
