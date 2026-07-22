@@ -107,6 +107,14 @@ const relatedArticles: Record<string, string[]> = {
   ],
 };
 
+type DetailItemProps = { label: string; value: React.ReactNode };
+const DetailItem = ({ label, value }: DetailItemProps) => (
+  <div>
+    <div style={{ fontSize: "13px", fontWeight: 600, color: COLORS.textSecondary, marginBottom: "8px" }}>{label}</div>
+    <div style={{ fontSize: "16px", fontWeight: 600, color: COLORS.text }}>{value}</div>
+  </div>
+);
+
 export default function HelpdeskPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Statuses");
@@ -455,64 +463,42 @@ export default function HelpdeskPage() {
           </div>
         </SectionCard>
       </div>
+    <DetailsModal open={showTicketDetails} title="Support Ticket Details" onClose={closeTicketDetails}>
+      {selectedTicket && (
+        <><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: "20px", marginBottom: "28px" }}>
+            <DetailItem label="Ticket ID" value={selectedTicket.id} />
+            <DetailItem label="Subject" value={selectedTicket.subject} />
+            <DetailItem label="Category" value={selectedTicket.category} />
+            <DetailItem label="Priority" value={<span style={{ display: "inline-flex", padding: "6px 12px", borderRadius: "999px", fontSize: "12px", fontWeight: 700, ...getPriorityStyle(selectedTicket.priority) }}>{selectedTicket.priority}</span>} />
+            <DetailItem label="Status" value={<StatusBadge status={selectedTicket.status} />} />
+            <DetailItem label="Created On" value={selectedTicket.createdOn} />
+            <DetailItem label="Last Updated" value={selectedTicket.updatedOn} />
+            <DetailItem label="Required By" value={selectedTicket.requiredBy ? new Date(selectedTicket.requiredBy).toLocaleDateString() : "-"} />
+          </div>
 
-      <DetailsModal open={showTicketDetails} onClose={closeTicketDetails} title={selectedTicket?.subject || "Ticket Details"} maxWidth="900px">
-        {selectedTicket && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "18px" }}>
-              <div>
-                <div style={{ fontSize: "13px", color: COLORS.textSecondary, marginBottom: "6px" }}>Ticket ID</div>
-                <div style={{ fontSize: "28px", fontWeight: 700, color: COLORS.text }}>{selectedTicket.id}</div>
-              </div>
-
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", padding: "8px 16px", borderRadius: "999px", fontWeight: 700, fontSize: "13px", ...getPriorityStyle(selectedTicket.priority) }}>
-                  {selectedTicket.priority}
-                </span>
-                <StatusBadge status={selectedTicket.status} />
-              </div>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "18px" }}>
-              <div style={{ background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "18px" }}>
-                <div style={{ fontSize: "12px", color: COLORS.textSecondary }}>Category</div>
-                <div style={{ marginTop: "6px", fontWeight: 700 }}>{selectedTicket.category}</div>
-              </div>
-
-              <div style={{ background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "18px" }}>
-                <div style={{ fontSize: "12px", color: COLORS.textSecondary }}>Created On</div>
-                <div style={{ marginTop: "6px", fontWeight: 700 }}>{selectedTicket.createdOn}</div>
-              </div>
-              <div style={{ background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "18px" }}>
-                <div style={{ fontSize: "12px", color: COLORS.textSecondary }}>Last Updated</div>
-                <div style={{ marginTop: "6px", fontWeight: 700 }}>{selectedTicket.updatedOn}</div>
-              </div>
-            </div>
-
-            <div style={{ border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "22px" }}>
-              <div style={{ fontSize: "15px", fontWeight: 700, marginBottom: "14px" }}>Issue Description</div>
-              <p style={{ margin: 0, color: COLORS.textSecondary, lineHeight: 1.8 }}>
-                {selectedTicket.description || "No detailed description was provided for this support request."}
-              </p>
-            </div>
-
-            <div style={{ border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "22px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
-              <div>
-                <div style={{ fontSize: "15px", fontWeight: 700 }}>Supporting Attachment</div>
-                <div style={{ marginTop: "6px", color: COLORS.textSecondary }}>
-                  {selectedTicket.attachment ? selectedTicket.attachment.name : "No attachment uploaded."}
-                </div>
-              </div>
-
-              {selectedTicket.attachment && (
-                <PrimaryButton>
-                  Download
-                </PrimaryButton>
-              )}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "22px" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: COLORS.textSecondary }}>Issue Description</div>
+            <div style={{ padding: "16px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface, color: COLORS.text, lineHeight: 1.7 }}>
+              {selectedTicket.description || "No description available."}
             </div>
           </div>
-        )}
-      </DetailsModal>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "28px" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: COLORS.textSecondary }}>Supporting Attachment</div>
+            <div style={{ padding: "16px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface, color: COLORS.text }}>
+              {selectedTicket.attachment ? selectedTicket.attachment.name : "No attachment uploaded."}
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button onClick={closeTicketDetails} style={{ padding: "12px 24px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, fontWeight: 600, cursor: "pointer" }}>
+              Close
+            </button>
+          </div>
+        </>
+      )}
+    </DetailsModal>
+      
     </div>
   );
 }
