@@ -58,7 +58,7 @@ export default function LoginPage() {
             <Link to="/forgot-password" style={{ fontSize: "14px", color: "#2563EB", textDecoration: "none", fontWeight: 600 }}>Forgot Password?</Link>
           </div>
 
-          <PrimaryButton title="Login" onClick={handleLogin} style={{ width: "100%", height: "52px", borderRadius: "12px", marginBottom: "24px" }} />
+          <PrimaryButton onClick={handleLogin} fullWidth style={{height:"52px",borderRadius:"12px",marginBottom:"24px"}}>Login</PrimaryButton>
 
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
             <span style={{ fontSize: "14px", color: COLORS.textSecondary }}>New Alumni?</span>
