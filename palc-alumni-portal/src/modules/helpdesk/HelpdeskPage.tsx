@@ -207,7 +207,6 @@ export default function HelpdeskPage() {
       alert("Please complete all mandatory fields.");
       return;
     }
-
     const ticketId = `HD-${Date.now()}`;
     const newTicket: HelpdeskTicket={
     id:ticketId,
@@ -238,7 +237,6 @@ export default function HelpdeskPage() {
     );
     setTimeout(() => setSuccessMessage(""), 5000);
   };
-
   const openTicketDetails = (ticket: HelpdeskTicket) => {
     setSelectedTicket(ticket);
     setShowTicketDetails(true);
@@ -249,17 +247,51 @@ export default function HelpdeskPage() {
     setSelectedTicket(null);
   };
   const sendReply=()=>{
-    if(!selectedTicket||!replyMessage.trim()) return;
-      const reply={id:crypto.randomUUID(),sender:"Employee" as const,message:replyMessage.trim(),time:new Date().toLocaleString()};
-      const updated=ticketList.map(t=>
-        t.id===selectedTicket.id
-          ? {...t,conversation:[...(t.conversation||[]),reply],updatedOn:"Just now"}
-          : t
-      );
-      setTicketList(updated);
-      setSelectedTicket(updated.find(t=>t.id===selectedTicket.id) || null);
-      setReplyMessage("");
+  if(!selectedTicket||!replyMessage.trim()) return;
+  const employeeReply={
+    id:crypto.randomUUID(),
+    sender:"Employee" as const,
+    message:replyMessage.trim(),
+    time:new Date().toLocaleString()
+  };
+  const supportReplies:Record<string,string>={
+    "IT Support":"Thank you for your update. Our IT team is reviewing the additional information and will keep you informed of the progress.",
+    "HR":"Thank you for reaching out. Your request has been shared with our HR team for review.",
+    "Payroll":"We've received your update. Our Payroll team is verifying the details and will respond shortly.",
+    "Benefits":"Thank you for the additional information. Our Benefits team is currently reviewing your request.",
+    "Documents":"Your request has been forwarded to the Documents team. We'll notify you once an update is available.",
+    "Employment Verification":"We've received your update. Our verification team is processing your request.",
+    "Accounts":"Our Finance team has received your message and will review it shortly.",
+    "Other":"Thank you for your update. Our support team is reviewing your request and will get back to you soon."
+  };
+  const updateConversation=(messages:ConversationMessage[])=>{
+    const updated=ticketList.map(t=>
+      t.id===selectedTicket.id
+        ? {...t,conversation:messages,updatedOn:"Just now"}
+        : t
+    );
+    setTicketList(updated);
+    setSelectedTicket(updated.find(t=>t.id===selectedTicket.id) || null);
+  };
+  const employeeConversation=[
+    ...(selectedTicket.conversation||[]),
+    employeeReply
+  ];
+  updateConversation(employeeConversation);
+  setReplyMessage("");
+  setTimeout(()=>{
+    const supportReply={
+      id:crypto.randomUUID(),
+      sender:"Support" as const,
+      message:supportReplies[selectedTicket.category] || supportReplies.Other,
+      time:new Date().toLocaleString()
     };
+    updateConversation([
+      ...employeeConversation,
+      supportReply
+    ]);
+  },2500);
+};
 
   const reopenTicket = (ticketId: string) => { console.log(ticketId); };
   const scrollToTickets = () => { ticketsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); };
