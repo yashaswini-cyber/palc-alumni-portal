@@ -37,10 +37,13 @@ export default function DetailsModal({
         style={{
           width: "100%",
           maxWidth: "720px",
+          maxHeight: "90vh",
           background: "#FFFFFF",
           borderRadius: "18px",
           boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
           overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <div
@@ -77,10 +80,7 @@ export default function DetailsModal({
         </div>
 
         <div
-          style={{
-            padding: "28px",
-          }}
-        >
+          style={{padding: "28px",overflowY: "auto",flex: 1,}}>
           {children}
         </div>
       </div>

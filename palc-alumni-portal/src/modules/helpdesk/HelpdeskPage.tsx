@@ -181,6 +181,7 @@ export default function HelpdeskPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [selectedTicket, setSelectedTicket] = useState<HelpdeskTicket | null>(null);
   const [showTicketDetails, setShowTicketDetails] = useState(false);
+  const [replyMessage,setReplyMessage]=useState("");
   const [ticketForm, setTicketForm] = useState({ category: "IT Support", priority: "Medium", subject: "", description: "", attachment: null as File | null });
 
   const handleTicketChange = (field: keyof typeof ticketForm, value: string | File | null) => {
@@ -242,11 +243,23 @@ export default function HelpdeskPage() {
     setSelectedTicket(ticket);
     setShowTicketDetails(true);
   };
-
-  const closeTicketDetails = () => {
+  const closeTicketDetails=()=>{
+    setReplyMessage("");
     setShowTicketDetails(false);
     setSelectedTicket(null);
   };
+  const sendReply=()=>{
+    if(!selectedTicket||!replyMessage.trim()) return;
+      const reply={id:crypto.randomUUID(),sender:"Employee" as const,message:replyMessage.trim(),time:new Date().toLocaleString()};
+      const updated=ticketList.map(t=>
+        t.id===selectedTicket.id
+          ? {...t,conversation:[...(t.conversation||[]),reply],updatedOn:"Just now"}
+          : t
+      );
+      setTicketList(updated);
+      setSelectedTicket(updated.find(t=>t.id===selectedTicket.id) || null);
+      setReplyMessage("");
+    };
 
   const reopenTicket = (ticketId: string) => { console.log(ticketId); };
   const scrollToTickets = () => { ticketsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); };
@@ -346,6 +359,7 @@ export default function HelpdeskPage() {
             <label style={labelStyle}>Issue Description *</label>
             <textarea rows={5} placeholder="Describe the issue in detail. Include any error messages, steps you've already tried, or additional information that may help the support team resolve your request faster." value={ticketForm.description} onChange={(e) => handleTicketChange("description", e.target.value)} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit", fontSize: "14px" }} />
           </div>
+          
 
           <div style={sectionGap}>
             <label style={{ ...labelStyle, marginBottom: "10px" }}>Supporting Attachment (Optional)</label>
@@ -551,11 +565,36 @@ export default function HelpdeskPage() {
             </div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button onClick={closeTicketDetails} style={{ padding: "12px 24px", borderRadius: "8px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, fontWeight: 600, cursor: "pointer" }}>
-              Close
-            </button>
+          <div style={{marginBottom:"28px"}}>
+          <div style={{fontSize:"16px",fontWeight:700,color:COLORS.text,marginBottom:"10px"}}> Conversation</div>
+          <div style={{display:"flex",flexDirection:"column",gap:"14px",maxHeight:"220px",overflowY:"auto"}}>
+            {selectedTicket.conversation?.map(msg=>(
+              <div key={msg.id} style={{display:"flex",justifyContent:msg.sender==="Employee"?"flex-end":"flex-start"}}>
+                <div style={{maxWidth:"78%",padding:"14px 16px",borderRadius:"14px",background:msg.sender==="Employee"?"#E0F2FE":"#F8FAFC",border:`1px solid ${COLORS.border}`}}>
+                  <div style={{display:"flex",justifyContent:"space-between",gap:"16px",marginBottom:"6px"}}>
+                    <span style={{fontWeight:700,fontSize:"13px"}}>{msg.sender==="Employee"?"You":"PalC Support"}</span>
+                    <span style={{fontSize:"11px",color:COLORS.textSecondary}}>{msg.time}</span>
+                  </div>
+                  <div style={{lineHeight:1.7,color:COLORS.text}}>{msg.message}</div>
+                </div>
+              </div>
+            ))}
           </div>
+        </div>
+          <div style={{display:"flex",flexDirection:"column",gap:"8px",marginTop:"16px",marginBottom:"20px"}}>
+            <div style={{fontSize:"13px",fontWeight:600,color:COLORS.textSecondary}}>Reply to Support Team</div>
+            <textarea rows={4} placeholder="Add additional information or respond to the support team..." value={replyMessage} onChange={e=>setReplyMessage(e.target.value)} style={{...inputStyle,resize:"vertical",fontFamily:"inherit"}} />
+          </div>
+
+          <div style={{display:"flex",justifyContent:"flex-end",gap:"12px"}}>
+          <button
+              onClick={closeTicketDetails}
+              style={{padding:"12px 24px",borderRadius:"8px",border:`1px solid ${COLORS.border}`,background:"#FFF",color:COLORS.text, cursor:"pointer",fontWeight:600,}}
+          >Close</button>
+          <PrimaryButton onClick={sendReply}>
+              Send Reply
+          </PrimaryButton>
+      </div>
         </>
       )}
     </DetailsModal>
