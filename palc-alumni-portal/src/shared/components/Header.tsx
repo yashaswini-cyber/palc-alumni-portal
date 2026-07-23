@@ -5,6 +5,11 @@ export default function Header() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("palcAuth");
+    setShowProfileMenu(false);
+    navigate("/login", { replace: true });
+  };
   return (
     <header
       style={{
@@ -240,15 +245,23 @@ export default function Header() {
     }}
   >
     <div
-      style={{
-        padding: "10px 18px",
-        fontWeight: 700,
-        fontSize: "13px",
-        color: "#0F172A",
-      }}
-    >
-      My Profile
-    </div>
+  onClick={() => {
+    setShowProfileMenu(false);
+    navigate("/dashboard/profile");
+  }}
+  style={{
+    padding: "10px 18px",
+    fontWeight: 700,
+    fontSize: "13px",
+    color: "#0F172A",
+    cursor: "pointer",
+    transition: "background 140ms ease",
+  }}
+  onMouseEnter={(e) => { e.currentTarget.style.background = "#F8FAFC"; }}
+  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+>
+  My Profile
+</div>
 
     <div
       style={{
@@ -318,20 +331,22 @@ export default function Header() {
         margin: "8px 0",
       }}
     />
-
     <div
-      style={{
-        padding: "10px 18px",
-        color: "#EF4444",
-        fontSize: "13px",
-        cursor: "pointer",
-        transition: "background 140ms ease",
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = "#FEF2F2"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-    >
-      Logout
-    </div>
+    onClick={handleLogout}
+    style={{
+      padding: "10px 18px",
+      color: "#EF4444",
+      fontSize: "13px",
+      fontWeight: 600,
+      cursor: "pointer",
+      transition: "background 140ms ease",
+    }}
+    onMouseEnter={(e) => { e.currentTarget.style.background = "#FEF2F2"; }}
+    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+  >
+    Logout
+  </div>
+    
   </div>
 )}
       </div>

@@ -3,6 +3,7 @@ import StatsCard from "../../shared/components/StatsCard";
 import SectionCard from "../../shared/components/SectionCard";
 import PrimaryButton from "../../shared/components/PrimaryButton";
 import { COLORS } from "../../shared/theme/colors";
+import { useNavigate } from "react-router-dom";
 
 const personalInfo = [
   ["Name", "John Doe"],
@@ -38,6 +39,11 @@ const ProfileRow=({label,value,status}:{label:string;value:string;status?:boolea
   );
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("palcAuth");
+    navigate("/login", { replace: true });
+  };
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
 
@@ -122,6 +128,7 @@ export default function ProfilePage() {
       </div>
     </SectionCard>
   </>
-    </div>
+
+      </div>
   );
 }
