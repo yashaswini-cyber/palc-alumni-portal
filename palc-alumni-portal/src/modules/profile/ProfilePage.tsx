@@ -88,36 +88,40 @@ export default function ProfilePage() {
         ))}
       </div>
 
-      <SectionCard title="Profile Information">
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:"24px"}}>
-        <SectionCard title="Personal Information">
-          {personalInfo.map(([label,value])=>(
-          <ProfileRow key={label} label={label} value={value}/>
-          ))}
-          </SectionCard>
+      <>
+  <SectionCard title="Personal Information">
+    {personalInfo.map(([label, value]) => (
+      <ProfileRow key={label} label={label} value={value} />
+    ))}
+  </SectionCard>
 
-          <SectionCard title="Employment Information">
-          {employmentInfo.map(([label,value])=>(
-          <ProfileRow key={label} label={label} value={value}/>
-          ))}
-          </SectionCard>
+  <SectionCard title="Employment Information">
+    {employmentInfo.map(([label, value]) => (
+      <ProfileRow key={label} label={label} value={value} />
+    ))}
+  </SectionCard>
 
-          <SectionCard title="Communication Preferences">
-          <ProfileRow label="Email Notifications" value="Enabled" status/>
-          <ProfileRow label="Event Invitations" value="Enabled" status/>
-          <ProfileRow label="Career Alerts" value="Enabled" status/>
-          <ProfileRow label="Newsletter Subscription" value="Subscribed" status/>
-          </SectionCard>
+  <SectionCard title="Communication Preferences">
+      <ProfileRow label="Email Notifications" value="Enabled" status />
+      <ProfileRow label="Event Invitations" value="Enabled" status />
+      <ProfileRow label="Career Alerts" value="Enabled" status />
+      <ProfileRow label="Newsletter Subscription" value="Subscribed" status />
 
-          <SectionCard title="Account Security">
-          <ProfileRow label="Password" value="••••••••"/>
-          <ProfileRow label="Multi-Factor Authentication" value="Enabled" status/>
-          <ProfileRow label="Portal Access" value="Valid" status/>
-          <ProfileRow label="Last Login" value="22 Jul 2026"/>
-          </SectionCard>
+      <div style={{display:"flex",justifyContent:"flex-end",marginTop:"24px"}}>
+        <PrimaryButton>Edit Preferences</PrimaryButton>
+      </div>
+  </SectionCard>
 
-          </div>
-      </SectionCard>
+    <SectionCard title="Account & Security">
+      <ProfileRow label="Password" value="••••••••" />
+      <ProfileRow label="Multi-Factor Authentication" value="Enabled" status />
+      <ProfileRow label="Portal Access" value="Active" status />
+      <ProfileRow label="Last Login" value="22 Jul 2026" />
+      <div style={{display:"flex",justifyContent:"flex-end",marginTop:"24px",gap:"12px"}}>
+        <PrimaryButton>Change Password</PrimaryButton>
+      </div>
+    </SectionCard>
+  </>
     </div>
   );
 }
