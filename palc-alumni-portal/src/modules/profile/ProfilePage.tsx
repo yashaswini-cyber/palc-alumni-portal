@@ -25,6 +25,17 @@ const stats = [
   { title: "Referrals", value: "4", subtitle: "Submitted" },
   { title: "Helpdesk", value: "2", subtitle: "Open Tickets" },
 ];
+const ProfileRow=({label,value,status}:{label:string;value:string;status?:boolean})=>(
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"13px 0",borderBottom:`1px solid ${COLORS.border}`}}>
+  <span style={{color:COLORS.textSecondary,fontSize:"14px"}}>{label}</span>
+  {status?
+  <div style={{padding:"5px 12px",borderRadius:"999px",background:"#EAF7EC",color:"#15803D",fontSize:"12px",fontWeight:700}}>
+  {value}
+  </div>
+  :
+  <strong style={{color:COLORS.text,fontWeight:600,fontSize:"14px"}}>{value}</strong>}
+  </div>
+  );
 
 export default function ProfilePage() {
   return (
@@ -39,12 +50,31 @@ export default function ProfilePage() {
           { title: "Download Profile", onClick: () => {} }
         ]}
         summaryCard={
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <div style={{ fontSize: "13px", fontWeight: 700, color: COLORS.textSecondary }}>PROFILE STATUS</div>
-            <div style={{ fontSize: "28px", fontWeight: 800, color: COLORS.text }}>Active Alumni</div>
-            <div style={{ fontSize: "14px", color: COLORS.textSecondary }}>Portal Access Valid</div>
+          <div style={{display:"flex",alignItems:"flex-start",gap:"14px"}}>
+          <div style={{width:"54px",height:"54px",borderRadius:"50%",background:"linear-gradient(135deg,#0A1B3D 0%,#123A7A 45%,#2563EB 80%)",display:"flex",alignItems:"center",justifyContent:"center",color:"#FFF",fontSize:"21px",fontWeight:800,flexShrink:0,marginTop:"2px"}}>
+          JD
           </div>
-        }
+          <div style={{display:"flex",flexDirection:"column",flex:1,gap:"6px"}}>
+          <div style={{fontSize:"24px",fontWeight:800,color:COLORS.text,lineHeight:1}}>
+          John Doe
+          </div>
+          <div style={{fontSize:"15px",fontWeight:500,color:COLORS.textSecondary}}>
+          Senior Software Engineer
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:"8px",flexWrap:"wrap",marginTop:"2px"}}>
+          <div style={{padding:"5px 12px",borderRadius:"999px",background:"#EAF7EC",color:"#15803D",fontSize:"12px",fontWeight:700}}>
+          ● Active
+          </div>
+          <div style={{padding:"5px 12px",borderRadius:"999px",background:"#EFF6FF",color:"#2563EB",fontSize:"12px",fontWeight:700}}>
+          EMP12345
+          </div>
+          </div>
+          <div style={{fontSize:"13px",color:COLORS.textSecondary}}>
+          PalC Alumni since Apr 2026
+          </div>
+          </div>
+          </div>
+          }
       />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "22px" }}>
@@ -59,61 +89,35 @@ export default function ProfilePage() {
       </div>
 
       <SectionCard title="Profile Information">
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:"24px"}}>
+        <SectionCard title="Personal Information">
+          {personalInfo.map(([label,value])=>(
+          <ProfileRow key={label} label={label} value={value}/>
+          ))}
+          </SectionCard>
 
-        <h3 style={{ margin: "0 0 18px", fontSize: "18px", fontWeight: 700, color: COLORS.text }}>
-          Personal Information
-        </h3>
+          <SectionCard title="Employment Information">
+          {employmentInfo.map(([label,value])=>(
+          <ProfileRow key={label} label={label} value={value}/>
+          ))}
+          </SectionCard>
 
-        {personalInfo.map(([label, value], index) => (
-          <div
-            key={label}
-            style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: index === personalInfo.length - 1 ? "none" : `1px solid ${COLORS.border}` }}
-          >
-            <span style={{ color: COLORS.textSecondary }}>{label}</span>
-            <strong style={{ color: COLORS.text }}>{value}</strong>
+          <SectionCard title="Communication Preferences">
+          <ProfileRow label="Email Notifications" value="Enabled" status/>
+          <ProfileRow label="Event Invitations" value="Enabled" status/>
+          <ProfileRow label="Career Alerts" value="Enabled" status/>
+          <ProfileRow label="Newsletter Subscription" value="Subscribed" status/>
+          </SectionCard>
+
+          <SectionCard title="Account Security">
+          <ProfileRow label="Password" value="••••••••"/>
+          <ProfileRow label="Multi-Factor Authentication" value="Enabled" status/>
+          <ProfileRow label="Portal Access" value="Valid" status/>
+          <ProfileRow label="Last Login" value="22 Jul 2026"/>
+          </SectionCard>
+
           </div>
-        ))}
-
-        <div style={{ height: "1px", background: COLORS.border, margin: "30px 0" }} />
-
-        <h3 style={{ margin: "0 0 18px", fontSize: "18px", fontWeight: 700, color: COLORS.text }}>
-          Employment Information
-        </h3>
-
-        {employmentInfo.map(([label, value], index) => (
-          <div
-            key={label}
-            style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: index === employmentInfo.length - 1 ? "none" : `1px solid ${COLORS.border}` }}
-          >
-            <span style={{ color: COLORS.textSecondary }}>{label}</span>
-            <strong style={{ color: COLORS.text }}>{value}</strong>
-          </div>
-        ))}
-
-        <div style={{ height: "1px", background: COLORS.border, margin: "30px 0" }} />
-
-        <h3 style={{ margin: "0 0 18px", fontSize: "18px", fontWeight: 700, color: COLORS.text }}>
-          Communication Preferences
-        </h3>
-
-        <div style={{ display: "flex", justifyContent: "space-between", padding: "12px 0", borderBottom: `1px solid ${COLORS.border}` }}>
-          <span style={{ color: COLORS.textSecondary }}>Email Notifications</span>
-          <strong style={{ color: COLORS.success }}>Enabled</strong>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "space-between", padding: "12px 0" }}>
-          <span style={{ color: COLORS.textSecondary }}>Event Notifications</span>
-          <strong style={{ color: COLORS.success }}>Enabled</strong>
-        </div>
-
-        <div style={{ marginTop: "28px", display: "flex", justifyContent: "flex-end" }}>
-          <PrimaryButton>
-            Edit Profile
-          </PrimaryButton>
-        </div>
-
       </SectionCard>
-
     </div>
   );
 }
