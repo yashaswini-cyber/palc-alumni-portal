@@ -557,7 +557,7 @@ export default function ReferralsPage() {
        <div style={{ fontSize: "17px", fontWeight: 700, color: COLORS.text, marginBottom: "22px" }}>
           Contact the Helpdesk
         </div>
-        <PrimaryButton onClick={() => window.location.href = "/helpdesk"}>
+        <PrimaryButton onClick={() => window.location.href = "/dashboard/helpdesk"}>
           Contact Helpdesk
         </PrimaryButton>
         <div style={{ marginTop: "18px", fontSize: "13px", color: COLORS.textSecondary, lineHeight: 1.6 }}>

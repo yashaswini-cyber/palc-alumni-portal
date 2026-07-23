@@ -613,7 +613,7 @@ const [alertMessage, setAlertMessage] = useState("");
         </p>
       </div>
       <PrimaryButton
-        onClick={() => window.location.href = "/helpdesk"}
+        onClick={() => window.location.href = "/dashboard/helpdesk"}
       >
         Go to Helpdesk
       </PrimaryButton>

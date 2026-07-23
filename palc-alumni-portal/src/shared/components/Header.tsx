@@ -128,7 +128,7 @@ export default function Header() {
         <button
           aria-label="Notifications"
           type="button"
-          onClick={() => navigate("/notifications")}
+          onClick={() => navigate("/dashboard/notifications")}
           style={{
             width: "42px",
             height: "42px",

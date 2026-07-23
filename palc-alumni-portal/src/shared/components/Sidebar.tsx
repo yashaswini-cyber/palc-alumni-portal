@@ -2,15 +2,15 @@ import { NavLink } from "react-router-dom";
 import Logo from "./Logo";
 
 const menuItems = [
-  { name: "Dashboard", path: "/", icon: "DB" },
-  { name: "Documents", path: "/documents", icon: "DC" },
-  { name: "Verification", path: "/verification", icon: "VR" },
-  { name: "Careers", path: "/careers", icon: "CR" },
-  { name: "Referrals", path: "/referrals", icon: "RF" },
-  { name: "Events", path: "/events", icon: "EV" },
-  { name: "Helpdesk", path: "/helpdesk", icon: "HD" },
-  { name: "Profile", path: "/profile", icon: "PR" },
-  { name: "Notifications", path: "/notifications", icon: "NT" },
+  { name: "Dashboard", path: "/dashboard", icon: "DB" },
+  { name: "Documents", path: "/dashboard/documents", icon: "DC" },
+  { name: "Verification", path: "/dashboard/verification", icon: "VR" },
+  { name: "Careers", path: "/dashboard/careers", icon: "CR" },
+  { name: "Referrals", path: "/dashboard/referrals", icon: "RF" },
+  { name: "Events", path: "/dashboard/events", icon: "EV" },
+  { name: "Helpdesk", path: "/dashboard/helpdesk", icon: "HD" },
+  { name: "Profile", path: "/dashboard/profile", icon: "PR" },
+  { name: "Notifications", path: "/dashboard/notifications", icon: "NT" },
 ];
 
 export default function Sidebar() {
@@ -63,7 +63,7 @@ export default function Sidebar() {
             <NavLink
               key={item.path}
               to={item.path}
-              end={item.path === "/"}
+              end={item.path === "/dashboard"}
               style={({ isActive }) => ({
                 textDecoration: "none",
                 color: isActive ? "#0F6CBD" : "#475569",

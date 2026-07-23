@@ -114,15 +114,15 @@ export default function DashboardPage() {
         actions={[
           {
             title: "My Documents",
-            onClick: () => navigate("/documents"),
+            onClick: () => navigate("/dashboard/documents"),
           },
           {
             title: "Employment Verification",
-            onClick: () => navigate("/verification"),
+            onClick: () => navigate("/dashboard/verification"),
           },
           {
             title: "Raise Support Ticket",
-            onClick: () => navigate("/helpdesk"),
+            onClick: () => navigate("/dashboard/helpdesk"),
           },
         ]}
         pills={[
@@ -248,7 +248,7 @@ export default function DashboardPage() {
             Keep your personal details updated to continue receiving employment verification updates,
             referral notifications, alumni events and career opportunities.
           </p>
-          <PrimaryButton style={{ marginTop: "12px", width: "100%" }} onClick={() => navigate("/profile")}>
+          <PrimaryButton style={{ marginTop: "12px", width: "100%" }} onClick={() => navigate("/dashboard/profile")}>
             Update Profile
           </PrimaryButton>
         </div>
@@ -351,7 +351,7 @@ export default function DashboardPage() {
     </div>
 
     <PrimaryButton
-      onClick={() => navigate("/verification")}
+      onClick={() => navigate("/dashboard/verification")}
     >
       Open Verification Centre
     </PrimaryButton>
@@ -465,7 +465,7 @@ export default function DashboardPage() {
       </p>
     </div>
 
-    <PrimaryButton onClick={() => navigate("/careers")}>
+    <PrimaryButton onClick={() => navigate("/dashboard/careers")}>
       View All
     </PrimaryButton>
   </div>
@@ -603,7 +603,7 @@ export default function DashboardPage() {
     </div>
 
     <PrimaryButton
-      onClick={() => navigate("/notifications")}
+      onClick={() => navigate("/dashboard/notifications")}
     >
       View All
     </PrimaryButton>
@@ -864,7 +864,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <PrimaryButton onClick={() => navigate("/events")} >
+              <PrimaryButton onClick={() => navigate("/dashboard/events")} >
                 View All Events
               </PrimaryButton>
             </div>

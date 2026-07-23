@@ -1,5 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
-
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import AlumniLayout from "../layouts/AlumniLayout";
 
 import DashboardPage from "../modules/dashboard/DashboardPage";
@@ -17,16 +16,20 @@ import AdminLayout from "../layouts/AdminLayout";
 
 import LoginPage from "../auth/LoginPage";
 
+
 export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Navigate to="/login" replace />,
+  },
   {
     path: "/login",
     element: <LoginPage />,
   },
-
   {
-    path: "/",
-    element: <AlumniLayout />,
-    children: [
+  path: "/dashboard",
+  element: <AlumniLayout />,
+  children: [
       {
         index: true,
         element: <DashboardPage />,

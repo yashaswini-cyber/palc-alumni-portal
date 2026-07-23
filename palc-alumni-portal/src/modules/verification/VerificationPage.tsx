@@ -1089,7 +1089,7 @@ const handleExportHistory = () => {
       </div>
 
       <PrimaryButton
-        onClick={() => navigate("/helpdesk")}
+        onClick={() => navigate("/dashboard/helpdesk")}
       > Contact Alumni Helpdesk
       </PrimaryButton>
     </div>

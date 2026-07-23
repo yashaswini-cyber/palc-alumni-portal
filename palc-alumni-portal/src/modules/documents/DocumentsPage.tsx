@@ -376,7 +376,7 @@ export default function DocumentsPage() {
             </div>
           </div>
 
-          <PrimaryButton onClick={() => navigate("/helpdesk")}>
+          <PrimaryButton onClick={() => navigate("/dashboard/helpdesk")}>
             Contact Alumni Helpdesk
           </PrimaryButton>
         </div>
