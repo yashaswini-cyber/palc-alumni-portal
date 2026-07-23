@@ -148,7 +148,7 @@ export default function DashboardPage() {
 
             {[
               ["Last Login", "25 Jun 2026"],
-              ["Documents", "12 Available"],
+              ["Documents", "6 Available"],
               ["Profile Completion", "90%"],
               ["Support", "24 × 7"],
             ].map(([label, value]) => (
