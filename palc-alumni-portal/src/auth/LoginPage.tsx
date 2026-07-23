@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/images/palc-logo.svg";
 import { COLORS } from "../shared/theme/colors";
@@ -8,12 +8,38 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error,setError]=useState("");
+  const [loading,setLoading]=useState(false);
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    const auth=localStorage.getItem("palcAuth");
+    if(auth){
+        const user=JSON.parse(auth);
+        if(user.isLoggedIn){
+            navigate("/dashboard");}}},[navigate]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
-  };
+    setError("");
+    if(username.trim()==="" || password.trim()===""){
+        setError("Please enter your username and password.");
+        return;
+    }
+    setLoading(true);
+    setTimeout(()=>{
+        if(username==="PALC01" && password==="123"){
+          localStorage.setItem("palcAuth",JSON.stringify({
+              isLoggedIn:true,
+              username:"PALC01"
+          }));
+          navigate("/dashboard");
+      }else{
+            setError("Invalid username or password.");
+        }
+        setLoading(false);
+    },800);
+};
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "32px", background: "linear-gradient(120deg,#0A1B3D 0%,#123A7A 45%,#2563EB 78%,#38BDF8 100%)" }}>
@@ -57,9 +83,12 @@ export default function LoginPage() {
           <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", marginBottom: "28px" }}>
             <Link to="/forgot-password" style={{ fontSize: "14px", color: "#2563EB", textDecoration: "none", fontWeight: 600 }}>Forgot Password?</Link>
           </div>
+          {error && (
+          <div style={{width:"100%",background:"#FEF2F2",border:"1px solid #FECACA",color:"#DC2626",padding:"12px 14px",borderRadius:"10px",marginBottom:"20px",fontSize:"14px",fontWeight:600}}>
+              {error}
+          </div>)}
 
-          <PrimaryButton onClick={handleLogin} fullWidth style={{height:"52px",borderRadius:"12px",marginBottom:"24px"}}>Login</PrimaryButton>
-
+          <PrimaryButton type="submit"disabled={loading} fullWidth style={{height:"52px",borderRadius:"12px",marginBottom:"24px"}}>{loading ? "Signing In..." : "Login"}</PrimaryButton>
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
             <span style={{ fontSize: "14px", color: COLORS.textSecondary }}>New Alumni?</span>
             <Link to="/register" style={{ fontWeight: 700, color: "#2563EB", textDecoration: "none" }}>Register Here</Link>
