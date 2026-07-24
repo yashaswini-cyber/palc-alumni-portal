@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthService } from "../../auth/authService";
 import Logo from "./Logo";
 
 export default function AdminHeader() {
@@ -189,6 +190,11 @@ export default function AdminHeader() {
             <hr style={{ border: "none", borderTop: "1px solid #E2E8F0", margin: 0 }} />
 
             <div
+              onClick={() => {
+                setShowMenu(false);
+                AuthService.logout();
+                navigate("/admin/login", { replace: true });
+              }}
               style={{
                 padding: "14px 18px",
                 cursor: "pointer",
@@ -202,8 +208,7 @@ export default function AdminHeader() {
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = "white";
               }}
-            >
-              Logout
+            >  Logout
             </div>
           </div>
         )}
