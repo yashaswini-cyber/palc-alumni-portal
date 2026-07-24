@@ -4,7 +4,7 @@ export const quickActions = [
     description:
       "Access employment documents including Experience Letters, Payslips and Form 16.",
     icon: "📄",
-    route: "/documents",
+    route: "/dashboard/documents",
   },
 
   {
@@ -12,7 +12,7 @@ export const quickActions = [
     description:
       "Request and track employment verification certificates.",
     icon: "✔️",
-    route: "/verification",
+    route: "/dashboard/verification",
   },
 
   {
@@ -20,7 +20,7 @@ export const quickActions = [
     description:
       "Explore internal openings and rehire opportunities.",
     icon: "💼",
-    route: "/careers",
+    route: "/dashboard/careers",
   },
 
   {
@@ -28,14 +28,14 @@ export const quickActions = [
     description:
       "Submit referrals and monitor referral progress.",
     icon: "🤝",
-    route: "/referrals",
+    route: "/dashboard/referrals",
   },
   {
     title: "Helpdesk",
     description:
       "Raise support requests and monitor ticket status.",
     icon: "🎫",
-    route: "/helpdesk",
+    route: "/dashboard/helpdesk",
   },
   {
     title: "Engagement Hub",
@@ -54,7 +54,7 @@ export const overviewStats = [
     status: "Available",
     description: "Latest: Experience Certificate",
     buttonText: "Open Repository",
-    route: "/documents",
+    route: "/dashboard/documents",
     color: "#2563EB",
   },
   {
@@ -64,7 +64,7 @@ export const overviewStats = [
     status: "Pending",
     description: "Last Approved: 15 Jun 2026",
     buttonText: "Open Verification",
-    route: "/verification",
+    route: "/dashboard/verification",
     color: "#16A34A",
   },
   {
@@ -74,7 +74,7 @@ export const overviewStats = [
     status: "5 New This Week",
     description: "Jobs matching your experience",
     buttonText: "Explore Jobs",
-    route: "/careers",
+    route: "/dashboard/careers",
     color: "#0EA5E9",
   },
   {
@@ -84,7 +84,7 @@ export const overviewStats = [
     status: "Active Referral",
     description: "Referral under review",
     buttonText: "View Referrals",
-    route: "/referrals",
+    route: "/dashboard/referrals",
     color: "#9333EA",
   },
   {
@@ -94,17 +94,7 @@ export const overviewStats = [
     status: "Open Requests",
     description: "Average SLA: 2 Days",
     buttonText: "View Tickets",
-    route: "/helpdesk",
+    route: "/dashboard/helpdesk",
     color: "#DC2626",
-  },
-  {
-    id: 6,
-    title: "Announcements",
-    value: "5",
-    status: "New",
-    description: "Latest company & alumni updates",
-    buttonText: "Read Updates",
-    route: "/engagement",
-    color: "#2563EB",
   },
 ];
