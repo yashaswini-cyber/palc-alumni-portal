@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import AlumniLayout from "../layouts/AlumniLayout";
 
 import DashboardPage from "../modules/dashboard/DashboardPage";
@@ -16,6 +16,22 @@ import AdminLayout from "../layouts/AdminLayout";
 
 import LoginPage from "../auth/LoginPage";
 
+function RequireAuth() {
+    const auth = localStorage.getItem("palcAuth");
+    if (!auth) {
+        return <Navigate to="/login" replace />;
+    }
+    try {
+        const user = JSON.parse(auth);
+
+        if (!user.isLoggedIn) {
+            return <Navigate to="/login" replace />;
+        }
+    } catch {
+        return <Navigate to="/login" replace />;
+    }
+    return <Outlet />;
+}
 
 export const router = createBrowserRouter([
   {
@@ -27,48 +43,25 @@ export const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-  path: "/dashboard",
-  element: <AlumniLayout />,
-  children: [
-      {
-        index: true,
-        element: <DashboardPage />,
-      },
-      {
-        path: "documents",
-        element: <DocumentsPage />,
-      },
-      {
-        path: "verification",
-        element: <VerificationPage />,
-      },
-      {
-        path: "careers",
-        element: <CareersPage />,
-      },
-      {
-        path: "referrals",
-        element: <ReferralsPage />,
-      },
-      {
-        path: "events",
-        element: <EventsPage />,
-      },
-      {
-        path: "helpdesk",
-        element: <HelpdeskPage />,
-      },
-      {
-        path: "profile",
-        element: <ProfilePage />,
-      },
-      {
-        path: "notifications",
-        element: <NotificationsPage />,
-      },
+    element: <RequireAuth />,
+    children: [
+        {
+            path: "/dashboard",
+            element: <AlumniLayout />,
+            children: [
+                { index: true, element: <DashboardPage /> },
+                { path: "documents", element: <DocumentsPage /> },
+                { path: "verification", element: <VerificationPage /> },
+                { path: "careers", element: <CareersPage /> },
+                { path: "referrals", element: <ReferralsPage /> },
+                { path: "events", element: <EventsPage /> },
+                { path: "helpdesk", element: <HelpdeskPage /> },
+                { path: "profile", element: <ProfilePage /> },
+                { path: "notifications", element: <NotificationsPage /> },
+            ],
+        },
     ],
-  },
-
+},
   {
     path: "/admin",
     element: <AdminLayout />,
