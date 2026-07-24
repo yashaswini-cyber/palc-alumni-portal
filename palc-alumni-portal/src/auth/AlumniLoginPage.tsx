@@ -5,7 +5,7 @@ import { COLORS } from "../shared/theme/colors";
 import PrimaryButton from "../shared/components/PrimaryButton";
 import { AuthService } from "./authService";
 
-export default function LoginPage() {
+export default function AlumniLoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -87,7 +87,7 @@ export default function LoginPage() {
           <PrimaryButton type="submit"disabled={loading} fullWidth style={{height:"52px",borderRadius:"12px",marginBottom:"24px"}}>{loading ? "Signing In..." : "Login"}</PrimaryButton>
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
             <span style={{ fontSize: "14px", color: COLORS.textSecondary }}>New Alumni?</span>
-            <Link to="/register" style={{ fontWeight: 700, color: "#2563EB", textDecoration: "none" }}>Register Here</Link>
+            <Link to="/register" style={{ fontWeight: 700, color: "#2563EB", textDecoration: "none" }}>Activate Alumni Account</Link>
           </div>
         </form>
       </div>

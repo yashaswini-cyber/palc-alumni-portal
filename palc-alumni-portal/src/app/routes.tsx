@@ -11,18 +11,27 @@ import ProfilePage from "../modules/profile/ProfilePage";
 import NotificationsPage from "../modules/notifications/NotificationsPage";
 import AdminDashboardPage from "../modules/admin/dashboard/AdminDashboardPage";
 import AdminLayout from "../layouts/AdminLayout";
-import LoginPage from "../auth/LoginPage";
+import AlumniLoginPage from "../auth/AlumniLoginPage";
+import AdminLoginPage from "../auth/AdminLoginPage";
 import { AuthService } from "../auth/authService";
 
-function RequireAuth() {
-  return AuthService.isAuthenticated() ? <Outlet /> : <Navigate to="/login" replace />;
+function RequireAlumniAuth() {
+  return AuthService.isAuthenticated()
+    ? <Outlet />
+    : <Navigate to="/login" replace />;
+}
+function RequireAdminAuth() {
+  return AuthService.isAdminAuthenticated()
+    ? <Outlet />
+    : <Navigate to="/admin/login" replace />;
 }
 
 export const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/login" replace /> },
-  { path: "/login", element: <LoginPage /> },
+  { path: "/login", element: <AlumniLoginPage /> },
+  { path: "/admin/login", element: <AdminLoginPage /> },
   {
-    element: <RequireAuth />,
+    element: <RequireAlumniAuth />,
     children: [
       {
         path: "/dashboard",
@@ -42,8 +51,18 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/admin",
-    element: <AdminLayout />,
-    children: [{ index: true, element: <AdminDashboardPage /> }],
-  },
+  element: <RequireAdminAuth />,
+  children: [
+    {
+      path: "/admin",
+      element: <AdminLayout />,
+      children: [
+        {
+          index: true,
+          element: <AdminDashboardPage />,
+        },
+      ],
+    },
+  ],
+},
 ]);

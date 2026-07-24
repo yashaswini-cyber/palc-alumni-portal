@@ -290,47 +290,7 @@ export default function Header() {
     >
       Help
     </div>
-
-    <hr
-      style={{
-        border: "none",
-        borderTop: "1px solid #E2E8F0",
-        margin: "8px 0",
-      }}
-    />
-
-    <div
-      onClick={() => navigate("/admin")}
-      style={{
-        padding: "12px 18px",
-        fontWeight: 600,
-        color: "#2563EB",
-        cursor: "pointer",
-        transition: "background 140ms ease",
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = "#F8FAFC"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-    >
-      👑 Switch Portal
-
-      <div
-        style={{
-          marginTop: "6px",
-          fontSize: "12px",
-          color: "#64748B",
-        }}
-      >
-        HR Admin Portal
-      </div>
-    </div>
-
-    <hr
-      style={{
-        border: "none",
-        borderTop: "1px solid #E2E8F0",
-        margin: "8px 0",
-      }}
-    />
+    
     <div
     onClick={handleLogout}
     style={{
