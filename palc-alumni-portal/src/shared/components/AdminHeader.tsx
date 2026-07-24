@@ -178,7 +178,7 @@ export default function AdminHeader() {
                 e.currentTarget.style.background = "white";
               }}
             >
-              Switch to Alumni Portal
+              Switch User
             </div>
 
             <hr style={{ border: "none", borderTop: "1px solid #E2E8F0", margin: 0 }} />
