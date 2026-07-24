@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthService } from "../../auth/authService";
 
 export default function Header() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("palcAuth");
-    setShowProfileMenu(false);
-    navigate("/login", { replace: true });
+    AuthService.logout();
+    navigate("/login");
   };
   return (
     <header

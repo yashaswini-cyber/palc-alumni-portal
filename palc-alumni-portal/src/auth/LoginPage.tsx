@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/images/palc-logo.svg";
 import { COLORS } from "../shared/theme/colors";
 import PrimaryButton from "../shared/components/PrimaryButton";
+import { AuthService } from "./authService";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -12,12 +13,10 @@ export default function LoginPage() {
   const [loading,setLoading]=useState(false);
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    const auth=localStorage.getItem("palcAuth");
-    if(auth){
-        const user=JSON.parse(auth);
-        if(user.isLoggedIn){
-            navigate("/dashboard");}}},[navigate]);
+  useEffect(() => {
+    if (AuthService.isAuthenticated()) {
+        navigate("/dashboard");
+    }}, [navigate]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,10 +28,7 @@ export default function LoginPage() {
     setLoading(true);
     setTimeout(()=>{
         if(username==="PALC01" && password==="123"){
-          localStorage.setItem("palcAuth",JSON.stringify({
-              isLoggedIn:true,
-              username:"PALC01"
-          }));
+          AuthService.login(username);
           navigate("/dashboard");
       }else{
             setError("Invalid username or password.");
