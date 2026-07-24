@@ -11,8 +11,7 @@ import ProfilePage from "../modules/profile/ProfilePage";
 import NotificationsPage from "../modules/notifications/NotificationsPage";
 import AdminDashboardPage from "../modules/admin/dashboard/AdminDashboardPage";
 import AdminLayout from "../layouts/AdminLayout";
-import AlumniLoginPage from "../auth/AlumniLoginPage";
-import AdminLoginPage from "../auth/AdminLoginPage";
+import AlumniLoginPage from "../auth/LoginPage";
 import { AuthService } from "../auth/authService";
 
 function RequireAlumniAuth() {
@@ -23,13 +22,12 @@ function RequireAlumniAuth() {
 function RequireAdminAuth() {
   return AuthService.isAdminAuthenticated()
     ? <Outlet />
-    : <Navigate to="/admin/login" replace />;
+    : <Navigate to="/login" replace />;
 }
 
 export const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/login" replace /> },
   { path: "/login", element: <AlumniLoginPage /> },
-  { path: "/admin/login", element: <AdminLoginPage /> },
   {
     element: <RequireAlumniAuth />,
     children: [

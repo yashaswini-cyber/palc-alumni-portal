@@ -167,16 +167,10 @@ export default function AdminHeader() {
             <div
               onClick={() => {
                 setShowMenu(false);
-                navigate("/", { replace: true });
+                AuthService.logout();
+                navigate("/login", { replace: true });
               }}
-              style={{
-                padding: "14px 18px",
-                cursor: "pointer",
-                fontSize: "13px",
-                fontWeight: 700,
-                color: "#2563EB",
-                transition: "background 140ms ease",
-              }}
+              style={{padding: "14px 18px",cursor: "pointer",fontSize: "13px",fontWeight: 700,color: "#2563EB",transition: "background 140ms ease",}}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "#F8FAFC";
               }}
@@ -184,7 +178,7 @@ export default function AdminHeader() {
                 e.currentTarget.style.background = "white";
               }}
             >
-              🎓 Switch to Alumni Portal
+              Switch to Alumni Portal
             </div>
 
             <hr style={{ border: "none", borderTop: "1px solid #E2E8F0", margin: 0 }} />
@@ -193,7 +187,7 @@ export default function AdminHeader() {
               onClick={() => {
                 setShowMenu(false);
                 AuthService.logout();
-                navigate("/admin/login", { replace: true });
+                navigate("/login", { replace: true });
               }}
               style={{
                 padding: "14px 18px",

@@ -18,12 +18,12 @@ type AuthSession = {
 
 export const AuthService = {
     /*Alumni Authentication*/
-  validateCredentials(username: string, password: string) {
-    return (
-      username === DEMO_ALUMNI.username &&
-      password === DEMO_ALUMNI.password
-    );
-  },
+ validateCredentials(username: string, password: string) {
+  return (
+    username === DEMO_ALUMNI.username &&
+    password === DEMO_ALUMNI.password
+  );
+},
 
   login(username: string) {
     const session: AuthSession = {
@@ -41,6 +41,31 @@ export const AuthService = {
       password === DEMO_ADMIN.password
     );
   },
+  authenticate(username: string, password: string) {
+  if (
+    username === DEMO_ALUMNI.username &&
+    password === DEMO_ALUMNI.password
+  ) {
+    return {
+      success: true,
+      role: "alumni" as const,
+    };
+  }
+  
+  if (
+    username === DEMO_ADMIN.username &&
+    password === DEMO_ADMIN.password
+  ) {
+    return {
+      success: true,
+      role: "admin" as const,
+    };
+  }
+  return {
+    success: false,
+    role: null,
+  };
+},
 
   loginAdmin(username: string) {
     const session: AuthSession = {
@@ -64,7 +89,7 @@ export const AuthService = {
       return null;
     }
   },
-  
+
   isAuthenticated() {
     const user = this.getCurrentUser();
 

@@ -15,8 +15,11 @@ export default function AlumniLoginPage() {
 
   useEffect(() => {
     if (AuthService.isAuthenticated()) {
-        navigate("/dashboard");
-    }}, [navigate]);
+      navigate("/dashboard", { replace: true });
+    } else if (AuthService.isAdminAuthenticated()) {
+      navigate("/admin", { replace: true });
+    }
+  }, [navigate]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,14 +29,18 @@ export default function AlumniLoginPage() {
         return;
     }
     setLoading(true);
-    setTimeout(()=>{
-        if (AuthService.validateCredentials(username, password)) {
-          AuthService.login(username);
-          navigate("/dashboard");
-      }else{
-            setError("Invalid username or password.");
-        }
-        setLoading(false);
+setTimeout(()=>{
+const result = AuthService.authenticate(username, password);
+if (!result.success) {
+  setError("Invalid username or password.");
+} else if (result.role === "alumni") {
+  AuthService.login(username);
+  navigate("/dashboard");
+} else if (result.role === "admin") {
+  AuthService.loginAdmin(username);
+  navigate("/admin");
+}
+  setLoading(false);
     },800);
 };
 
