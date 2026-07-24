@@ -27,7 +27,7 @@ export default function LoginPage() {
     }
     setLoading(true);
     setTimeout(()=>{
-        if(username==="PALC01" && password==="123"){
+        if (AuthService.validateCredentials(username, password)) {
           AuthService.login(username);
           navigate("/dashboard");
       }else{
