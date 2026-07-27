@@ -10,15 +10,7 @@ import { COLORS } from "../../shared/theme/colors";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DocumentPreviewModal from "../../shared/components/DocumentPreviewModal";
-
-const documents = [
-  { id: "DOC-001", name: "Experience Certificate", category: "Employment Record", date: "12-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-002", name: "Relieving Letter", category: "Employment Record", date: "15-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-003", name: "Form 16", category: "Tax Document", date: "30-Mar-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-004", name: "Last Payslip", category: "Payroll", date: "31-Dec-2024", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-005", name: "Full & Final (F&F) Settlement Statement", category: "Settlement", date: "18-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-006", name: "PF Transfer Documents", category: "Provident Fund", date: "20-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-];
+import { getDocuments } from "../../mockData/localStorage";
 
 const secondaryButtonStyle = { background: "#EFF6FF", color: COLORS.primary, boxShadow: "none", border: `1px solid ${COLORS.border}`, padding: "10px 18px", borderRadius: "10px", cursor: "pointer" };
 
@@ -42,6 +34,7 @@ export default function DocumentsPage() {
   const [selectedDocument, setSelectedDocument] = useState({ title: "", path: "" });
   const [recentActivity, setRecentActivity] = useState<{ name: string; action: "Downloaded" | "Previewed"; time: number; }[]>([]);
   const downloadsThisMonth = useMemo(() => recentActivity.filter(item => item.action === "Downloaded" && new Date(item.time).getMonth() === new Date().getMonth() && new Date(item.time).getFullYear() === new Date().getFullYear()).length, [recentActivity]);
+  const [documents, setDocuments] = useState(getDocuments());
 
   const filteredDocuments = useMemo(() => {
     return documents.filter((doc) => {

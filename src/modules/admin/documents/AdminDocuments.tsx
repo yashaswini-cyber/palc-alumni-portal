@@ -14,7 +14,6 @@ import HeroBanner from "../../../shared/components/HeroBanner";
 import { getDocuments, addDocument } from "../../../mockData/localStorage";
 
 const secondaryButtonStyle = { background: "#EFF6FF", color: COLORS.primary, boxShadow: "none", border: `1px solid ${COLORS.border}`, padding: "10px 18px", borderRadius: "10px", cursor: "pointer" };
-const documents = getDocuments();
 function formatRecentTime(time: number) {
   const diff = Date.now() - time;
   const minutes = Math.floor(diff / (1000 * 60));
@@ -41,7 +40,15 @@ export default function DocumentsPage() {
   const [selectedDocument, setSelectedDocument] = useState({ title: "", path: "" });
   const [recentActivity, setRecentActivity] = useState<{ name: string; action: "Uploaded" | "Updated" | "Deleted" | "Previewed"; time: number; }[]>([]);
   const uploadsToday = useMemo(() => recentActivity.filter(item => item.action === "Uploaded").length, [recentActivity]);
-
+  const [employeeId, setEmployeeId] = useState("");
+const [employeeName, setEmployeeName] = useState("");
+const [documentName, setDocumentName] = useState("Experience Certificate");
+const [category, setCategory] = useState("Employment Record");
+const [issueDate, setIssueDate] = useState("");
+const [expiryDate, setExpiryDate] = useState("");
+const [remarks, setRemarks] = useState("");
+const [selectedFile, setSelectedFile] = useState<File | null>(null);
+const [documents, setDocuments] = useState(getDocuments());
   const filteredDocuments = useMemo(() => {
     return documents.filter((doc) => {
       const search = searchText.toLowerCase();
@@ -112,6 +119,42 @@ export default function DocumentsPage() {
     link.click();
     logActivity(doc.name, "Previewed");
   };
+
+const handleUploadDocument = () => {
+  if (!employeeId || !employeeName || !selectedFile || !issueDate) {
+    alert("Please fill all required fields.");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const newDocument = {
+      id: `DOC-${Date.now()}`,
+      employeeId,
+      employeeName,
+      name: documentName,
+      category,
+      uploadedBy: "HR Administrator",
+      version: "v1.0",
+      date: issueDate,
+      format: "PDF",
+      status: "Available",
+      path: reader.result as string
+    };
+    addDocument(newDocument);
+    setDocuments(getDocuments());
+    logActivity(documentName, "Uploaded");
+    setEmployeeId("");
+    setEmployeeName("");
+    setDocumentName("Experience Certificate");
+    setCategory("Employment Record");
+    setIssueDate("");
+    setExpiryDate("");
+    setRemarks("");
+    setSelectedFile(null);
+    alert("Document uploaded successfully.");
+  };
+  reader.readAsDataURL(selectedFile);
+};
 const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
 
   return (
@@ -221,29 +264,32 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
 
             <div>
             <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Employee ID</label>
-            <input type="text" placeholder="Enter Employee ID" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            <input value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} type="text" placeholder="Enter Employee ID" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
             </div>
 
             <div>
             <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Employee Name</label>
-            <input type="text" placeholder="Enter Employee Name" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            <input value={employeeName} onChange={(e) => setEmployeeName(e.target.value)} type="text" placeholder="Enter Employee Name" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
             </div>
 
             <div>
             <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Document Type</label>
-            <select style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }}>
-                <option>Experience Certificate</option>
-                <option>Relieving Letter</option>
-                <option>Form 16</option>
-                <option>Last Payslip</option>
-                <option>Full & Final Settlement</option>
-                <option>PF Transfer Documents</option>
+            <select
+                value={documentName}
+                onChange={(e) => setDocumentName(e.target.value)}
+                style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }}>
+                    <option value="Experience Certificate">Experience Certificate</option>
+                    <option value="Relieving Letter">Relieving Letter</option>
+                    <option value="Form 16">Form 16</option>
+                    <option value="Last Payslip">Last Payslip</option>
+                    <option value="Full & Final (F&F) Settlement Statement">Full & Final (F&F) Settlement Statement</option>
+                    <option value="PF Transfer Documents">PF Transfer Documents</option>
             </select>
             </div>
 
             <div>
             <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Category</label>
-            <select style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }}>
+            <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }}>
                 <option>Employment Record</option>
                 <option>Payroll</option>
                 <option>Tax Document</option>
@@ -254,33 +300,48 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
 
             <div>
             <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Issue Date</label>
-            <input type="date" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            <input value={issueDate} onChange={(e) => setIssueDate(e.target.value)} type="date" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
             </div>
 
             <div>
-            <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Expiry Date (Optional)</label>
-            <input type="date" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+                <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Expiry Date (Optional)</label>  
+                <input
+                value={expiryDate}
+                onChange={(e) => setExpiryDate(e.target.value)}
+                type="date"
+                style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }}
+                />
             </div>
 
             <div style={{ gridColumn: "1 / -1" }}>
             <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Upload PDF Document</label>
-            <input type="file" accept=".pdf" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px dashed ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            <input type="file" accept=".pdf" onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)} style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px dashed ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
             </div>
 
             <div style={{ gridColumn: "1 / -1" }}>
             <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Remarks</label>
-            <textarea rows={4} placeholder="Additional notes..." style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, resize: "vertical" }} />
+            <textarea value={remarks} onChange={(e) => setRemarks(e.target.value)} rows={4} placeholder="Additional notes..." style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, resize: "vertical" }} />
             </div>
 
         </div>
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "16px", marginTop: "28px" }}>
-            <button style={secondaryButtonStyle}>
-            Clear Form
-            </button>
+            <button
+    style={secondaryButtonStyle}
+    onClick={() => {
+        setEmployeeId("");
+        setEmployeeName("");
+        setDocumentName("Experience Certificate");
+        setCategory("Employment Record");
+        setIssueDate("");
+        setExpiryDate("");
+        setRemarks("");
+        setSelectedFile(null);
+    }}>Clear Form
+</button>
 
-            <PrimaryButton>
-            Upload Document
+            <PrimaryButton onClick={handleUploadDocument}>
+                Upload Document
             </PrimaryButton>
         </div>
         </SectionCard>
@@ -359,9 +420,7 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
                             Preview
                         </button>
 
-                        <PrimaryButton>
-                            Download
-                        </PrimaryButton>
+                        <PrimaryButton onClick={() => handleDownload(doc)}>Download</PrimaryButton>
                       </div>
                     </td>
                   </tr>
