@@ -14,6 +14,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import AlumniLoginPage from "../auth/LoginPage";
 import { AuthService } from "../auth/authService";
 import AdminDocuments from "../modules/admin/documents/AdminDocuments";
+import AdminVerification from "../modules/admin/verification/AdminVerification";
 
 function RequireAlumniAuth() {
   return AuthService.isAuthenticated()
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
       path: "documents",
       element: <AdminDocuments />,
     },
+    {
+    path: "verification",
+    element: <AdminVerification />
+    }
   ],
 },
   ],
