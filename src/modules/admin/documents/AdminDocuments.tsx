@@ -48,6 +48,7 @@ const [issueDate, setIssueDate] = useState("");
 const [expiryDate, setExpiryDate] = useState("");
 const [remarks, setRemarks] = useState("");
 const [selectedFile, setSelectedFile] = useState<File | null>(null);
+const today = new Date().toISOString().split("T")[0];
 const [documents, setDocuments] = useState(getDocuments());
   const filteredDocuments = useMemo(() => {
     return documents.filter((doc) => {
@@ -300,7 +301,13 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
 
             <div>
             <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Issue Date</label>
-            <input value={issueDate} onChange={(e) => setIssueDate(e.target.value)} type="date" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            <input
+                value={issueDate}
+                onChange={(e) => setIssueDate(e.target.value)}
+                type="date"
+                min={today}
+                style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }}
+                />
             </div>
 
             <div>
@@ -309,6 +316,7 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
                 value={expiryDate}
                 onChange={(e) => setExpiryDate(e.target.value)}
                 type="date"
+                min={issueDate || today}
                 style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }}
                 />
             </div>
