@@ -13,12 +13,12 @@ import DocumentPreviewModal from "../../../shared/components/DocumentPreviewModa
 import HeroBanner from "../../../shared/components/HeroBanner";
 
 const documents = [
-  { id: "DOC-001", name: "Experience Certificate", category: "Employment Record", date: "12-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-002", name: "Relieving Letter", category: "Employment Record", date: "15-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-003", name: "Form 16", category: "Tax Document", date: "30-Mar-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-004", name: "Last Payslip", category: "Payroll", date: "31-Dec-2024", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-005", name: "Full & Final (F&F) Settlement Statement", category: "Settlement", date: "18-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-006", name: "PF Transfer Documents", category: "Provident Fund", date: "20-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-001", employeeId: "PALC-1023", employeeName: "Rahul Sharma", name: "Experience Certificate", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.0", date: "12-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-002", employeeId: "PALC-1047", employeeName: "Sneha Iyer", name: "Relieving Letter", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.2", date: "15-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-003", employeeId: "PALC-1008", employeeName: "Karan Mehta", name: "Form 16", category: "Tax Document", uploadedBy: "Finance", version: "v2.0", date: "30-Mar-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-004", employeeId: "PALC-1061", employeeName: "Priya Nair", name: "Last Payslip", category: "Payroll", uploadedBy: "Payroll Team", version: "v1.0", date: "31-Dec-2024", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-005", employeeId: "PALC-1084", employeeName: "Arjun Rao", name: "Full & Final (F&F) Settlement Statement", category: "Settlement", uploadedBy: "Finance", version: "v1.0", date: "18-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
+  { id: "DOC-006", employeeId: "PALC-1096", employeeName: "Neha Kapoor", name: "PF Transfer Documents", category: "Provident Fund", uploadedBy: "HR Operations", version: "v1.1", date: "20-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
 ];
 
 const secondaryButtonStyle = { background: "#EFF6FF", color: COLORS.primary, boxShadow: "none", border: `1px solid ${COLORS.border}`, padding: "10px 18px", borderRadius: "10px", cursor: "pointer" };
@@ -47,17 +47,19 @@ export default function DocumentsPage() {
   const [sortBy, setSortBy] = useState("Latest");
   const [fileSizes, setFileSizes] = useState<Record<string, string>>({});
   const [selectedDocument, setSelectedDocument] = useState({ title: "", path: "" });
-  const [recentActivity, setRecentActivity] = useState<{ name: string; action: "Downloaded" | "Previewed"; time: number; }[]>([]);
-  const downloadsThisMonth = useMemo(() => recentActivity.filter(item => item.action === "Downloaded" && new Date(item.time).getMonth() === new Date().getMonth() && new Date(item.time).getFullYear() === new Date().getFullYear()).length, [recentActivity]);
+  const [recentActivity, setRecentActivity] = useState<{ name: string; action: "Uploaded" | "Updated" | "Deleted" | "Previewed"; time: number; }[]>([]);
+  const uploadsToday = useMemo(() => recentActivity.filter(item => item.action === "Uploaded").length, [recentActivity]);
 
   const filteredDocuments = useMemo(() => {
     return documents.filter((doc) => {
       const search = searchText.toLowerCase();
       const matchesSearch =
+        doc.employeeId.toLowerCase().includes(search) ||
+        doc.employeeName.toLowerCase().includes(search) ||
         doc.name.toLowerCase().includes(search) ||
         doc.category.toLowerCase().includes(search) ||
+        doc.uploadedBy.toLowerCase().includes(search) ||
         doc.id.toLowerCase().includes(search) ||
-        doc.format.toLowerCase().includes(search) ||
         doc.status.toLowerCase().includes(search);
       const matchesCategory = selectedCategory === "All Categories" || doc.category === selectedCategory;
       return matchesSearch && matchesCategory;
@@ -105,7 +107,7 @@ export default function DocumentsPage() {
     loadSizes();
   }, []);
 
-  const logActivity = (name: string, action: "Downloaded" | "Previewed") => {
+  const logActivity = (name: string, action: "Uploaded" | "Updated" | "Deleted" | "Previewed") => {
     const activity = { name, action, time: Date.now() };
     const updated = [activity, ...recentActivity].slice(0, 5);
     setRecentActivity(updated);
@@ -116,7 +118,7 @@ export default function DocumentsPage() {
     link.href = doc.path;
     link.download = doc.name + ".pdf";
     link.click();
-    logActivity(doc.name, "Downloaded");
+    logActivity(doc.name, "Previewed");
   };
 const [uploadModalOpen, setUploadModalOpen] = useState(false);
 const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
@@ -214,7 +216,7 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "32px" }}>
         <StatsCard title="Available Documents" value={documents.length.toString()} subtitle="Employment records" accentColor="#2563EB" />
         <StatsCard title="Latest Upload"value={latestDocument.name}subtitle={new Date(latestDocument.date).toLocaleDateString("en-GB", {day: "2-digit",month: "short",year: "numeric", })} accentColor="#16A34A"/>
-        <StatsCard title="Downloads" value={downloadsThisMonth.toString()} subtitle="This month" accentColor="#D97706" />
+        <StatsCard title="Pending Uploads" value="18" subtitle="Awaiting processing" accentColor="#D97706" />
         <StatsCard title="Latest Upload" value="30 Mar" subtitle="Latest upload" accentColor="#9333EA" />
       </div>
 
@@ -259,12 +261,12 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ textAlign: "left", borderBottom: `1px solid ${COLORS.border}` }}>
-                <th style={{ padding: "12px" }}>Document ID</th>
+                <th style={{ padding: "12px" }}>Employee ID</th>
+                <th style={{ padding: "12px" }}>Employee Name</th>
                 <th style={{ padding: "12px" }}>Document</th>
                 <th style={{ padding: "12px" }}>Category</th>
-                <th style={{ padding: "12px" }}>Issue Date</th>
-                <th style={{ padding: "12px" }}>File Size</th>
-                <th style={{ padding: "12px" }}>Format</th>
+                <th style={{ padding: "12px" }}>Uploaded By</th>
+                <th style={{ padding: "12px" }}>Version</th>
                 <th style={{ padding: "12px" }}>Status</th>
                 <th style={{ padding: "12px" }}>Actions</th>
               </tr>
@@ -279,27 +281,21 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
               ) : (
                 sortedDocuments.map((doc) => (
                   <tr key={doc.id} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
-                    <td style={{ padding: "12px" }}>{doc.id}</td>
-                    <td style={{ padding: "12px", fontWeight: 700 }}>{doc.name}</td>
+                    <td style={{ padding: "12px", fontWeight: 700 }}>{doc.employeeId}</td>
+                    <td style={{ padding: "12px" }}>{doc.employeeName}</td>
+                    <td style={{ padding: "12px" }}>{doc.name}</td>
                     <td style={{ padding: "12px" }}>{doc.category}</td>
-                    <td style={{ padding: "12px" }}>{doc.date}</td>
-                    <td style={{ padding: "12px" }}>{fileSizes[doc.id] ?? "--"}</td>
-                    <td style={{ padding: "12px" }}>{doc.format}</td>
+                    <td style={{ padding: "12px" }}>{doc.uploadedBy}</td>
+                    <td style={{ padding: "12px" }}>{doc.version}</td>
                     <td style={{ padding: "12px" }}><StatusBadge status={doc.status} /></td>
                     <td style={{ padding: "12px" }}>
                       <div style={{ display: "flex", gap: "10px" }}>
-                        <button
-                          style={secondaryButtonStyle}
-                          onClick={() => {
-                            setSelectedDocument({ title: doc.name, path: doc.path });
-                            logActivity(doc.name, "Previewed");
-                            setPreviewOpen(true);
-                          }}
-                        >
-                          Preview
+                        <button style={secondaryButtonStyle} onClick={() => { setSelectedDocument({ title: doc.name, path: doc.path }); logActivity(doc.name, "Previewed"); setPreviewOpen(true); }}>
+                            Preview
                         </button>
-                        <PrimaryButton onClick={() => handleDownload(doc)}>
-                          Download
+
+                        <PrimaryButton>
+                            Download
                         </PrimaryButton>
                       </div>
                     </td>
@@ -309,7 +305,7 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
             </tbody>
           </table>
           <div style={{ marginTop: "20px", paddingTop: "18px", borderTop: `1px solid ${COLORS.border}`, color: COLORS.textSecondary, fontSize: "14px" }}>
-            All employment documents displayed in this repository are official records issued by PalC. Downloaded copies should be retained for your personal records.
+            All employment documents are centrally managed by HR. Uploaded records become available to authorized alumni through the Alumni Portal and every update is tracked for audit and compliance purposes.
           </div>
         </div>
       </SectionCard>
@@ -320,24 +316,26 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "18px" }}>
     
     <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Documents Available</div>
+      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Documents Managed</div>
       <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700, color: COLORS.primary }}>
         {documents.length}
       </div>
     </div>
 
     <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Total Activity</div>
-      <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700, color: "#D97706" }}>
-        {recentActivity.length}
-      </div>
+      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Today's Uploads</div>
+      <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700, color: "#D97706" }}>14</div>
     </div>
 
     <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
-      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Repository Status</div>
+      <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Repository Health</div>
       <div style={{ marginTop: "8px", fontSize: "20px", fontWeight: 700, color: "#16A34A" }}>
         {documents.filter(doc => doc.status === "Available").length} Active
       </div>
+    </div>
+    <div style={{ padding: "18px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface }}>
+        <div style={{ color: COLORS.textSecondary, fontSize: "14px" }}>Storage Used</div>
+        <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700, color: "#2563EB" }}>2.8 GB</div>
     </div>
 
   </div>
@@ -349,18 +347,18 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "18px" }}>
     <InfoCard
       hoverable
-      title="Document Availability"
-      subtitle="Employment documents remain available for up to 24 months after your separation date."
+      title="Version Control"
+      subtitle="Every uploaded document maintains version history to ensure previous revisions can be restored whenever required."
     />
     <InfoCard
       hoverable
-      title="Supported Formats"
-      subtitle="All employment records are provided in PDF format for consistency and long-term accessibility."
+      title="Role-Based Access"
+      subtitle="Only authorized HR administrators can upload, replace or remove employment documents from the repository."
     />
     <InfoCard
       hoverable
-      title="Security"
-      subtitle="Documents are securely stored and can only be accessed by authenticated alumni."
+      title="Audit Trail"
+      subtitle="Every upload, replacement, download and deletion is recorded for compliance and operational visibility."
     />
   </div>
 </SectionCard>
@@ -386,8 +384,8 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
 
     {/* Help & Support */}
     <SectionCard
-      title="Need Help with Your Documents?"
-      subtitle="Find guidance for accessing employment records, payroll documents and tax forms. If you still need assistance, our Alumni Support Team is here to help.">
+      title="Document Management Guidelines"
+      subtitle="Best practices for managing employment documents, maintaining repository integrity and ensuring secure document distribution.">
       <div
         style={{ display: "grid",gridTemplateColumns: "2fr 1fr",gap: "24px",}}>
       
@@ -395,26 +393,18 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
         <div
           style={{display: "grid",gap: "18px"}}>
           {[
-            {
-              title: "Document Availability",description:"Employment records remain available for up to 24 months after your separation date. Download important documents before the retention period ends.",  
-            },
-            {
-              title: "Before You Download", description: "Verify that you are downloading the correct document, such as your Experience Certificate, Form 16 or Last Payslip, before sharing it with employers or financial institutions.",
-            },
-            {
-              title: "Document Security", description:  "All documents are official records issued by PalC Networks. They are securely stored and intended for personal reference and professional verification purposes.",
-            },
-            {
-              title: "Finding Your Documents",description: "Use the search bar, category filter and sorting options to quickly locate employment records, payroll documents, settlement statements and tax forms.",
-            },
-          ].map((item) => (
+            { title: "Uploading Documents", description: "Upload employment records only after they have been reviewed and approved." },
+            { title: "Replacing Documents", description: "Always upload a new version instead of overwriting historical employment records." },
+            { title: "Retention Policy", description: "Maintain documents according to PalC retention and compliance requirements." },
+            { title: "Repository Security", description: "Only authorized HR personnel should manage employment documents." }
+            ].map((item) => (
             <InfoCard
-              key={item.title}
-              hoverable
-              title={item.title}
-              subtitle={item.description}
+                key={item.title}
+                hoverable
+                title={item.title}
+                subtitle={item.description}
             />
-          ))}
+            ))}
         </div>
 
         {/* Right Column */}
@@ -437,7 +427,7 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
                 color: COLORS.text,
               }}
             >
-              Can't Locate a Document?
+              Need Repository Assistance?
             </h3>
 
             <p
@@ -447,9 +437,7 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
                 marginBottom: "20px",
               }}
             >
-              If a required employment record is unavailable or you need assistance
-              with payroll, tax or settlement documents, our Alumni Support Team
-              will be happy to assist you.
+              For storage issues, permission errors or repository maintenance requests, contact the IT Administration team.
             </p>
 
             <div
@@ -461,15 +449,15 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
                 color: COLORS.text,
               }}
             >
-              <span>• Missing employment records</span>
-              <span>• Payroll document enquiries</span>
-              <span>• Tax document assistance</span>
-              <span>• Full & Final settlement support</span>
+              <span>• Upload failures</span>
+              <span>• Storage capacity </span>
+              <span>• Permission issues</span>
+              <span>• Repository maintenance</span>
             </div>
           </div>
 
           <PrimaryButton onClick={() => navigate("/dashboard/helpdesk")}>
-            Contact Alumni Helpdesk
+            Contact IT Administrator
           </PrimaryButton>
         </div>
       </div>
