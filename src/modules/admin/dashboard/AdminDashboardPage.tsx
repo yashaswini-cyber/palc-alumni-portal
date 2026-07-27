@@ -4,157 +4,35 @@ import StatusBadge from "../../../shared/components/StatusBadge";
 import { useNavigate } from "react-router-dom";
 import { COLORS } from "../../../shared/theme/colors";
 import StatsCard from "../../../shared/components/StatsCard";
+import HeroBanner from "../../../shared/components/HeroBanner";
 
-type MetricItem = {
-  title: string;
-  value: string;
-  subtitle: string;
-  accentColor: string;
-};
+type MetricItem = { title: string; value: string; subtitle: string; accentColor: string; };
+type AutomationItem = { name: string; owner: string; status: string; nextRun: string; };
+type QueueItem = { id: string; request: string; owner: string; priority: string; status: string; sla: string; };
+type TrendItem = { label: string; value: string; width: string; };
+type PendingWorkItem = { title: string; count: string; status: "High" | "Medium" | "Low"; path: string; };
 
-type AutomationItem = {
-  name: string;
-  owner: string;
-  status: string;
-  nextRun: string;
-};
-
-type QueueItem = {
-  id: string;
-  request: string;
-  owner: string;
-  priority: string;
-  status: string;
-  sla: string;
-};
-
-type TrendItem = {
-  label: string;
-  value: string;
-  width: string;
-};
-type PendingWorkItem = {
-  title: string;
-  count: string;
-  status: "High" | "Medium" | "Low";
-  path: string;
-};
-
-const cardStyle = {
-  background: COLORS.surface,
-  border: `1px solid ${COLORS.border}`,
-  borderRadius: "18px",
-  padding: "24px",
-  boxShadow: "0 18px 42px rgba(15, 23, 42, 0.07)",
-};
-
-const sectionTitleStyle = {
-  margin: "0 0 6px",
-  color: COLORS.text,
-  fontSize: "22px",
-  lineHeight: 1.2,
-  fontWeight: 850,
-};
-
-const mutedTextStyle = {
-  margin: 0,
-  color: COLORS.textSecondary,
-  fontSize: "14px",
-  lineHeight: 1.6,
-};
-
-const buttonStyle = {
-  border: "none",
-  borderRadius: "12px",
-  background: COLORS.primary,
-  color: "#FFFFFF",
-  padding: "10px 16px",
-  fontSize: "13px",
-  fontWeight: 800,
-  cursor: "pointer",
-  fontFamily: "inherit",
-  boxShadow: "0 10px 20px rgba(37, 99, 235, 0.20)",
-};
-
-const secondaryButtonStyle = {
-  ...buttonStyle,
-  background: "#EFF6FF",
-  color: COLORS.primary,
-  boxShadow: "none",
-  border: `1px solid ${COLORS.border}`,
-};
+const cardStyle = { background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: "18px", padding: "24px", boxShadow: "0 18px 42px rgba(15, 23, 42, 0.07)" };
+const sectionTitleStyle = { margin: "0 0 6px", color: COLORS.text, fontSize: "22px", lineHeight: 1.2, fontWeight: 850 };
+const mutedTextStyle = { margin: 0, color: COLORS.textSecondary, fontSize: "14px", lineHeight: 1.6 };
 
 const metrics: MetricItem[] = [
-  {
-    title: "Active Alumni",
-    value: "286",
-    subtitle: "75% Portal Activation",
-    accentColor: "#2563EB",
-  },
-  {
-    title: "Portal Logins",
-    value: "1.4K",
-    subtitle: "Last 30 Days",
-    accentColor: "#16A34A",
-  },
-  {
-    title: "Verification Requests",
-    value: "312",
-    subtitle: "Pending & Completed",
-    accentColor: "#D97706",
-  },
-  {
-    title: "Document Downloads",
-    value: "679",
-    subtitle: "Self-Service Access",
-    accentColor: "#DC2626",
-  },
-  {
-    title: "Referrals",
-    value: "28",
-    subtitle: "30% Participation",
-    accentColor: "#7C3AED",
-  },
-  {
-    title: "Boomerang Hiring",
-    value: "8",
-    subtitle: "Rehire Pipeline",
-    accentColor: "#0891B2",
-  },
+  { title: "Active Alumni", value: "286", subtitle: "75% Portal Activation", accentColor: "#2563EB" },
+  { title: "Portal Logins", value: "1.4K", subtitle: "Last 30 Days", accentColor: "#16A34A" },
+  { title: "Verification Requests", value: "312", subtitle: "Pending & Completed", accentColor: "#D97706" },
+  { title: "Document Downloads", value: "679", subtitle: "Self-Service Access", accentColor: "#DC2626" },
+  { title: "Referrals", value: "28", subtitle: "30% Participation", accentColor: "#7C3AED" },
+  { title: "Boomerang Hiring", value: "8", subtitle: "Rehire Pipeline", accentColor: "#0891B2" },
 ];
 
 const pendingWork: PendingWorkItem[] = [
-  {
-    title: "Employment Verifications",
-    count: "12",
-    status: "High",
-    path: "/admin/verification",
-  },
-  {
-    title: "Document Requests",
-    count: "8",
-    status: "High",
-    path: "/documents",
-  },
-  {
-    title: "Helpdesk Tickets",
-    count: "4",
-    status: "Medium",
-    path: "/helpdesk",
-  },
-  {
-    title: "Account Activations",
-    count: "3",
-    status: "Low",
-    path: "/admin/alumni",
-  },
-  {
-    title: "Referral Reviews",
-    count: "5",
-    status: "Medium",
-    path: "/referrals",
-  },
+  { title: "Employment Verifications", count: "12", status: "High", path: "/admin/verification" },
+  { title: "Document Requests", count: "8", status: "High", path: "/documents" },
+  { title: "Helpdesk Tickets", count: "4", status: "Medium", path: "/helpdesk" },
+  { title: "Account Activations", count: "3", status: "Low", path: "/admin/alumni" },
+  { title: "Referral Reviews", count: "5", status: "Medium", path: "/referrals" },
 ];
+
 const operationalSnapshot = [
   "86% documents downloaded through self-service",
   "90% employment verification automation achieved",
@@ -162,72 +40,20 @@ const operationalSnapshot = [
   "14 referrals received this month",
   "3 alumni accounts expire within the next 30 days",
 ];
+
 const automations: AutomationItem[] = [
-  {
-    name: "Generate exit document package",
-    owner: "HR Operations",
-    status: "Active",
-    nextRun: "On separation approval",
-  },
-  {
-    name: "Upload exit documents to archive",
-    owner: "Document Admin",
-    status: "Active",
-    nextRun: "Every 2 hours",
-  },
-  {
-    name: "Send alumni login credentials",
-    owner: "IT Administrator",
-    status: "Active",
-    nextRun: "Daily at 09:00",
-  },
-  {
-    name: "Account expiry notifications",
-    owner: "Compliance",
-    status: "Pending",
-    nextRun: "30/15/7 days before expiry",
-  },
-  {
-    name: "Anniversary greetings",
-    owner: "Engagement Team",
-    status: "Active",
-    nextRun: "Daily at 10:00",
-  },
+  { name: "Generate exit document package", owner: "HR Operations", status: "Active", nextRun: "On separation approval" },
+  { name: "Upload exit documents to archive", owner: "Document Admin", status: "Active", nextRun: "Every 2 hours" },
+  { name: "Send alumni login credentials", owner: "IT Administrator", status: "Active", nextRun: "Daily at 09:00" },
+  { name: "Account expiry notifications", owner: "Compliance", status: "Pending", nextRun: "30/15/7 days before expiry" },
+  { name: "Anniversary greetings", owner: "Engagement Team", status: "Active", nextRun: "Daily at 10:00" },
 ];
 
 const serviceQueue: QueueItem[] = [
-  {
-    id: "SR-1042",
-    request: "Missing Form 16 document",
-    owner: "Finance",
-    priority: "High",
-    status: "Open",
-    sla: "4h remaining",
-  },
-  {
-    id: "VR-991",
-    request: "Third-party employment verification",
-    owner: "HR Ops",
-    priority: "Medium",
-    status: "Pending",
-    sla: "1d remaining",
-  },
-  {
-    id: "DOC-782",
-    request: "Relieving letter version update",
-    owner: "Document Admin",
-    priority: "Medium",
-    status: "Open",
-    sla: "2d remaining",
-  },
-  {
-    id: "PF-318",
-    request: "PF transfer assistance",
-    owner: "Finance",
-    priority: "Low",
-    status: "Closed",
-    sla: "Completed",
-  },
+  { id: "SR-1042", request: "Missing Form 16 document", owner: "Finance", priority: "High", status: "Open", sla: "4h remaining" },
+  { id: "VR-991", request: "Third-party employment verification", owner: "HR Ops", priority: "Medium", status: "Pending", sla: "1d remaining" },
+  { id: "DOC-782", request: "Relieving letter version update", owner: "Document Admin", priority: "Medium", status: "Open", sla: "2d remaining" },
+  { id: "PF-318", request: "PF transfer assistance", owner: "Finance", priority: "Low", status: "Closed", sla: "Completed" },
 ];
 
 const downloadTrends: TrendItem[] = [
@@ -246,383 +72,124 @@ const successMetrics = [
   { kpi: "Employment verification automation", target: "90%", actual: "90%", status: "Approved" },
 ];
 
-const complianceItems = [
-  "Role-based access control enabled",
-  "MFA enforced for admin users",
-  "Document storage encryption active",
-  "Audit trails retained for compliance",
-  "Data retention policy configured",
-  "Consent management reviewed",
-];
-
 const quickActions = [
-  {
-    title: "Generate Documents",
-    description: "Create employment documents for alumni.",
-    route: "/admin",
-  },
-  {
-    title: "Employment Verification",
-    description: "Review pending verification requests.",
-    route: "/admin",
-  },
-  {
-    title: "Manage Alumni",
-    description: "Access alumni records and profiles.",
-    route: "/admin",
-  },
-  {
-    title: "Create Event",
-    description: "Publish alumni events and invitations.",
-    route: "/admin",
-  },
-  {
-    title: "Broadcast Announcement",
-    description: "Share updates with all alumni.",
-    route: "/admin",
-  },
+  { title: "Generate Documents", description: "Create employment documents for alumni.", route: "/admin" },
+  { title: "Employment Verification", description: "Review pending verification requests.", route: "/admin" },
+  { title: "Manage Alumni", description: "Access alumni records and profiles.", route: "/admin" },
+  { title: "Create Event", description: "Publish alumni events and invitations.", route: "/admin" },
+  { title: "Broadcast Announcement", description: "Share updates with all alumni.", route: "/admin" },
 ];
 
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
-  // TODO: Replace representative admin dashboard data with API responses from HRIS, document, verification, referral, and audit services.
+  const scrollToSection = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "32px",
-        paddingBottom: "44px",
-      }}
-    >
-      <PageHeader
-        title="Admin Dashboard"
-        subtitle="Monitor alumni operations, document self-service, employment verification, referrals, automations and compliance readiness."
+    <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingBottom: "44px" }}>
+      <PageHeader title="Admin Dashboard" subtitle="Monitor alumni operations, document self-service, employment verification, referrals, automations and compliance readiness." />
+      <HeroBanner
+        badge="HR Operations Command Center"
+        title="Manage the Complete PalC Alumni Ecosystem"
+        subtitle="Monitor alumni operations, document requests, employment verification, referrals, portal engagement and HR service performance from a single operational dashboard."
+        actions={[
+          { title: "View Pending Requests", onClick: () => scrollToSection("service-queue") },
+          { title: "Automation Monitor", onClick: () => scrollToSection("automation-monitor") },
+          { title: "View Reports", onClick: () => scrollToSection("success-metrics") },
+        ]}
+        pills={[
+          { title: "Active Alumni", value: "4,286", color: "#16A34A" },
+          { title: "Pending Requests", value: "24 Open", color: "#2563EB" },
+          { title: "Automation", value: "90% Active", color: "#D97706" },
+        ]}
+        summaryCard={
+          <>
+            <h3 style={{ marginTop: 0, marginBottom: "20px", fontSize: "20px", color: COLORS.text }}>HR Operations Overview</h3>
+            {[
+              ["Employment Verification", "12 Pending"],
+              ["Document Requests", "8 Open"],
+              ["Portal Health", "Operational"],
+              ["Compliance Status", "Compliant"],
+            ].map(([label, value]) => (
+              <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${COLORS.border}` }}>
+                <span style={{ color: COLORS.textSecondary, fontSize: "14px" }}>{label}</span>
+                <strong style={{ color: COLORS.text, fontSize: "14px" }}>{value}</strong>
+              </div>
+            ))}
+          </>
+        }
       />
 
-      <section
-        style={{
-          minHeight: "260px",
-          borderRadius: "24px",
-          overflow: "hidden",
-          background:
-            "linear-gradient(120deg, #0A1B3D 0%, #123A7A 42%, #2563EB 78%, #38BDF8 100%)",
-          color: "#FFFFFF",
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1.45fr) minmax(320px, 0.55fr)",
-          alignItems: "stretch",
-          boxShadow: "0 24px 60px rgba(15, 27, 61, 0.28)",
-        }}
-      >
-        <div style={{ padding: "38px 42px" }}>
-          <p
-            style={{
-              margin: 0,
-              fontSize: "13px",
-              fontWeight: 850,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              opacity: 0.86,
-            }}
-          >
-            HR Operations Command Center
-          </p>
+      <section style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", alignItems: "start" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(220px, 1fr))", gap: "20px" }}>
+            {metrics.map((metric) => (
+              <StatsCard key={metric.title} title={metric.title} value={metric.value} subtitle={metric.subtitle} accentColor={metric.accentColor} />
+            ))}
+          </div>
 
-          <h2
-            style={{
-              margin: "14px 0 0",
-              maxWidth: "760px",
-              color: "#FFFFFF",
-              fontSize: "40px",
-              lineHeight: 1.08,
-              fontWeight: 850,
-            }}
-          >
-            Manage the complete PalC Alumni ecosystem from a single operational dashboard.
-          </h2>
+          <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: "18px", padding: "22px 24px", boxShadow: "0 18px 42px rgba(15,23,42,0.07)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "22px", color: COLORS.text, fontWeight: 850 }}>Operational Snapshot</h3>
+                <p style={{ margin: "6px 0 0", fontSize: "14px", color: COLORS.textSecondary }}>Current operational performance across the alumni platform.</p>
+              </div>
+              <span style={{ fontSize: "12px", color: COLORS.textSecondary, fontWeight: 600 }}>Updated 5 mins ago</span>
+            </div>
 
-          <p
-            style={{
-              margin: "16px 0 0",
-              maxWidth: "720px",
-              color: "rgba(255,255,255,0.88)",
-              fontSize: "15px",
-              lineHeight: 1.7,
-            }}
-          >
-            Track the PRD success metrics across document access, verification
-            automation, referral participation, rehire conversion and HR ticket
-            reduction.
-          </p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 28px" }}>
+              {operationalSnapshot.map((item) => (
+                <div key={item} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ width: "8px", height: "8px", borderRadius: "999px", background: COLORS.primary, flexShrink: 0 }} />
+                  <span style={{ color: COLORS.text, fontSize: "14px", lineHeight: 1.6 }}>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: "18px", padding: "24px", boxShadow: "0 18px 42px rgba(15,23,42,0.07)", display: "flex", flexDirection: "column", gap: "18px", height: "100%" }}>
+          <div>
+            <h2 style={{ margin: 0, color: COLORS.text, fontSize: "22px", fontWeight: 850 }}>Today's Pending Work</h2>
+            <p style={{ marginTop: "6px", color: COLORS.textSecondary, fontSize: "14px" }}>Review and complete high priority HR activities.</p>
+          </div>
+
+          {pendingWork.map((item) => (
+            <div
+              key={item.title}
+              onClick={() => navigate(item.path)}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 24px rgba(0,0,0,0.08)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0px)"; e.currentTarget.style.boxShadow = "none"; }}
+              style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", border: `1px solid ${COLORS.border}`, borderRadius: "14px", cursor: "pointer", transition: "0.2s", background: "#FBFDFF" }}
+            >
+              <div>
+                <div style={{ fontWeight: 700, color: COLORS.text, fontSize: "14px" }}>{item.title}</div>
+                <div style={{ marginTop: "4px", color: COLORS.textSecondary, fontSize: "13px" }}>{item.count} Pending</div>
+              </div>
+              <StatusBadge status={item.status} />
+            </div>
+          ))}
         </div>
       </section>
 
-      <section
-      style={{
-        display: "grid",
-        gridTemplateColumns: "2fr 1fr",
-        gap: "24px",
-        alignItems: "start",
-      }}
-    >
-      <div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    gap: "20px",
-  }}
->
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(3, minmax(220px, 1fr))",
-      gap: "20px",
-    }}
-  >
-    {metrics.map((metric) => (
-      <StatsCard
-        key={metric.title}
-        title={metric.title}
-        value={metric.value}
-        subtitle={metric.subtitle}
-        accentColor={metric.accentColor}
-      />
-    ))}
-  </div>
-
-  <div
-    style={{
-      background: COLORS.surface,
-      border: `1px solid ${COLORS.border}`,
-      borderRadius: "18px",
-      padding: "22px 24px",
-      boxShadow: "0 18px 42px rgba(15,23,42,0.07)",
-    }}
-  >
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "16px",
-      }}
-    >
-      <div>
-        <h3
-          style={{
-            margin: 0,
-            fontSize: "22px",
-            color: COLORS.text,
-            fontWeight: 850,
-          }}
-        >
-          Operational Snapshot
-        </h3>
-
-        <p
-          style={{
-            margin: "6px 0 0",
-            fontSize: "14px",
-            color: COLORS.textSecondary,
-          }}
-        >
-          Current operational performance across the alumni platform.
-        </p>
-      </div>
-
-      <span
-        style={{
-          fontSize: "12px",
-          color: COLORS.textSecondary,
-          fontWeight: 600,
-        }}
-      >
-        Updated 5 mins ago
-      </span>
-    </div>
-
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "12px 28px",
-      }}
-    >
-      {operationalSnapshot.map((item) => (
-        <div
-          key={item}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-          <div
-            style={{
-              width: "8px",
-              height: "8px",
-              borderRadius: "999px",
-              background: COLORS.primary,
-              flexShrink: 0,
-            }}
-          />
-
-          <span
-            style={{
-              color: COLORS.text,
-              fontSize: "14px",
-              lineHeight: 1.6,
-            }}
-          >
-            {item}
-          </span>
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
-
-      <div
-      style={{
-        background: COLORS.surface,
-        border: `1px solid ${COLORS.border}`,
-        borderRadius: "18px",
-        padding: "24px",
-        boxShadow: "0 18px 42px rgba(15,23,42,0.07)",
-        display: "flex",
-        flexDirection: "column",
-        gap: "18px",
-        height: "100%",
-      }}
-    >
-      <div>
-        <h2
-          style={{
-            margin: 0,
-            color: COLORS.text,
-            fontSize: "22px",
-            fontWeight: 850,
-          }}
-        >
-          Today's Pending Work
-        </h2>
-
-        <p
-          style={{
-            marginTop: "6px",
-            color: COLORS.textSecondary,
-            fontSize: "14px",
-          }}
-        >
-          Review and complete high priority HR activities.
-        </p>
-      </div>
-
-      {pendingWork.map((item) => (
-        <div
-        onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow = "0 10px 24px rgba(0,0,0,0.08)";
-      }}
-
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0px)";
-        e.currentTarget.style.boxShadow = "none";
-      }}
-          key={item.title}
-          onClick={() => navigate(item.path)}
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "14px 16px",
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: "14px",
-            cursor: "pointer",
-            transition: "0.2s",
-            background: "#FBFDFF",
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontWeight: 700,
-                color: COLORS.text,
-                fontSize: "14px",
-              }}
-            >
-              {item.title}
-            </div>
-
-            <div
-              style={{
-                marginTop: "4px",
-                color: COLORS.textSecondary,
-                fontSize: "13px",
-              }}
-            >
-              {item.count} Pending
-            </div>
-          </div>
-
-          <StatusBadge status={item.status} />
-        </div>
-      ))}
-    </div>
-    </section>
-
       <section>
-      <h2 style={sectionTitleStyle}>Quick Actions</h2>
-      <p
-        style={{
-          ...mutedTextStyle,
-          marginBottom: "18px",
-        }}
-      >
-        Frequently used HR operations for managing the alumni portal.
-      </p>
+        <h2 style={sectionTitleStyle}>Quick Actions</h2>
+        <p style={{ ...mutedTextStyle, marginBottom: "18px" }}>Frequently used HR operations for managing the alumni portal.</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "16px" }}>
+          {quickActions.map((item) => (
+            <QuickActionCard key={item.title} title={item.title} subtitle={item.description} onClick={() => navigate(item.route)} />
+          ))}
+        </div>
+      </section>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-          gap: "16px",
-        }}
-      >
-        {quickActions.map((item) => (
-          <QuickActionCard
-            key={item.title}
-            title={item.title}
-            subtitle={item.description}
-            onClick={() => navigate(item.route)}
-          />
-        ))}
-      </div>
-    </section>
-
-    <section
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1.35fr) minmax(360px, 0.65fr)",
-          gap: "24px",
-        }}
-      >
+      <section id="service-queue" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.35fr) minmax(360px, 0.65fr)", gap: "24px" }}>
         <div style={cardStyle}>
           <h2 style={sectionTitleStyle}>Service Request & Verification Queue</h2>
-          <p style={mutedTextStyle}>
-            Operational workload across HR, finance, document administration and verification support.
-          </p>
-
+          <p style={mutedTextStyle}>Operational workload across HR, finance, document administration and verification support.</p>
           <div style={{ overflowX: "auto", marginTop: "22px" }}>
             <table>
               <thead>
                 <tr>
-                  <th>Request ID</th>
-                  <th>Request</th>
-                  <th>Owner</th>
-                  <th>Priority</th>
-                  <th>Status</th>
-                  <th>SLA</th>
+                  <th>Request ID</th><th>Request</th><th>Owner</th><th>Priority</th><th>Status</th><th>SLA</th>
                 </tr>
               </thead>
               <tbody>
@@ -643,10 +210,7 @@ export default function AdminDashboardPage() {
 
         <div style={cardStyle}>
           <h2 style={sectionTitleStyle}>Document Download Trends</h2>
-          <p style={mutedTextStyle}>
-            Self-service usage across the most requested employment documents.
-          </p>
-
+          <p style={mutedTextStyle}>Self-service usage across the most requested employment documents.</p>
           <div style={{ display: "flex", flexDirection: "column", gap: "18px", marginTop: "24px" }}>
             {downloadTrends.map((trend) => (
               <div key={trend.label}>
@@ -655,14 +219,7 @@ export default function AdminDashboardPage() {
                   <span style={{ color: COLORS.textSecondary, fontSize: "13px" }}>{trend.value}</span>
                 </div>
                 <div style={{ height: "9px", borderRadius: "999px", background: "#EFF6FF" }}>
-                  <div
-                    style={{
-                      width: trend.width,
-                      height: "100%",
-                      borderRadius: "999px",
-                      background: "linear-gradient(90deg, #0F6CBD, #3B82F6)",
-                    }}
-                  />
+                  <div style={{ width: trend.width, height: "100%", borderRadius: "999px", background: "linear-gradient(90deg, #0F6CBD, #3B82F6)" }} />
                 </div>
               </div>
             ))}
@@ -671,34 +228,15 @@ export default function AdminDashboardPage() {
       </section>
 
       <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-        <div style={cardStyle}>
+        <div id="automation-monitor" style={cardStyle}>
           <h2 style={sectionTitleStyle}>Automation Monitor</h2>
-          <p style={mutedTextStyle}>
-            Automated actions required by the PRD for document generation, account setup and alumni engagement.
-          </p>
-
+          <p style={mutedTextStyle}>Automated actions required by the PRD for document generation, account setup and alumni engagement.</p>
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "22px" }}>
             {automations.map((automation) => (
-              <div
-                key={automation.name}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "minmax(0, 1fr) auto",
-                  gap: "18px",
-                  alignItems: "center",
-                  padding: "16px",
-                  border: `1px solid ${COLORS.border}`,
-                  borderRadius: "16px",
-                  background: "#FBFDFF",
-                }}
-              >
+              <div key={automation.name} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "18px", alignItems: "center", padding: "16px", border: `1px solid ${COLORS.border}`, borderRadius: "16px", background: "#FBFDFF" }}>
                 <div>
-                  <strong style={{ display: "block", color: COLORS.text, fontSize: "14px" }}>
-                    {automation.name}
-                  </strong>
-                  <p style={{ margin: "5px 0 0", color: COLORS.textSecondary, fontSize: "13px" }}>
-                    {automation.owner} - {automation.nextRun}
-                  </p>
+                  <strong style={{ display: "block", color: COLORS.text, fontSize: "14px" }}>{automation.name}</strong>
+                  <p style={{ margin: "5px 0 0", color: COLORS.textSecondary, fontSize: "13px" }}>{automation.owner} - {automation.nextRun}</p>
                 </div>
                 <StatusBadge status={automation.status} />
               </div>
@@ -706,20 +244,14 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        <div style={cardStyle}>
+        <div id="success-metrics" style={cardStyle}>
           <h2 style={sectionTitleStyle}>Success Metrics</h2>
-          <p style={mutedTextStyle}>
-            KPI progress against the PRD targets for adoption, HR efficiency and verification automation.
-          </p>
-
+          <p style={mutedTextStyle}>KPI progress against the PRD targets for adoption, HR efficiency and verification automation.</p>
           <div style={{ overflowX: "auto", marginTop: "22px" }}>
             <table>
               <thead>
                 <tr>
-                  <th>KPI</th>
-                  <th>Target</th>
-                  <th>Actual</th>
-                  <th>Status</th>
+                  <th>KPI</th><th>Target</th><th>Actual</th><th>Status</th>
                 </tr>
               </thead>
               <tbody>
