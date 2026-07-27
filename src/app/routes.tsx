@@ -13,6 +13,7 @@ import AdminDashboardPage from "../modules/admin/dashboard/AdminDashboardPage";
 import AdminLayout from "../layouts/AdminLayout";
 import AlumniLoginPage from "../auth/LoginPage";
 import { AuthService } from "../auth/authService";
+import AdminDocuments from "../modules/admin/documents/AdminDocuments";
 
 function RequireAlumniAuth() {
   return AuthService.isAuthenticated()
@@ -51,16 +52,20 @@ export const router = createBrowserRouter([
   {
   element: <RequireAdminAuth />,
   children: [
+  {
+  path: "/admin",
+  element: <AdminLayout />,
+  children: [
     {
-      path: "/admin",
-      element: <AdminLayout />,
-      children: [
-        {
-          index: true,
-          element: <AdminDashboardPage />,
-        },
-      ],
+      index: true,
+      element: <AdminDashboardPage />,
     },
+    {
+      path: "documents",
+      element: <AdminDocuments />,
+    },
+  ],
+},
   ],
 },
 ]);

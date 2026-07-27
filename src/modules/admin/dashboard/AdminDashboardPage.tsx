@@ -27,7 +27,7 @@ const metrics: MetricItem[] = [
 
 const pendingWork: PendingWorkItem[] = [
   { title: "Employment Verifications", count: "12", status: "High", path: "/admin/verification" },
-  { title: "Document Requests", count: "8", status: "High", path: "/documents" },
+  { title: "Document Requests", count: "8", status: "High", path: "/admin/documents" },
   { title: "Helpdesk Tickets", count: "4", status: "Medium", path: "/helpdesk" },
   { title: "Account Activations", count: "3", status: "Low", path: "/admin/alumni" },
   { title: "Referral Reviews", count: "5", status: "Medium", path: "/referrals" },
@@ -73,10 +73,10 @@ const successMetrics = [
 ];
 
 const quickActions = [
-  { title: "Generate Documents", description: "Create employment documents for alumni.", route: "/admin" },
-  { title: "Employment Verification", description: "Review pending verification requests.", route: "/admin" },
-  { title: "Manage Alumni", description: "Access alumni records and profiles.", route: "/admin" },
-  { title: "Create Event", description: "Publish alumni events and invitations.", route: "/admin" },
+  { title: "Generate Documents", description: "Create employment documents for alumni.", route: "/admin/documents" },
+  { title: "Employment Verification", description: "Review pending verification requests.", route: "/admin/verification" },
+  { title: "Manage Alumni", description: "Access alumni records and profiles.", route: "/admin/alumni" },
+  { title: "Create Event", description: "Publish alumni events and invitations.", route: "/admin/events" },
   { title: "Broadcast Announcement", description: "Share updates with all alumni.", route: "/admin" },
 ];
 
@@ -97,7 +97,7 @@ export default function AdminDashboardPage() {
           { title: "View Reports", onClick: () => scrollToSection("success-metrics") },
         ]}
         pills={[
-          { title: "Active Alumni", value: "4,286", color: "#16A34A" },
+          { title: "Active Alumni", value: "286", color: "#16A34A" },
           { title: "Pending Requests", value: "24 Open", color: "#2563EB" },
           { title: "Automation", value: "90% Active", color: "#D97706" },
         ]}
