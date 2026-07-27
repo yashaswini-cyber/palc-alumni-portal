@@ -1,13 +1,15 @@
-import DashboardCard from "../../../shared/components/DashboardCard";
+import QuickActionCard from "../../../shared/components/QuickActionCard";
 import PageHeader from "../../../shared/components/PageHeader";
 import StatusBadge from "../../../shared/components/StatusBadge";
+import { useNavigate } from "react-router-dom";
 import { COLORS } from "../../../shared/theme/colors";
+import StatsCard from "../../../shared/components/StatsCard";
 
 type MetricItem = {
   title: string;
   value: string;
   subtitle: string;
-  icon: string;
+  accentColor: string;
 };
 
 type AutomationItem = {
@@ -30,6 +32,12 @@ type TrendItem = {
   label: string;
   value: string;
   width: string;
+};
+type PendingWorkItem = {
+  title: string;
+  count: string;
+  status: "High" | "Medium" | "Low";
+  path: string;
 };
 
 const cardStyle = {
@@ -79,42 +87,81 @@ const secondaryButtonStyle = {
 const metrics: MetricItem[] = [
   {
     title: "Active Alumni",
-    value: "4,286",
-    subtitle: "75% portal activation",
-    icon: "AA",
+    value: "286",
+    subtitle: "75% Portal Activation",
+    accentColor: "#2563EB",
   },
   {
     title: "Portal Logins",
-    value: "18.4K",
-    subtitle: "Last 30 days",
-    icon: "PL",
+    value: "1.4K",
+    subtitle: "Last 30 Days",
+    accentColor: "#16A34A",
   },
   {
-    title: "Downloads",
-    value: "9,742",
-    subtitle: "Document self-service",
-    icon: "DD",
+    title: "Verification Requests",
+    value: "312",
+    subtitle: "Pending & Completed",
+    accentColor: "#D97706",
   },
   {
-    title: "Verifications",
-    value: "1,126",
-    subtitle: "90% automated",
-    icon: "VR",
+    title: "Document Downloads",
+    value: "679",
+    subtitle: "Self-Service Access",
+    accentColor: "#DC2626",
   },
   {
     title: "Referrals",
-    value: "342",
-    subtitle: "30% participation target",
-    icon: "RF",
+    value: "28",
+    subtitle: "30% Participation",
+    accentColor: "#7C3AED",
   },
   {
-    title: "Rehire Pipeline",
-    value: "64",
-    subtitle: "10% annual hiring target",
-    icon: "RH",
+    title: "Boomerang Hiring",
+    value: "8",
+    subtitle: "Rehire Pipeline",
+    accentColor: "#0891B2",
   },
 ];
 
+const pendingWork: PendingWorkItem[] = [
+  {
+    title: "Employment Verifications",
+    count: "12",
+    status: "High",
+    path: "/admin/verification",
+  },
+  {
+    title: "Document Requests",
+    count: "8",
+    status: "High",
+    path: "/documents",
+  },
+  {
+    title: "Helpdesk Tickets",
+    count: "4",
+    status: "Medium",
+    path: "/helpdesk",
+  },
+  {
+    title: "Account Activations",
+    count: "3",
+    status: "Low",
+    path: "/admin/alumni",
+  },
+  {
+    title: "Referral Reviews",
+    count: "5",
+    status: "Medium",
+    path: "/referrals",
+  },
+];
+const operationalSnapshot = [
+  "86% documents downloaded through self-service",
+  "90% employment verification automation achieved",
+  "75% alumni portal activation rate",
+  "14 referrals received this month",
+  "3 alumni accounts expire within the next 30 days",
+];
 const automations: AutomationItem[] = [
   {
     name: "Generate exit document package",
@@ -208,25 +255,36 @@ const complianceItems = [
   "Consent management reviewed",
 ];
 
-function Glyph({ label }: { label: string }) {
-  return (
-    <span
-      style={{
-        display: "inline-grid",
-        placeItems: "center",
-        width: "22px",
-        height: "22px",
-        fontSize: "11px",
-        lineHeight: 1,
-        fontWeight: 850,
-      }}
-    >
-      {label}
-    </span>
-  );
-}
+const quickActions = [
+  {
+    title: "Generate Documents",
+    description: "Create employment documents for alumni.",
+    route: "/admin",
+  },
+  {
+    title: "Employment Verification",
+    description: "Review pending verification requests.",
+    route: "/admin",
+  },
+  {
+    title: "Manage Alumni",
+    description: "Access alumni records and profiles.",
+    route: "/admin",
+  },
+  {
+    title: "Create Event",
+    description: "Publish alumni events and invitations.",
+    route: "/admin",
+  },
+  {
+    title: "Broadcast Announcement",
+    description: "Share updates with all alumni.",
+    route: "/admin",
+  },
+];
 
 export default function AdminDashboardPage() {
+  const navigate = useNavigate();
   // TODO: Replace representative admin dashboard data with API responses from HRIS, document, verification, referral, and audit services.
   return (
     <div
@@ -280,7 +338,7 @@ export default function AdminDashboardPage() {
               fontWeight: 850,
             }}
           >
-            Keep alumni services measurable, compliant and responsive.
+            Manage the complete PalC Alumni ecosystem from a single operational dashboard.
           </h2>
 
           <p
@@ -300,24 +358,249 @@ export default function AdminDashboardPage() {
       </section>
 
       <section
+      style={{
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr",
+        gap: "24px",
+        alignItems: "start",
+      }}
+    >
+      <div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px",
+  }}
+>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(3, minmax(220px, 1fr))",
+      gap: "20px",
+    }}
+  >
+    {metrics.map((metric) => (
+      <StatsCard
+        key={metric.title}
+        title={metric.title}
+        value={metric.value}
+        subtitle={metric.subtitle}
+        accentColor={metric.accentColor}
+      />
+    ))}
+  </div>
+
+  <div
+    style={{
+      background: COLORS.surface,
+      border: `1px solid ${COLORS.border}`,
+      borderRadius: "18px",
+      padding: "22px 24px",
+      boxShadow: "0 18px 42px rgba(15,23,42,0.07)",
+    }}
+  >
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "16px",
+      }}
+    >
+      <div>
+        <h3
+          style={{
+            margin: 0,
+            fontSize: "22px",
+            color: COLORS.text,
+            fontWeight: 850,
+          }}
+        >
+          Operational Snapshot
+        </h3>
+
+        <p
+          style={{
+            margin: "6px 0 0",
+            fontSize: "14px",
+            color: COLORS.textSecondary,
+          }}
+        >
+          Current operational performance across the alumni platform.
+        </p>
+      </div>
+
+      <span
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "20px",
+          fontSize: "12px",
+          color: COLORS.textSecondary,
+          fontWeight: 600,
         }}
       >
-        {metrics.map((metric) => (
-          <DashboardCard
-            key={metric.title}
-            title={metric.title}
-            value={metric.value}
-            subtitle={metric.subtitle}
-            icon={<Glyph label={metric.icon} />}
+        Updated 5 mins ago
+      </span>
+    </div>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "12px 28px",
+      }}
+    >
+      {operationalSnapshot.map((item) => (
+        <div
+          key={item}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <div
+            style={{
+              width: "8px",
+              height: "8px",
+              borderRadius: "999px",
+              background: COLORS.primary,
+              flexShrink: 0,
+            }}
+          />
+
+          <span
+            style={{
+              color: COLORS.text,
+              fontSize: "14px",
+              lineHeight: 1.6,
+            }}
+          >
+            {item}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+      <div
+      style={{
+        background: COLORS.surface,
+        border: `1px solid ${COLORS.border}`,
+        borderRadius: "18px",
+        padding: "24px",
+        boxShadow: "0 18px 42px rgba(15,23,42,0.07)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "18px",
+        height: "100%",
+      }}
+    >
+      <div>
+        <h2
+          style={{
+            margin: 0,
+            color: COLORS.text,
+            fontSize: "22px",
+            fontWeight: 850,
+          }}
+        >
+          Today's Pending Work
+        </h2>
+
+        <p
+          style={{
+            marginTop: "6px",
+            color: COLORS.textSecondary,
+            fontSize: "14px",
+          }}
+        >
+          Review and complete high priority HR activities.
+        </p>
+      </div>
+
+      {pendingWork.map((item) => (
+        <div
+        onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-2px)";
+        e.currentTarget.style.boxShadow = "0 10px 24px rgba(0,0,0,0.08)";
+      }}
+
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0px)";
+        e.currentTarget.style.boxShadow = "none";
+      }}
+          key={item.title}
+          onClick={() => navigate(item.path)}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "14px 16px",
+            border: `1px solid ${COLORS.border}`,
+            borderRadius: "14px",
+            cursor: "pointer",
+            transition: "0.2s",
+            background: "#FBFDFF",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontWeight: 700,
+                color: COLORS.text,
+                fontSize: "14px",
+              }}
+            >
+              {item.title}
+            </div>
+
+            <div
+              style={{
+                marginTop: "4px",
+                color: COLORS.textSecondary,
+                fontSize: "13px",
+              }}
+            >
+              {item.count} Pending
+            </div>
+          </div>
+
+          <StatusBadge status={item.status} />
+        </div>
+      ))}
+    </div>
+    </section>
+
+      <section>
+      <h2 style={sectionTitleStyle}>Quick Actions</h2>
+      <p
+        style={{
+          ...mutedTextStyle,
+          marginBottom: "18px",
+        }}
+      >
+        Frequently used HR operations for managing the alumni portal.
+      </p>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+          gap: "16px",
+        }}
+      >
+        {quickActions.map((item) => (
+          <QuickActionCard
+            key={item.title}
+            title={item.title}
+            subtitle={item.description}
+            onClick={() => navigate(item.route)}
           />
         ))}
-      </section>
+      </div>
+    </section>
 
-      <section
+    <section
         style={{
           display: "grid",
           gridTemplateColumns: "minmax(0, 1.35fr) minmax(360px, 0.65fr)",
