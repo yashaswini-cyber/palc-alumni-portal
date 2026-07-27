@@ -11,18 +11,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DocumentPreviewModal from "../../../shared/components/DocumentPreviewModal";
 import HeroBanner from "../../../shared/components/HeroBanner";
-
-const documents = [
-  { id: "DOC-001", employeeId: "PALC-1023", employeeName: "Rahul Sharma", name: "Experience Certificate", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.0", date: "12-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-002", employeeId: "PALC-1047", employeeName: "Sneha Iyer", name: "Relieving Letter", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.2", date: "15-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-003", employeeId: "PALC-1008", employeeName: "Karan Mehta", name: "Form 16", category: "Tax Document", uploadedBy: "Finance", version: "v2.0", date: "30-Mar-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-004", employeeId: "PALC-1061", employeeName: "Priya Nair", name: "Last Payslip", category: "Payroll", uploadedBy: "Payroll Team", version: "v1.0", date: "31-Dec-2024", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-005", employeeId: "PALC-1084", employeeName: "Arjun Rao", name: "Full & Final (F&F) Settlement Statement", category: "Settlement", uploadedBy: "Finance", version: "v1.0", date: "18-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-  { id: "DOC-006", employeeId: "PALC-1096", employeeName: "Neha Kapoor", name: "PF Transfer Documents", category: "Provident Fund", uploadedBy: "HR Operations", version: "v1.1", date: "20-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
-];
+import { getDocuments, addDocument } from "../../../mockData/localStorage";
 
 const secondaryButtonStyle = { background: "#EFF6FF", color: COLORS.primary, boxShadow: "none", border: `1px solid ${COLORS.border}`, padding: "10px 18px", borderRadius: "10px", cursor: "pointer" };
-
+const documents = getDocuments();
 function formatRecentTime(time: number) {
   const diff = Date.now() - time;
   const minutes = Math.floor(diff / (1000 * 60));
@@ -120,19 +112,18 @@ export default function DocumentsPage() {
     link.click();
     logActivity(doc.name, "Previewed");
   };
-const [uploadModalOpen, setUploadModalOpen] = useState(false);
 const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
       <HeroBanner
-        badge="HR Document Management"
-        title="Employment Document Repository"
-        subtitle="Manage employment records, upload official documents, maintain version history and securely distribute employment records to alumni through a centralized repository."
-        actions={[
+            badge="HR Document Management"
+            title="Employment Document Repository"
+            subtitle="Manage employment records, upload official documents, maintain version history and securely distribute employment records to alumni through a centralized repository."
+            actions={[
             {
-            title: "Upload Document",
-            onClick: () => setUploadModalOpen(true),
+                title: "Upload Document",
+                onClick: () => scrollToSection("upload-document"),
             },
             {
             title: "Bulk Upload",
@@ -220,6 +211,80 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
         <StatsCard title="Latest Upload" value="30 Mar" subtitle="Latest upload" accentColor="#9333EA" />
       </div>
 
+{/*Upload Document*/}
+    <section id="upload-document">
+        <SectionCard
+        title="Upload Employment Document"
+        subtitle="Upload employment records and assign them to alumni. Uploaded documents will automatically become available in the Alumni Portal."
+        >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: "20px" }}>
+
+            <div>
+            <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Employee ID</label>
+            <input type="text" placeholder="Enter Employee ID" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            </div>
+
+            <div>
+            <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Employee Name</label>
+            <input type="text" placeholder="Enter Employee Name" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            </div>
+
+            <div>
+            <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Document Type</label>
+            <select style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }}>
+                <option>Experience Certificate</option>
+                <option>Relieving Letter</option>
+                <option>Form 16</option>
+                <option>Last Payslip</option>
+                <option>Full & Final Settlement</option>
+                <option>PF Transfer Documents</option>
+            </select>
+            </div>
+
+            <div>
+            <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Category</label>
+            <select style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }}>
+                <option>Employment Record</option>
+                <option>Payroll</option>
+                <option>Tax Document</option>
+                <option>Settlement</option>
+                <option>Provident Fund</option>
+            </select>
+            </div>
+
+            <div>
+            <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Issue Date</label>
+            <input type="date" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            </div>
+
+            <div>
+            <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Expiry Date (Optional)</label>
+            <input type="date" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            </div>
+
+            <div style={{ gridColumn: "1 / -1" }}>
+            <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Upload PDF Document</label>
+            <input type="file" accept=".pdf" style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px dashed ${COLORS.border}`, background: COLORS.surface, color: COLORS.text }} />
+            </div>
+
+            <div style={{ gridColumn: "1 / -1" }}>
+            <label style={{ display: "block", marginBottom: "8px", color: COLORS.text }}>Remarks</label>
+            <textarea rows={4} placeholder="Additional notes..." style={{ width: "100%", padding: "12px", borderRadius: "10px", border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, resize: "vertical" }} />
+            </div>
+
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "16px", marginTop: "28px" }}>
+            <button style={secondaryButtonStyle}>
+            Clear Form
+            </button>
+
+            <PrimaryButton>
+            Upload Document
+            </PrimaryButton>
+        </div>
+        </SectionCard>
+        </section>
       {/* Employment Documents Section */}
      <SectionCard title="Employment Document Repository">
         <div style={{ marginBottom: "22px" }}>
@@ -480,19 +545,6 @@ const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
         </div>
       </DetailsModal>
     )}
-    {uploadModalOpen && (
-  <DetailsModal
-    open={uploadModalOpen}
-    onClose={() => setUploadModalOpen(false)}
-    title="Upload Employment Document"
-  >
-    <div style={{ padding: "24px" }}>
-      <p style={{ color: COLORS.text }}>
-        Upload Document functionality will be implemented here.
-      </p>
-    </div>
-  </DetailsModal>
-)}
 {bulkUploadModalOpen && (
   <DetailsModal
     open={bulkUploadModalOpen}
