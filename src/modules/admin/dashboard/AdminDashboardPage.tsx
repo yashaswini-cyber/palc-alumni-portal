@@ -28,7 +28,7 @@ const metrics: MetricItem[] = [
 const pendingWork: PendingWorkItem[] = [
   { title: "Employment Verifications", count: "12", status: "High", path: "/admin/verification" },
   { title: "Document Requests", count: "8", status: "High", path: "/admin/documents" },
-  { title: "Helpdesk Tickets", count: "4", status: "Medium", path: "/helpdesk" },
+  { title: "Helpdesk Tickets", count: "4", status: "Medium", path: "/admin/helpdesk" },
   { title: "Account Activations", count: "3", status: "Low", path: "/admin/alumni" },
   { title: "Referral Reviews", count: "5", status: "Medium", path: "/referrals" },
 ];
