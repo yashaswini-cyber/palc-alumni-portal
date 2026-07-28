@@ -136,16 +136,6 @@ export default function ProfilePage() {
         <strong>6 Years</strong>
         </div>
         </div>
-
-        <div
-        style={{
-        paddingTop:"14px",
-        borderTop:`1px solid ${COLORS.border}`,
-        fontSize:"13px",
-        color:COLORS.textSecondary,
-        }}
-        >Keep your profile updated so alumni and HR always see your latest information.
-        </div>
         </div>
         }
       />
