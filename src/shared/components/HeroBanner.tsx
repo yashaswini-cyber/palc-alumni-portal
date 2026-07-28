@@ -13,6 +13,7 @@ type HeroPill = {
 type HeroBannerProps = {
   badge: string;
   title: string;
+  onClick?: () => void;
   subtitle: string;
   actions: HeroAction[];
   pills?: HeroPill[];

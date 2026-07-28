@@ -75,9 +75,9 @@ const successMetrics = [
 const quickActions = [
   { title: "Generate Documents", description: "Create employment documents for alumni.", route: "/admin/documents" },
   { title: "Employment Verification", description: "Review pending verification requests.", route: "/admin/verification" },
+  { title: "Helpdesk Tickets", description: "Share updates with all alumni.", route: "/admin/helpdesk" },
   { title: "Manage Alumni", description: "Access alumni records and profiles.", route: "/admin/alumni" },
   { title: "Create Event", description: "Publish alumni events and invitations.", route: "/admin/events" },
-  { title: "Broadcast Announcement", description: "Share updates with all alumni.", route: "/admin" },
 ];
 
 export default function AdminDashboardPage() {
