@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, useEffect, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../../shared/components/Toast";
 import HeroBanner from "../../shared/components/HeroBanner";
@@ -9,6 +9,7 @@ import SectionCard from "../../shared/components/SectionCard";
 import StatusBadge from "../../shared/components/StatusBadge";
 import DetailsModal from "../../shared/components/DetailsModal";
 import { COLORS } from "../../shared/theme/colors";
+import {getVerificationRequests,addVerificationRequest, } from "../../mockData/localStorage";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -96,37 +97,9 @@ function StageBadge({ stage }: { stage: string }) {
 }
 export default function VerificationPage() {
   const navigate = useNavigate();
-
-  // 1. Core Component States
-  const [requests, setRequests] = useState([
-    {
-      id: "VR001",
-      company: "Microsoft",
-      requester: "HR Team",
-      date: "10 June 2026",
-      type: "Employment Verification",
-      stage: "HR Review",
-      status: "Approved",
-    },
-    {
-      id: "VR002",
-      company: "Google",
-      requester: "Background Verification Agency",
-      date: "18 June 2026",
-      type: "Background Verification",
-      stage: "Processing",
-      status: "Pending",
-    },
-    {
-      id: "VR003",
-      company: "Amazon",
-      requester: "Recruitment Team",
-      date: "20 June 2026",
-      type: "Employment Verification",
-      stage: "Completed",
-      status: "Approved",
-    },
-  ]);
+const [requests, setRequests] = useState(
+  getVerificationRequests()
+);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -152,6 +125,9 @@ export default function VerificationPage() {
     purpose: "New Employment",
     notes: "",
   });
+  useEffect(() => {
+  setRequests(getVerificationRequests());
+}, []);
 
   // 2. Filter and Sort Logic Derivation
   const filteredRequests = requests
@@ -204,8 +180,8 @@ export default function VerificationPage() {
       stage: "Submitted",
       status: "Pending",
     };
-
-    setRequests([newRequest, ...requests]);
+    addVerificationRequest(newRequest);
+    setRequests(getVerificationRequests());
     setShowSuccess(true);
 
     // Reset form fields cleanly
