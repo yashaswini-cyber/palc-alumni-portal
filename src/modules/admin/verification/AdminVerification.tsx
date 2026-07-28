@@ -8,7 +8,7 @@ import SectionCard from "../../../shared/components/SectionCard";
 import StatusBadge from "../../../shared/components/StatusBadge";
 import DetailsModal from "../../../shared/components/DetailsModal";
 import { COLORS } from "../../../shared/theme/colors";
-import { getVerificationRequests, } from "../../../mockData/localStorage";
+import { getVerificationRequests, saveVerificationRequests, } from "../../../mockData/localStorage";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -69,7 +69,10 @@ export default function VerificationPage() {
     });
 
   const visibleRequests = filteredRequests.slice(0, 5);
-    
+  const pendingRequests = requests.filter((req) => req.status === "Pending");
+  const approvedRequests = requests.filter((req) => req.status === "Approved");
+  const rejectedRequests = requests.filter((req) => req.status === "Rejected");
+  const completedRequests = requests.filter((req) => req.stage === "Completed");  
   const handleViewDetails = (request: (typeof requests)[number]) => {
     setSelectedRequest(request);
     setShowDetailsModal(true);
@@ -92,7 +95,50 @@ export default function VerificationPage() {
     link.click();
     URL.revokeObjectURL(url);
   };
+  const refreshRequests = () => {
+    setRequests(getVerificationRequests());
+  };
+const updateRequestStatus = (
+  requestId: string,
+  status: "Approved" | "Rejected"
+) => {
+  const updatedRequests = requests.map((request) => {
+    if (request.id !== requestId) {
+      return request;
+    }
+    return {
+      ...request,
+      status,
+      stage: "Completed",
+    };
+  });
+  saveVerificationRequests(updatedRequests);
+   setRequests(updatedRequests);
+   if (selectedRequest?.id === requestId) {
 
+  const updatedRequest = updatedRequests.find(
+    (request) => request.id === requestId
+  );
+  if (updatedRequest) {
+    setSelectedRequest(updatedRequest);
+  }
+}
+};
+const handleApprove = (requestId: string) => {
+  updateRequestStatus(
+    requestId,
+    "Approved"
+  );
+  setShowDetailsModal(false);
+};
+
+const handleReject = (requestId: string) => {
+  updateRequestStatus(
+    requestId,
+    "Rejected"
+  );
+  setShowDetailsModal(false);
+};
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -129,13 +175,120 @@ export default function VerificationPage() {
       />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px" }}>
-        <StatsCard title="Pending Requests" value="2" subtitle="Awaiting HR Review" accentColor="#2563EB" />
-        <StatsCard title="Completed" value="18" subtitle="Successfully Verified" accentColor="#16A34A" />
-        <StatsCard title="QR Certificates" value="12" subtitle="Ready to Download" accentColor="#D97706" />
-        <StatsCard title="Average Processing" value="2 Days" subtitle="Current Turnaround" accentColor="#DC2626" />
+        <StatsCard
+          title="Pending Requests"
+          value={pendingRequests.length.toString()}
+          subtitle="Awaiting HR Review"
+          accentColor="#D97706"
+        />
+
+        <StatsCard
+          title="Approved Requests"
+          value={approvedRequests.length.toString()}
+          subtitle="Approved by HR"
+          accentColor="#16A34A"
+        />
+
+        <StatsCard
+          title="Rejected Requests"
+          value={rejectedRequests.length.toString()}
+          subtitle="Rejected by HR"
+          accentColor="#DC2626"
+        />
+
+        <StatsCard
+          title="Completed"
+          value={completedRequests.length.toString()}
+          subtitle="Verification Completed"
+          accentColor="#2563EB"
+        />
       </div>
 
+      <div id="pending-verifications">
+        <SectionCard
+          title="Pending Verification Requests"
+          subtitle={`There are ${pendingRequests.length} requests awaiting HR approval.`}
+        ><div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead style={{ background: "#F8FAFC" }}>
+                <tr>
+                  <th style={{ padding: "12px" }}>Request ID</th>
+                  <th style={{ padding: "12px" }}>Requested By</th>
+                  <th style={{ padding: "12px" }}>Company</th>
+                  <th style={{ padding: "12px" }}>Verification Type</th>
+                  <th style={{ padding: "12px" }}>Submitted</th>
+                  <th style={{ padding: "12px" }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingRequests.map((req) => (
+                  <tr
+                    key={req.id}
+                    style={{ borderBottom: `1px solid ${COLORS.border}` }}
+                  ><td style={{ padding: "12px" }}>{req.id}</td>
+                    <td style={{ padding: "12px" }}>
+                      {req.requester}
+                    </td>
 
+                    <td style={{ padding: "12px" }}>
+                      {req.company}
+                    </td>
+
+                    <td style={{ padding: "12px" }}>
+                      {req.type}
+                    </td>
+
+                    <td style={{ padding: "12px" }}>
+                      {req.date}
+                    </td>
+
+                    <td style={{ padding: "12px" }}>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        <button
+                          style={secondaryButtonStyle}
+                          onClick={() => handleViewDetails(req)}
+                        >View Details
+                        </button>
+
+                        <PrimaryButton
+                          onClick={() => handleApprove(req.id)}
+                        >
+                          Approve
+                        </PrimaryButton>
+
+                        <button
+                          style={{
+                            ...secondaryButtonStyle,
+                            background: "#FEE2E2",
+                            color: "#B91C1C",
+                          }}
+                          onClick={() => handleReject(req.id)}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {pendingRequests.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      style={{
+                        padding: "30px",
+                        textAlign: "center",
+                        color: COLORS.textSecondary,
+                      }}
+                    >
+                      No pending verification requests.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </SectionCard>
+      </div>
 
       <div id="verification-requests">
         <SectionCard title="Manage Verification Requests" subtitle={`Showing ${Math.min(visibleRequests.length, filteredRequests.length)} of ${filteredRequests.length} verification requests`}>
@@ -306,7 +459,11 @@ export default function VerificationPage() {
         </SectionCard>
       </div>
 
-      <DetailsModal open={showDetailsModal} title={selectedRequest?.id ?? "Request Details"} onClose={() => setShowDetailsModal(false)}>
+      <DetailsModal
+        open={showDetailsModal}
+        title={selectedRequest?.id ?? "Request Details"}
+        onClose={() => setShowDetailsModal(false)}
+      >
         {selectedRequest && (
           <div style={{ display: "grid", gap: "16px" }}>
             <div><strong>Company:</strong> {selectedRequest.company}</div>
@@ -315,6 +472,39 @@ export default function VerificationPage() {
             <div><strong>Submitted:</strong> {selectedRequest.date}</div>
             <div><strong>Stage:</strong> {selectedRequest.stage}</div>
             <div><strong>Status:</strong> {selectedRequest.status}</div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "12px",
+                marginTop: "24px",
+              }}
+            >
+              {selectedRequest.status === "Pending" && (
+                <>
+                  <button
+                    style={{
+                      ...secondaryButtonStyle,
+                      background: "#FEE2E2",
+                      color: "#B91C1C",
+                    }}
+                    onClick={() => {
+                      handleReject(selectedRequest.id);
+                      setShowDetailsModal(false);
+                    }}
+                  >
+                    Reject
+                  </button>
+                  <PrimaryButton
+                    onClick={() => {
+                      handleApprove(selectedRequest.id);
+                      setShowDetailsModal(false);
+                    }}
+                  >Approve
+                  </PrimaryButton>
+                </>
+              )}
+            </div>
           </div>
         )}
       </DetailsModal>
