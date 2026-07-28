@@ -103,34 +103,6 @@ export default function Header() {
         </label>
 
         <button
-          aria-label="Settings"
-          type="button"
-          style={{
-            width: "42px",
-            height: "42px",
-            borderRadius: "14px",
-            border: "1px solid #D9E2EF",
-            background: "#FFFFFF",
-            color: "#475569",
-            display: "grid",
-            placeItems: "center",
-            cursor: "pointer",
-            boxShadow: "none",
-            transition: "background 160ms ease, border-color 160ms ease, transform 120ms ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "#F8FAFC";
-            e.currentTarget.style.borderColor = "#BFDBFE";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "#FFFFFF";
-            e.currentTarget.style.borderColor = "#D9E2EF";
-          }}
-        >
-          <span style={{ fontSize: "12px", fontWeight: 850 }}>ST</span>
-        </button>
-
-        <button
           aria-label="Notifications"
           type="button"
           onClick={() => navigate("/dashboard/notifications")}
@@ -264,20 +236,10 @@ export default function Header() {
 </div>
 
     <div
-      style={{
-        padding: "10px 18px",
-        fontSize: "13px",
-        color: "#475569",
-        cursor: "pointer",
-        transition: "background 140ms ease",
-      }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = "#F8FAFC"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-    >
-      Settings
-    </div>
-
-    <div
+      onClick={() => {
+      setShowProfileMenu(false);
+      navigate("/dashboard/helpdesk");
+    }}
       style={{
         padding: "10px 18px",
         fontSize: "13px",
