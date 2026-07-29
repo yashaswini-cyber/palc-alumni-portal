@@ -93,7 +93,7 @@ if (!result.success) {
 
           <PrimaryButton type="submit"disabled={loading} fullWidth style={{height:"52px",borderRadius:"12px",marginBottom:"24px"}}>{loading ? "Signing In..." : "Login"}</PrimaryButton>
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
-            <span style={{ fontSize: "14px", color: COLORS.textSecondary }}>New Alumni?</span>
+            <span style={{ fontSize: "14px", color: COLORS.textSecondary }}>First time signing in?</span>
             <Link to="/register" style={{ fontWeight: 700, color: "#2563EB", textDecoration: "none" }}>Activate Alumni Account</Link>
           </div>
         </form>
