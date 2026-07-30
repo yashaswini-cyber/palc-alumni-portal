@@ -16,6 +16,7 @@ import { AuthService } from "../auth/authService";
 import AdminDocuments from "../modules/admin/documents/AdminDocuments";
 import AdminVerification from "../modules/admin/verification/AdminVerification";
 import AdminHelpdesk from "../modules/admin/helpdesk/AdminHelpdesk";
+import ActivateAccountPage from "../auth/ActivateAccountPage";
 
 function RequireAlumniAuth() {
   return AuthService.isAuthenticated()
@@ -31,6 +32,7 @@ function RequireAdminAuth() {
 export const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/login" replace /> },
   { path: "/login", element: <AlumniLoginPage /> },
+  { path: "/activate-account", element: <ActivateAccountPage /> },
   {
     element: <RequireAlumniAuth />,
     children: [
