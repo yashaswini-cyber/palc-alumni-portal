@@ -3,15 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import logo from "../assets/images/palc-logo.svg";
 import { COLORS } from "../shared/theme/colors";
 import PrimaryButton from "../shared/components/PrimaryButton";
-
-const mockEmployees = [
-  {
-    employeeId: "PALC001",
-    email: "pawar.rvu@gmail.com",
-    name: "Yashaswini Pawar",
-    activated: false,
-  },
-];
+import { alumniAccounts } from "../../data/mockEmployeeData"
 
 export default function ActivateAccountPage() {
   const navigate = useNavigate();
@@ -33,12 +25,11 @@ export default function ActivateAccountPage() {
       return;
     }
 
-    const employee = mockEmployees.find(
-      (emp) =>
+    const employee = alumniAccounts.find(
+    (emp) =>
         emp.employeeId.toLowerCase() === employeeId.toLowerCase() &&
         emp.email.toLowerCase() === email.toLowerCase()
     );
-
     if (!employee) {
       setError(
         "We couldn't verify your employment details. Please check your information or contact HR."

@@ -1,15 +1,9 @@
+import { alumniAccounts, adminAccounts } from "../../data/mockEmployeeData";
+
 const AUTH_KEY = "palcAuth";
 
-const DEMO_ALUMNI = {
-  username: "PALC01",
-  password: "123",
-};
-const DEMO_ADMIN = {
-  username: "PALCHR01",
-  password: "123",
-};
-
 type UserRole = "alumni" | "admin";
+
 type AuthSession = {
   isLoggedIn: boolean;
   username: string;
@@ -17,13 +11,57 @@ type AuthSession = {
 };
 
 export const AuthService = {
-    /*Alumni Authentication*/
- validateCredentials(username: string, password: string) {
-  return (
-    username === DEMO_ALUMNI.username &&
-    password === DEMO_ALUMNI.password
-  );
-},
+  // Alumni Authentication
+  validateCredentials(username: string, password: string) {
+    return alumniAccounts.some(
+      (user) =>
+        user.username === username &&
+        user.password === password
+    );
+  },
+
+  // Admin Authentication
+  validateAdminCredentials(username: string, password: string) {
+    return adminAccounts.some(
+      (user) =>
+        user.username === username &&
+        user.password === password
+    );
+  },
+
+  // Used by Login Page
+  authenticate(username: string, password: string) {
+    const alumni = alumniAccounts.find(
+      (user) =>
+        user.username === username &&
+        user.password === password
+    );
+
+    if (alumni) {
+      return {
+        success: true,
+        role: "alumni" as const,
+      };
+    }
+
+    const admin = adminAccounts.find(
+      (user) =>
+        user.username === username &&
+        user.password === password
+    );
+
+    if (admin) {
+      return {
+        success: true,
+        role: "admin" as const,
+      };
+    }
+
+    return {
+      success: false,
+      role: null,
+    };
+  },
 
   login(username: string) {
     const session: AuthSession = {
@@ -31,41 +69,9 @@ export const AuthService = {
       username,
       role: "alumni",
     };
+
     localStorage.setItem(AUTH_KEY, JSON.stringify(session));
   },
-
-  // Admin Authentication
-  validateAdminCredentials(username: string, password: string) {
-    return (
-      username === DEMO_ADMIN.username &&
-      password === DEMO_ADMIN.password
-    );
-  },
-  authenticate(username: string, password: string) {
-  if (
-    username === DEMO_ALUMNI.username &&
-    password === DEMO_ALUMNI.password
-  ) {
-    return {
-      success: true,
-      role: "alumni" as const,
-    };
-  }
-  
-  if (
-    username === DEMO_ADMIN.username &&
-    password === DEMO_ADMIN.password
-  ) {
-    return {
-      success: true,
-      role: "admin" as const,
-    };
-  }
-  return {
-    success: false,
-    role: null,
-  };
-},
 
   loginAdmin(username: string) {
     const session: AuthSession = {
@@ -77,7 +83,6 @@ export const AuthService = {
     localStorage.setItem(AUTH_KEY, JSON.stringify(session));
   },
 
-  // Common
   logout() {
     localStorage.removeItem(AUTH_KEY);
   },
