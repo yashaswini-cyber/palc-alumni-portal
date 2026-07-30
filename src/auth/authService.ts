@@ -1,4 +1,5 @@
-import { alumniAccounts, adminAccounts } from "../../data/mockEmployeeData";
+import { adminAccounts } from "../../data/mockEmployeeData";
+import { getAlumniAccounts } from "../mockData/localStorage";
 
 const AUTH_KEY = "palcAuth";
 
@@ -13,9 +14,10 @@ type AuthSession = {
 export const AuthService = {
   // Alumni Authentication
   validateCredentials(username: string, password: string) {
-    return alumniAccounts.some(
+    return getAlumniAccounts().some(
       (user) =>
-        user.username === username &&
+        (user.username === username ||
+          user.email.toLowerCase() === username.toLowerCase()) &&
         user.password === password
     );
   },
@@ -31,9 +33,10 @@ export const AuthService = {
 
   // Used by Login Page
   authenticate(username: string, password: string) {
-    const alumni = alumniAccounts.find(
+    const alumni = getAlumniAccounts().find(
       (user) =>
-        user.username === username &&
+        (user.username === username ||
+          user.email.toLowerCase() === username.toLowerCase()) &&
         user.password === password
     );
 

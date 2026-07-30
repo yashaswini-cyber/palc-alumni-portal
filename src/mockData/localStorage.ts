@@ -1,3 +1,5 @@
+import { alumniAccounts } from "../../data/mockEmployeeData";
+
 export interface EmploymentDocument {
   id: string;
   employeeId: string;
@@ -23,6 +25,7 @@ export interface VerificationRequest {
 
 const DOCUMENTS_KEY = "palc-employment-documents";
 const VERIFICATION_REQUESTS_KEY = "palc-verification-requests";
+const ALUMNI_ACCOUNTS_KEY = "palc-alumni-accounts";
 const defaultDocuments: EmploymentDocument[] = [
   { id: "DOC-001", employeeId: "PALC-1023", employeeName: "Rahul Sharma", name: "Experience Certificate", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.0", date: "12-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
   { id: "DOC-002", employeeId: "PALC-1047", employeeName: "Sneha Iyer", name: "Relieving Letter", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.2", date: "15-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
@@ -117,4 +120,43 @@ export function addVerificationRequest(
   requests.unshift(request);
 
   saveVerificationRequests(requests);
+}
+export function getAlumniAccounts() {
+  const stored = localStorage.getItem(ALUMNI_ACCOUNTS_KEY);
+
+  if (!stored) {
+    localStorage.setItem(
+      ALUMNI_ACCOUNTS_KEY,
+      JSON.stringify(alumniAccounts)
+    );
+
+    return alumniAccounts;
+  }
+
+  return JSON.parse(stored);
+}
+
+export function saveAlumniAccounts(accounts: typeof alumniAccounts) {
+  localStorage.setItem(
+    ALUMNI_ACCOUNTS_KEY,
+    JSON.stringify(accounts)
+  );
+}
+
+export function updateAlumniAccount(
+  employeeId: string,
+  password: string
+) {
+  const accounts = getAlumniAccounts();
+
+  const account = accounts.find(
+    (a: any) => a.employeeId === employeeId
+  );
+
+  if (!account) return;
+
+  account.password = password;
+  account.activated = true;
+
+  saveAlumniAccounts(accounts);
 }

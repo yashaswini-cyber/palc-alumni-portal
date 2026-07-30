@@ -9,7 +9,7 @@ import emailjs from "@emailjs/browser";
 import Toast from "../shared/components/Toast";
 
 
-export default function ActivateAccountPage() {
+export default function ForgotPasswordPage() {
   const navigate = useNavigate();
 
   const [employeeId, setEmployeeId] = useState("");
@@ -70,11 +70,12 @@ export default function ActivateAccountPage() {
       setError("We couldn't verify your employment details. Please check your information or contact HR.");
       return;
     }
-
-    if (employee.activated) {
-      setError("This account has already been activated.");
-      return;
-    }
+    if (!employee.activated) {
+        setError(
+            "This account has not been activated yet. Please activate your account first."
+        );
+        return;
+        }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedOTP(otp);
@@ -127,7 +128,7 @@ export default function ActivateAccountPage() {
     }
   };
 
-  const activateAccount = () => {
+  const resetPassword = () => {
     setOtpError("");
     setError("");
 
@@ -147,17 +148,19 @@ export default function ActivateAccountPage() {
       return;
     }
 
-    setToastTitle("Account Activated");
-    setToastMessage(`${verifiedEmployee?.name}, your Alumni Portal account has been activated successfully.`);
+    setToastTitle("Password Updated");
+    setToastMessage(
+    `${verifiedEmployee?.name}, your password has been updated successfully.`
+    );
     setShowToast(true);
 
     setTimeout(() => {
       if (verifiedEmployee) {
-      updateAlumniAccount(
-          verifiedEmployee.employeeId,
-          password
-      );
-  }
+        updateAlumniAccount(
+            verifiedEmployee.employeeId,
+            password
+        );
+    }
       navigate("/login");
     }, 2000);
   };
@@ -167,8 +170,8 @@ export default function ActivateAccountPage() {
       <div style={{ width: "100%", maxWidth: "500px", background: "#fff", borderRadius: "24px", padding: "42px", boxShadow: "0 24px 60px rgba(15,23,42,.25)" }}>
         <form onSubmit={handleContinue} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <img src={logo} alt="PalC" style={{ width: "90px", marginBottom: "22px" }} />
-          <h1 style={{ margin: 0, fontSize: "30px", fontWeight: 800, color: COLORS.text }}>Activate Alumni Account</h1>
-          <p style={{ margin: "14px 0 36px", color: COLORS.textSecondary, textAlign: "center", lineHeight: 1.7 }}>Verify your identity before activating your Alumni Portal account.</p>
+          <h1 style={{ margin: 0, fontSize: "30px", fontWeight: 800, color: COLORS.text }}>Forgot Password</h1>
+          <p style={{ margin: "14px 0 36px", color: COLORS.textSecondary, textAlign: "center", lineHeight: 1.7 }}>Verify your identity to reset your Alumni Portal password.</p>
 
           <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "8px", marginBottom: "22px" }}>
             <label style={{ fontWeight: 600, color: COLORS.text }}>Employee ID</label>
@@ -199,7 +202,7 @@ export default function ActivateAccountPage() {
 
         {showPasswordSection && (
           <div style={{ width: "100%", marginTop: "28px", borderTop: `1px solid ${COLORS.border}`, paddingTop: "24px" }}>
-            <h3 style={{ margin: "0 0 20px", color: COLORS.text }}>Create Password</h3>
+            <h3 style={{ margin: "0 0 20px", color: COLORS.text }}>Create New Password</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
               <div>
                 <label style={{ fontWeight: 600 }}>New Password</label>
@@ -219,7 +222,7 @@ export default function ActivateAccountPage() {
                 • One special character
               </div>
 
-              <PrimaryButton type="button" fullWidth onClick={activateAccount} style={{ height: "50px", borderRadius: "12px" }}>Activate Account</PrimaryButton>
+              <PrimaryButton type="button" fullWidth onClick={resetPassword} style={{ height: "50px", borderRadius: "12px" }}>Reset Password</PrimaryButton>
             </div>
           </div>
         )}
