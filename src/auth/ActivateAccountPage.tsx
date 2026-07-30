@@ -7,7 +7,8 @@ import { alumniAccounts } from "../../data/mockEmployeeData";
 import {getAlumniAccounts,updateAlumniAccount,} from "../mockData/localStorage"; 
 import emailjs from "@emailjs/browser";
 import Toast from "../shared/components/Toast";
-
+import {isEmailActivated,activateEmail} from "../mockData/localStorage";    
+    
 
 export default function ActivateAccountPage() {
   const navigate = useNavigate();
@@ -71,11 +72,10 @@ export default function ActivateAccountPage() {
       return;
     }
 
-    if (employee.activated) {
+    if (isEmailActivated(email)) {
       setError("This account has already been activated.");
       return;
-    }
-
+  }
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedOTP(otp);
     const sent = await sendOTPEmail(email, otp);
@@ -157,6 +157,7 @@ export default function ActivateAccountPage() {
           verifiedEmployee.employeeId,
           password
       );
+      activateEmail(email);
   }
       navigate("/login");
     }, 2000);

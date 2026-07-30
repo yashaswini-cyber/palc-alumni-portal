@@ -1,0 +1,62 @@
+/*
+ * BACKEND INTEGRATION NOTE (Prototype Authentication Logic)
+ *
+ * The current account activation flow has been temporarily modified for the HR testing/demo phase.
+ *
+ * Since the frontend is not yet connected to the HR employee database, all testers currently use the
+ * same mock Employee ID (PALC001) but their own email addresses. To support this, a temporary
+ * email-based activation mechanism has been implemented in:
+ *
+ *    - src/shared/utils/localStorage.ts
+ *      • ACTIVATED_EMAILS_KEY
+ *      • getActivatedEmails()
+ *      • saveActivatedEmails()
+ *      • isEmailActivated()
+ *      • activateEmail()
+ *
+ *    - src/auth/ActivateAccountPage.tsx
+ *      • Activation currently checks isEmailActivated(email) instead of employee.activated.
+ *
+ * Production Changes Required:
+ *
+ * 1. Remove the temporary ACTIVATED_EMAILS_KEY and all related helper functions from
+ *    src/shared/utils/localStorage.ts.
+ *
+ * 2. In src/auth/ActivateAccountPage.tsx, replace the email-based activation check:
+ *
+ *        if (isEmailActivated(email)) { ... }
+ *
+ *    with backend validation that:
+ *
+ *      • Employee ID exists.
+ *      • Entered email matches the employee's registered email in the HR database.
+ *      • Employee account has not already been activated.
+ *
+ * 3. After successful OTP verification and password creation, the backend should persist:
+ *
+ *      • activated = true
+ *      • password hash
+ *
+ *    against the corresponding Employee ID in the database.
+ *
+ * Expected Production Flow:
+ *
+ * Employee ID
+ *        ↓
+ * Verify Employee ID exists
+ *        ↓
+ * Verify entered email matches HR records
+ *        ↓
+ * Verify employee.activated == false
+ *        ↓
+ * Send OTP
+ *        ↓
+ * Verify OTP
+ *        ↓
+ * Create Password
+ *        ↓
+ * Mark Employee ID as activated
+ *
+ * Once the backend is integrated, activation should be controlled solely by the Employee ID record
+ * in the HR database, and the temporary email-tracking implementation should be removed.
+ */

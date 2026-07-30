@@ -26,6 +26,7 @@ export interface VerificationRequest {
 const DOCUMENTS_KEY = "palc-employment-documents";
 const VERIFICATION_REQUESTS_KEY = "palc-verification-requests";
 const ALUMNI_ACCOUNTS_KEY = "palc-alumni-accounts";
+const ACTIVATED_EMAILS_KEY = "palc-activated-emails";
 const defaultDocuments: EmploymentDocument[] = [
   { id: "DOC-001", employeeId: "PALC-1023", employeeName: "Rahul Sharma", name: "Experience Certificate", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.0", date: "12-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
   { id: "DOC-002", employeeId: "PALC-1047", employeeName: "Sneha Iyer", name: "Relieving Letter", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.2", date: "15-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
@@ -121,7 +122,7 @@ export function addVerificationRequest(
 
   saveVerificationRequests(requests);
 }
-export function getAlumniAccounts() {
+export function getAlumniAccounts(): typeof alumniAccounts {
   const stored = localStorage.getItem(ALUMNI_ACCOUNTS_KEY);
 
   if (!stored) {
@@ -160,3 +161,36 @@ export function updateAlumniAccount(
 
   saveAlumniAccounts(accounts);
 }
+export const getActivatedEmails = (): string[] => {
+    const stored = localStorage.getItem(ACTIVATED_EMAILS_KEY);
+
+    if (stored) {
+        return JSON.parse(stored);
+    }
+
+    return [];
+};
+
+export const saveActivatedEmails = (emails: string[]) => {
+    localStorage.setItem(
+        ACTIVATED_EMAILS_KEY,
+        JSON.stringify(emails)
+    );
+};
+
+export const isEmailActivated = (email: string): boolean => {
+    return getActivatedEmails().includes(
+        email.toLowerCase()
+    );
+};
+
+export const activateEmail = (email: string) => {
+    const emails = getActivatedEmails();
+
+    const lower = email.toLowerCase();
+
+    if (!emails.includes(lower)) {
+        emails.push(lower);
+        saveActivatedEmails(emails);
+    }
+};
