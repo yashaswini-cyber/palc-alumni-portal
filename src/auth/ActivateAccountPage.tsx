@@ -29,9 +29,22 @@ export default function ActivateAccountPage() {
   const [showPasswordSection, setShowPasswordSection] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const [verifiedEmployee, setVerifiedEmployee] = useState<(typeof alumniAccounts)[0] | null>(null);
+  const calculatePasswordStrength = (value: string) => {
+    let strength = 0;
 
-  const sendOTPEmail = async (email: string, otp: string) => {
+    if (value.length >= 8) strength++;
+    if (/[A-Z]/.test(value)) strength++;
+    if (/[a-z]/.test(value)) strength++;
+    if (/\d/.test(value)) strength++;
+    if (/[^A-Za-z0-9]/.test(value)) strength++;
+
+    setPasswordStrength(strength);
+};
+
+
+const sendOTPEmail = async (email: string, otp: string) => {
     try {
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
@@ -204,7 +217,8 @@ export default function ActivateAccountPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
               <div>
                 <label style={{ fontWeight: 600 }}>New Password</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" style={{ width: "100%", marginTop: "8px", padding: "14px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, boxSizing: "border-box" }} />
+                <input type="password" value={password} onChange={(e) => {setPassword(e.target.value); calculatePasswordStrength(e.target.value);}}
+    placeholder="Enter password" style={{ width: "100%", marginTop: "8px", padding: "14px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, boxSizing: "border-box" }} />
               </div>
 
               <div>
