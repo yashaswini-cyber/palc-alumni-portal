@@ -13,12 +13,21 @@ export default function ActivateAccountPage() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  const [generatedOTP, setGeneratedOTP] = useState("");
+  const [enteredOTP, setEnteredOTP] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [otpSuccess, setOtpSuccess] = useState("");
+  const [showOTPSection, setShowOTPSection] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
   const handleContinue = (e: React.FormEvent) => {
     e.preventDefault();
 
     setError("");
     setSuccess("");
+    setOtpError("");
+    setOtpSuccess("");
+    setOtpVerified(false);
+    setEnteredOTP("");
 
     if (employeeId.trim() === "" || email.trim() === "") {
       setError("Please enter your Employee ID and Email Address.");
@@ -42,13 +51,39 @@ export default function ActivateAccountPage() {
       return;
     }
 
+    const otp = Math.floor(
+    100000 + Math.random() * 900000
+    ).toString();
+    setGeneratedOTP(otp);
+    console.log("Generated OTP:", otp);
+    setShowOTPSection(true);
+
     setSuccess(
-      `Identity verified for ${employee.name}. You can continue to email verification.`
+    `Identity verified for ${employee.name}. A verification code has been generated.`
     );
 
     // STEP 2:
     // OTP generation will happen here.
   };
+  const verifyOTP = () => {
+    setOtpError("");
+    setOtpSuccess("");
+    if (enteredOTP.trim() === "") {
+        setOtpError("Please enter the verification code.");
+        return;
+    }
+    if (enteredOTP !== generatedOTP) {
+        setOtpVerified(false);
+        setOtpSuccess("");
+        setOtpError("Invalid verification code.");
+        return;
+    }
+    setOtpVerified(true);
+    setOtpSuccess(
+        "OTP Verified ✓ You can now continue to create your password."
+    );
+    };
+
 
   return (
     <div
@@ -225,7 +260,86 @@ export default function ActivateAccountPage() {
           >
             Continue
           </PrimaryButton>
+          {showOTPSection && (
+            <div
+                style={{
+                width: "100%",
+                marginTop: "28px",
+                borderTop: `1px solid ${COLORS.border}`,
+                paddingTop: "24px",
+                }}
+            >
+                <label
+                style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontWeight: 600,
+                    color: COLORS.text,
+                }}
+                >
+                Enter Verification Code
+                </label>
 
+                <input
+                value={enteredOTP}
+                onChange={(e) => setEnteredOTP(e.target.value)}
+                placeholder="Enter the 6-digit OTP"
+                style={{
+                    width: "100%",
+                    padding: "14px 16px",
+                    borderRadius: "12px",
+                    border: `1px solid ${COLORS.border}`,
+                    fontSize: "15px",
+                    marginBottom: "18px",
+                    boxSizing: "border-box",
+                }}
+                />
+
+                <PrimaryButton
+                type="button"
+                fullWidth
+                onClick={verifyOTP}
+                style={{
+                    height: "50px",
+                    borderRadius: "12px",
+                }}
+                >
+                Verify OTP
+                </PrimaryButton>
+            </div>
+            )}
+            {otpError && (
+                <div
+                    style={{
+                    width: "100%",
+                    marginTop: "18px",
+                    background: "#FEF2F2",
+                    border: "1px solid #FECACA",
+                    color: "#DC2626",
+                    padding: "12px",
+                    borderRadius: "10px",
+                    fontWeight: 600,
+                    }}
+                >
+                    {otpError}
+                </div>
+                )}
+                {otpSuccess && (
+                    <div
+                        style={{
+                        width: "100%",
+                        marginTop: "18px",
+                        background: "#ECFDF5",
+                        border: "1px solid #BBF7D0",
+                        color: "#15803D",
+                        padding: "12px",
+                        borderRadius: "10px",
+                        fontWeight: 600,
+                        }}
+                    >
+                        {otpSuccess}
+                    </div>
+                    )}
           <Link
             to="/login"
             style={{
