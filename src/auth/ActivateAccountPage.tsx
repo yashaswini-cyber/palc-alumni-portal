@@ -4,6 +4,7 @@ import logo from "../assets/images/palc-logo.svg";
 import { COLORS } from "../shared/theme/colors";
 import PrimaryButton from "../shared/components/PrimaryButton";
 import { alumniAccounts } from "../../data/mockEmployeeData";
+import emailjs from "@emailjs/browser";
 
 export default function ActivateAccountPage() {
   const navigate = useNavigate();
@@ -20,7 +21,25 @@ export default function ActivateAccountPage() {
   const [showOTPSection, setShowOTPSection] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
 
-  const handleContinue = (e: React.FormEvent) => {
+const sendOTPEmail = async (email: string, otp: string) => {
+  try {
+    await emailjs.send(
+      import.meta.env.VITE_EMAILJS_SERVICE_ID,
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+      {
+        email,
+        otp,
+      },
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Email Error:", error);
+    return false;
+  }
+};  
+  const handleContinue = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setError("");
@@ -51,14 +70,18 @@ export default function ActivateAccountPage() {
       return;
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    setGeneratedOTP(otp);
-    console.log("Generated OTP:", otp);
-    setShowOTPSection(true);
-
-    setSuccess(`Identity verified for ${employee.name}. A verification code has been generated.`);
-  };
-
+const otp = Math.floor(100000 + Math.random() * 900000).toString();
+setGeneratedOTP(otp);
+const sent = await sendOTPEmail(employee.email, otp);
+if (!sent) {
+  setError("Unable to send verification email. Please try again.");
+  return;
+}
+setShowOTPSection(true);
+setSuccess(
+  `Identity verified for ${employee.name}. A verification code has been sent to ${employee.email}.`
+);
+};
   const verifyOTP = () => {
     setOtpError("");
     setOtpSuccess("");
