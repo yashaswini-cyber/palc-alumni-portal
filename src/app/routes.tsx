@@ -18,6 +18,7 @@ import AdminVerification from "../modules/admin/verification/AdminVerification";
 import AdminHelpdesk from "../modules/admin/helpdesk/AdminHelpdesk";
 import ActivateAccountPage from "../auth/ActivateAccountPage";
 import ForgotPasswordPage from "../auth/ForgotPasswordPage";
+import ManageAlumniPage from "../modules/admin/users/ManageAlumniPage";
 
 function RequireAlumniAuth() {
   return AuthService.isAuthenticated()
@@ -77,6 +78,10 @@ export const router = createBrowserRouter([
     {
       path: "helpdesk",
       element: <AdminHelpdesk />,
+    },
+    {
+      path: "manage-alumni",
+      element: <ManageAlumniPage />,
     },
   ],
 },
