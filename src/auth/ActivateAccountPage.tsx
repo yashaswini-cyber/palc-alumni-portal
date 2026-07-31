@@ -43,21 +43,35 @@ export default function ActivateAccountPage() {
     setPasswordStrength(strength);
 };
 
-
 const sendOTPEmail = async (email: string, otp: string) => {
-    try {
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        { email, otp },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      );
-      return true;
-    } catch (error) {
-      console.error("Email Error:", error);
-      return false;
-    }
-  };
+
+  console.log("Sending OTP...");
+  console.log("Email:", email);
+  console.log("OTP:", otp);
+
+  console.log("Service ID:", import.meta.env.VITE_EMAILJS_SERVICE_ID);
+  console.log("Template ID:", import.meta.env.VITE_EMAILJS_TEMPLATE_ID);
+  console.log("Public Key:", import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
+
+  try {
+    const response = await emailjs.send(
+      import.meta.env.VITE_EMAILJS_SERVICE_ID,
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+      {
+        email,
+        otp,
+      },
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+    );
+    console.log("SUCCESS");
+    console.log(response);
+    return true;
+  } catch (error) {
+    console.error("EMAILJS FAILED");
+    console.error(error);
+    return false;
+  }
+};
 
   const handleContinue = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,11 +98,16 @@ const sendOTPEmail = async (email: string, otp: string) => {
       setError("We couldn't verify your employment details. Please check your information or contact HR.");
       return;
     }
+    // ------------------------------------------------------------------
+// DEMO ONLY:
+// Allow repeated activation using the same email.
+// Restore this check when backend integration is completed.
+// ------------------------------------------------------------------
 
-    if (isEmailActivated(email)) {
-      setError("This account has already been activated.");
-      return;
-  }
+// if (isEmailActivated(email)) {
+//     setError("This account has already been activated.");
+//     return;
+// }
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedOTP(otp);
     const sent = await sendOTPEmail(email, otp);
@@ -170,7 +189,8 @@ const sendOTPEmail = async (email: string, otp: string) => {
           verifiedEmployee.employeeId,
           password
       );
-      activateEmail(email);
+      //activateEmail(email);
+      //Above code line saves already activated emails; Restore during backend integration.
   }
       navigate("/login");
     }, 2000);
@@ -219,6 +239,54 @@ const sendOTPEmail = async (email: string, otp: string) => {
                 <label style={{ fontWeight: 600 }}>New Password</label>
                 <input type="password" value={password} onChange={(e) => {setPassword(e.target.value); calculatePasswordStrength(e.target.value);}}
     placeholder="Enter password" style={{ width: "100%", marginTop: "8px", padding: "14px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, boxSizing: "border-box" }} />
+    <div style={{ marginTop: "12px" }}>
+    <div
+      style={{
+        width: "100%",
+        height: "8px",
+        background: "#E5E7EB",
+        borderRadius: "999px",
+        overflow: "hidden"
+      }}
+    >
+      <div
+        style={{
+          width: `${passwordStrength * 20}%`,
+          height: "100%",
+          background:
+            passwordStrength <= 2
+              ? "#EF4444"
+              : passwordStrength <= 4
+              ? "#F59E0B"
+              : "#22C55E",
+          transition: "all 0.3s ease"
+        }}
+      />
+    </div>
+
+    <div
+      style={{
+        marginTop: "8px",
+        fontSize: "14px",
+        fontWeight: 600,
+        color:
+          passwordStrength <= 2
+            ? "#EF4444"
+            : passwordStrength <= 4
+            ? "#F59E0B"
+            : "#22C55E"
+      }}
+    >
+      {password.length === 0
+        ? ""
+        : passwordStrength <= 2
+        ? "Weak Password"
+        : passwordStrength <= 4
+        ? "Medium Password"
+        : "Strong Password"}
+    </div>
+
+  </div>
               </div>
 
               <div>
