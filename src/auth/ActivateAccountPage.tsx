@@ -55,9 +55,11 @@ const sendOTPEmail = async (email: string, otp: string) => {
       }),
     });
 
-    return response.ok;
+    const data = await response.json();
+
+    return data.success;
   } catch (error) {
-    console.error(error);
+    console.error("Backend Error:", error);
     return false;
   }
 };
