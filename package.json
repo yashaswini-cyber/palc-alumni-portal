@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@azure/identity": "^4.13.1",
     "@emailjs/browser": "^4.4.1",
     "@fluentui/react-components": "^9.74.2",
     "@fluentui/react-icons": "^2.0.330",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "date": "^2.0.6",
     "dotenv": "^17.4.2",
+    "isomorphic-fetch": "^3.0.0",
     "nodemailer": "^9.0.3",
     "picker": "^0.1.4",
     "react": "^19.2.7",
@@ -26,6 +29,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/dotenv": "^6.1.1",
+    "@types/isomorphic-fetch": "^0.0.39",
     "@types/node": "^24.13.2",
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19.2.17",

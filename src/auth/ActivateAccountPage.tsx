@@ -5,7 +5,7 @@ import { COLORS } from "../shared/theme/colors";
 import PrimaryButton from "../shared/components/PrimaryButton";
 import { alumniAccounts } from "../../data/mockEmployeeData";
 import {getAlumniAccounts,updateAlumniAccount,} from "../mockData/localStorage"; 
-import emailjs from "@emailjs/browser";
+//import { sendOTPEmail } from "./../auth/emailService";
 import Toast from "../shared/components/Toast";
 import {isEmailActivated,activateEmail} from "../mockData/localStorage";    
     
@@ -42,32 +42,21 @@ export default function ActivateAccountPage() {
 
     setPasswordStrength(strength);
 };
-
 const sendOTPEmail = async (email: string, otp: string) => {
-
-  console.log("Sending OTP...");
-  console.log("Email:", email);
-  console.log("OTP:", otp);
-
-  console.log("Service ID:", import.meta.env.VITE_EMAILJS_SERVICE_ID);
-  console.log("Template ID:", import.meta.env.VITE_EMAILJS_TEMPLATE_ID);
-  console.log("Public Key:", import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
-
   try {
-    const response = await emailjs.send(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID,
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-      {
+    const response = await fetch("http://localhost:5000/api/send-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         email,
         otp,
-      },
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-    );
-    console.log("SUCCESS");
-    console.log(response);
-    return true;
+      }),
+    });
+
+    return response.ok;
   } catch (error) {
-    console.error("EMAILJS FAILED");
     console.error(error);
     return false;
   }
@@ -91,6 +80,7 @@ const sendOTPEmail = async (email: string, otp: string) => {
     const employee = getAlumniAccounts().find(
     (emp) =>
       emp.employeeId.toLowerCase() === employeeId.toLowerCase()
+      //emp.email.toLowerCase() === email.toLowerCase()
   );
     setVerifiedEmployee(employee || null);
 
