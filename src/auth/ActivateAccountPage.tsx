@@ -77,15 +77,15 @@ const sendOTPEmail = async (email: string, otp: string) => {
     setConfirmPassword("");
 
     if (employeeId.trim() === "" || email.trim() === "") {
-      setError("Please enter your Employee ID and Email Address.");
+      setError("Please enter your PalC Employee ID and Email Address.");
       return;
     }
 
     const employee = getAlumniAccounts().find(
-    (emp) =>
-      emp.employeeId.toLowerCase() === employeeId.toLowerCase()
-      //emp.email.toLowerCase() === email.toLowerCase()
-  );
+      (emp) =>
+        emp.employeeId.toLowerCase() === employeeId.toLowerCase() &&
+        emp.email.toLowerCase() === email.toLowerCase()
+    );
     setVerifiedEmployee(employee || null);
 
     if (!employee) {
@@ -200,12 +200,12 @@ const sendOTPEmail = async (email: string, otp: string) => {
 
           <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "8px", marginBottom: "22px" }}>
             <label style={{ fontWeight: 600, color: COLORS.text }}>Employee ID</label>
-            <input value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} placeholder="Enter your Employee ID" style={{ width: "100%", padding: "14px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, fontSize: "15px", boxSizing: "border-box", outline: "none" }} />
+            <input value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} placeholder="Enter your PalC Employee ID" style={{ width: "100%", padding: "14px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, fontSize: "15px", boxSizing: "border-box", outline: "none" }} />
           </div>
 
           <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "8px", marginBottom: "24px" }}>
             <label style={{ fontWeight: 600, color: COLORS.text }}>Email Address</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your registered email" style={{ width: "100%", padding: "14px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, fontSize: "15px", boxSizing: "border-box", outline: "none" }} />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your personal email" style={{ width: "100%", padding: "14px 16px", borderRadius: "12px", border: `1px solid ${COLORS.border}`, fontSize: "15px", boxSizing: "border-box", outline: "none" }} />
           </div>
 
           {error && <div style={{ width: "100%", background: "#FEF2F2", border: "1px solid #FECACA", color: "#DC2626", padding: "12px", borderRadius: "10px", marginBottom: "20px", fontWeight: 600 }}>{error}</div>}

@@ -56,7 +56,6 @@ export default function ForgotPasswordPage() {
     }),
   }
 );
-
     return response.ok;
   } catch (error) {
     console.error(error);
@@ -80,10 +79,10 @@ export default function ForgotPasswordPage() {
     }
 
     const employee = getAlumniAccounts().find(
-    (emp) =>
-      emp.employeeId.toLowerCase() === employeeId.toLowerCase()
-      //emp.email.toLowerCase() === email.toLowerCase()
-  );
+      (emp) =>
+        emp.employeeId.toLowerCase() === employeeId.toLowerCase() &&
+        emp.email.toLowerCase() === email.toLowerCase()
+    );
     setVerifiedEmployee(employee || null);
 
     if (!employee) {
