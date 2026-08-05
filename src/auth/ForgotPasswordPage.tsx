@@ -43,16 +43,19 @@ export default function ForgotPasswordPage() {
 };
   const sendOTPEmail = async (email: string, otp: string) => {
   try {
-    const response = await fetch("http://localhost:5000/api/send-otp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        otp,
-      }),
-    });
+    const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/api/send-otp`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      otp,
+    }),
+  }
+);
 
     return response.ok;
   } catch (error) {
