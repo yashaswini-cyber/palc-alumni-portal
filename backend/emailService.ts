@@ -1,11 +1,21 @@
 import "isomorphic-fetch";
+import dotenv from "dotenv";
+dotenv.config();
 import { Client } from "@microsoft/microsoft-graph-client";
 import { ClientSecretCredential } from "@azure/identity";
 
+const tenantId = process.env.AZURE_TENANT_ID?.trim();
+const clientId = process.env.AZURE_CLIENT_ID?.trim();
+const clientSecret = process.env.AZURE_CLIENT_SECRET?.trim();
+
+console.log("Tenant:", tenantId);
+console.log("Client:", clientId);
+console.log("Secret Loaded:", !!clientSecret);
+
 const credential = new ClientSecretCredential(
-  process.env.AZURE_TENANT_ID!,
-  process.env.AZURE_CLIENT_ID!,
-  process.env.AZURE_CLIENT_SECRET!
+  tenantId!,
+  clientId!,
+  clientSecret!
 );
 
 const graphClient = Client.init({
@@ -34,11 +44,8 @@ export async function sendOTPEmail(
         contentType: "HTML",
         content: `
           <h2>PalC Alumni Portal</h2>
-
           <p>Your verification code is:</p>
-
           <h1>${otp}</h1>
-
           <p>This OTP expires shortly.</p>
         `,
       },

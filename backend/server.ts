@@ -1,10 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { sendOTPEmail } from "./emailService.js";
+//ignore below error, otp still arrives in mail.
+import { sendOTPEmail } from "./emailService";
 
 dotenv.config();
-
+console.log("TENANT =", process.env.AZURE_TENANT_ID);
+console.log("CLIENT =", process.env.AZURE_CLIENT_ID);
+console.log("SECRET =", process.env.AZURE_CLIENT_SECRET ? "Loaded" : "Missing");
+console.log("MAIL =", process.env.MAIL_FROM);
 const app = express();
 
 app.use(cors());
