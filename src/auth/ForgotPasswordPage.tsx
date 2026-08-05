@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
       setError("Please enter your Employee ID and Email Address.");
       return;
     }
-
+//employee id and email both need to be verified
     const employee = getAlumniAccounts().find(
       (emp) =>
         emp.employeeId.toLowerCase() === employeeId.toLowerCase() &&
