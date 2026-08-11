@@ -16,6 +16,7 @@ export const AuthService = {
   validateCredentials(username: string, password: string) {
     return getAlumniAccounts().some(
       (user) =>
+        user.activated &&
         (user.username === username ||
           user.email.toLowerCase() === username.toLowerCase()) &&
         user.password === password
@@ -35,6 +36,7 @@ export const AuthService = {
   authenticate(username: string, password: string) {
     const alumni = getAlumniAccounts().find(
       (user) =>
+        user.activated &&
         (user.username === username ||
           user.email.toLowerCase() === username.toLowerCase()) &&
         user.password === password

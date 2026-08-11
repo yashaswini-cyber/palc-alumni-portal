@@ -119,13 +119,16 @@ export const alumniAccounts = [
   {
     employeeId: "1000",
     username: "1000",
-    password: "",
+    password: "1234",
     name: "Yashaswini Pawar",
     email: "pawar.yashaswini77@gmail.com",
-    activated: false,
-    otpVerified: false,
+    activated: true,
+    otpVerified: true,
   },
 ];
+
+// Increment this when mock data changes to force localStorage refresh
+export const MOCK_DATA_VERSION = 2;
 
 export const adminAccounts = [
   {

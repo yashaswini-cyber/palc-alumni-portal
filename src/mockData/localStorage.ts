@@ -1,4 +1,4 @@
-import { alumniAccounts } from "../../data/mockEmployeeData";
+import { alumniAccounts, MOCK_DATA_VERSION } from "../../data/mockEmployeeData";
 
 export interface EmploymentDocument {
   id: string;
@@ -27,6 +27,7 @@ const DOCUMENTS_KEY = "palc-employment-documents";
 const VERIFICATION_REQUESTS_KEY = "palc-verification-requests";
 const ALUMNI_ACCOUNTS_KEY = "palc-alumni-accounts";
 const ACTIVATED_EMAILS_KEY = "palc-activated-emails";
+const DATA_VERSION_KEY = "palc-mock-data-version";
 const defaultDocuments: EmploymentDocument[] = [
   { id: "DOC-001", employeeId: "PALC-1023", employeeName: "Rahul Sharma", name: "Experience Certificate", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.0", date: "12-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
   { id: "DOC-002", employeeId: "PALC-1047", employeeName: "Sneha Iyer", name: "Relieving Letter", category: "Employment Record", uploadedBy: "HR Operations", version: "v1.2", date: "15-Jan-2025", format: "PDF", status: "Available", path: "/downloads/Form16.pdf" },
@@ -123,6 +124,16 @@ export function addVerificationRequest(
   saveVerificationRequests(requests);
 }
 export function getAlumniAccounts(): typeof alumniAccounts {
+  const storedVersion = localStorage.getItem(DATA_VERSION_KEY);
+  const currentVersion = String(MOCK_DATA_VERSION);
+
+  // Reset cached accounts when mock data version changes
+  if (storedVersion !== currentVersion) {
+    localStorage.setItem(ALUMNI_ACCOUNTS_KEY, JSON.stringify(alumniAccounts));
+    localStorage.setItem(DATA_VERSION_KEY, currentVersion);
+    return alumniAccounts;
+  }
+
   const stored = localStorage.getItem(ALUMNI_ACCOUNTS_KEY);
 
   if (!stored) {
