@@ -182,16 +182,28 @@ export default function HelpdeskPage() {
   const [selectedTicket, setSelectedTicket] = useState<HelpdeskTicket | null>(null);
   const [showTicketDetails, setShowTicketDetails] = useState(false);
   const [replyMessage,setReplyMessage]=useState("");
-  const [ticketForm, setTicketForm] = useState({ category: "IT Support", priority: "Medium", subject: "", description: "", attachment: null as File | null });
+  const [ticketForm, setTicketForm] = useState({
+    category: "",
+    priority: "",
+    subject: "",
+    description: "",
+    attachment: null as File | null
+  });
 
   const handleTicketChange = (field: keyof typeof ticketForm, value: string | File | null) => {
     setTicketForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const resetTicketForm = () => {
-    setTicketForm({ category: "IT Support", priority: "Medium", subject: "", description: "", attachment: null });
-    setRequiredBy(null);
-  };
+ const resetTicketForm = () => {
+  setTicketForm({
+    category: "",
+    priority: "",
+    subject: "",
+    description: "",
+    attachment: null
+  });
+  setRequiredBy(null);
+};
 
   useEffect(() => { saveHelpdeskTickets(ticketList); }, [ticketList]);
   const ticketsSectionRef = useRef<HTMLDivElement>(null);
@@ -203,7 +215,7 @@ export default function HelpdeskPage() {
   const cancelCreateTicket = () => { resetTicketForm(); };
   
   const handleSubmitTicket = () => {
-    if (!ticketForm.subject.trim() || !ticketForm.description.trim() || !requiredBy) {
+    if ( !ticketForm.category || !ticketForm.priority || !ticketForm.subject.trim() || !ticketForm.description.trim() || !requiredBy) {
       alert("Please complete all mandatory fields.");
       return;
     }
@@ -352,21 +364,35 @@ export default function HelpdeskPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "24px" }}>
             <div>
               <label style={labelStyle}>Category *</label>
-              <select value={ticketForm.category} onChange={(e) => handleTicketChange("category", e.target.value)} style={inputStyle}>
-                <option>IT Support</option>
-                <option>HR</option>
-                <option>Payroll</option>
-                <option>Benefits</option>
-                <option>Documents</option>
-                <option>Employment Verification</option>
-                <option>Accounts</option>
-                <option>Other</option>
-              </select>
+              <select
+                value={ticketForm.category}
+                onChange={(e) => handleTicketChange("category", e.target.value)}
+                style={{
+                  ...inputStyle,
+                  color: ticketForm.category ? COLORS.text : COLORS.textSecondary,
+                      }}
+                    >
+        <option value="">Select category</option>
+        <option>HR</option>
+        <option>Payroll</option>
+        <option>Documents</option>
+        <option>Employment Verification</option>
+        <option>Accounts</option>
+        <option>Other</option>
+      </select>
             </div>
 
             <div>
               <label style={labelStyle}>Priority *</label>
-              <select value={ticketForm.priority} onChange={(e) => handleTicketChange("priority", e.target.value)} style={inputStyle}>
+              <select
+                value={ticketForm.priority}
+                onChange={(e) => handleTicketChange("priority", e.target.value)}
+                style={{
+                  ...inputStyle,
+                  color: ticketForm.priority ? COLORS.text : COLORS.textSecondary,
+                }}
+              >
+                <option value="">Select priority</option>
                 <option>Low</option>
                 <option>Medium</option>
                 <option>High</option>
@@ -395,8 +421,8 @@ export default function HelpdeskPage() {
 
           <div style={sectionGap}>
             <label style={{ ...labelStyle, marginBottom: "10px" }}>Supporting Attachment (Optional)</label>
-            <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "10px", minHeight: "160px", border: `2px dashed ${COLORS.border}`, borderRadius: "14px", background: "#F8FAFC", cursor: "pointer", transition: ".2s", textAlign: "center", padding: "28px" }}>
-              <div style={{ fontSize: "36px" }}>📎</div>
+            <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "6px", minHeight: "100px", border: `2px dashed ${COLORS.border}`, borderRadius: "12px", background: "#F8FAFC", cursor: "pointer", transition: ".2s", textAlign: "center", padding: "16px" }}>
+              <div style={{ fontSize: "24px" }}>📎</div>
               <div style={{ fontWeight: 700, color: COLORS.text }}>Click to upload supporting files</div>
               <div style={{ color: COLORS.textSecondary, fontSize: "14px", lineHeight: 1.6 }}>Screenshots, PDFs or documents help us resolve your issue faster.</div>
               {ticketForm.attachment && (
@@ -415,36 +441,6 @@ export default function HelpdeskPage() {
                 <strong>Maximum Size:</strong> 10 MB
               </span>
             </div>
-          </div>
-
-          <div style={{ marginTop: "30px", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "22px", background: "#FFFFFF" }}>
-            <h4 style={{ margin: "0 0 14px", color: COLORS.text, fontSize: "17px" }}>
-              Related Help Articles
-            </h4>
-
-            <p style={{ margin: "0 0 18px", color: COLORS.textSecondary, lineHeight: 1.6 }}>
-              These articles may help resolve your issue before submitting a support request.
-            </p>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {relatedArticles[ticketForm.category]?.map((article) => (
-                <div key={article}
-                  style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 14px", borderRadius: "10px", background: "#F8FAFC", border: `1px solid ${COLORS.border}`, cursor: "pointer", transition: ".2s" }}>
-                  <span style={{ color: "#2563EB" }}>📄</span>
-                  <span>{article}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ marginTop: "30px", background: "#F8FAFC", border: `1px solid ${COLORS.border}`, borderRadius: "14px", padding: "20px" }}>
-            <h4 style={{ margin: "0 0 12px", color: COLORS.text, fontSize: "17px" }}>Support Guidelines</h4>
-            <ul style={{ margin: 0, paddingLeft: "20px", color: COLORS.textSecondary, lineHeight: 1.9 }}>
-              <li>Our support team aims to provide an initial response within <strong>24 business hours.</strong></li>
-              <li>Attach screenshots or supporting documents whenever possible for quicker resolution.</li>
-              <li>Track your ticket status anytime under <strong>My Support Tickets.</strong></li>
-              <li>You will receive notifications whenever there is an update or response to your ticket.</li>
-            </ul>
           </div>
 
           <div style={{ marginTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
