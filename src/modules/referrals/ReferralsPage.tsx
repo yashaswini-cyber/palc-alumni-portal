@@ -23,7 +23,6 @@ interface Referral {
   company?: string;
   experience?: string;
   linkedin?: string;
-  notes?: string;
   resumeName?: string;
 }
 
@@ -81,29 +80,45 @@ export default function ReferralsPage() {
   const openReferralForm = () => setFormOpen(true);
   const closeReferralForm = () => setFormOpen(false);
 
-  const handleReferralSubmitted = (formData: Omit<Referral, "id" | "date" | "updated" | "status"> & { candidate: string; email: string; phone: string; company: string; experience: string; position: string; linkedin: string; notes: string; }) => {
-    const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
-    const referral: Referral = {
-      id: `REF${String(referrals.length + 1).padStart(3, "0")}`,
-      candidate: formData.candidate,
-      position: formData.position,
-      date: today,
-      updated: today,
-      status: "Pending",
-      email: formData.email,
-      phone: formData.phone,
-      company: formData.company,
-      experience: formData.experience,
-      linkedin: formData.linkedin,
-      notes: formData.notes,
-    };
-    setReferrals((prev) => {
-      const updated = [referral, ...prev];
-      saveReferrals(updated);
-      return updated;
-    });
-    setFormOpen(false);
+ const handleReferralSubmitted = (formData: {
+  candidate: string;
+  email: string;
+  phone: string;
+  company: string;
+  experience: string;
+  position: string;
+  linkedin: string;
+  resume: File | null;
+}) => {
+  const today = new Date().toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
+  const referral: Referral = {
+    id: `REF${String(referrals.length + 1).padStart(3, "0")}`,
+    candidate: formData.candidate,
+    position: formData.position,
+    date: today,
+    updated: today,
+    status: "Pending",
+    email: formData.email,
+    phone: formData.phone,
+    company: formData.company,
+    experience: formData.experience,
+    linkedin: formData.linkedin,
+    resumeName: formData.resume?.name,
   };
+
+  setReferrals((prev) => {
+    const updated = [referral, ...prev];
+    saveReferrals(updated);
+    return updated;
+  });
+
+  setFormOpen(false);
+};
 
   const openReferralDetails = (referral: Referral) => {
     setSelectedReferral(referral);
@@ -587,13 +602,6 @@ export default function ReferralsPage() {
               <DetailItem label="Current Company" value={selectedReferral.company || "-"} />
               <DetailItem label="Experience" value={selectedReferral.experience || "-"} />
               <DetailItem label="LinkedIn" value={selectedReferral.linkedin || "-"} />
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "24px" }}>
-              <div style={{ fontSize: "13px", fontWeight: 600, color: COLORS.textSecondary }}>Additional Notes</div>
-              <div style={{ padding: "16px", border: `1px solid ${COLORS.border}`, borderRadius: "12px", background: COLORS.surface, color: COLORS.text }}>
-                {selectedReferral.notes || "No notes provided."}
-              </div>
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
