@@ -11,7 +11,7 @@ type ReferralForm = {
   experience: string;
   position: string;
   linkedin: string;
-  notes: string;
+  resume: File | null;
 };
 
 type Props = {
@@ -28,7 +28,7 @@ const emptyForm: ReferralForm = {
   experience: "",
   position: "",
   linkedin: "",
-  notes: "",
+  resume: null,
 };
 
 export default function ReferralFormModal({
@@ -36,11 +36,17 @@ export default function ReferralFormModal({
   onClose,
   onSubmit,
 }: Props) {
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState<ReferralForm>(emptyForm);
   const [validationError, setValidationError] = useState("");
 
-  const updateField = (key: keyof ReferralForm, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const updateField = (
+    key: keyof ReferralForm,
+    value: string | File | null
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
 
     if (validationError) {
       setValidationError("");
@@ -58,8 +64,15 @@ export default function ReferralFormModal({
       return;
     }
 
+    if (!form.resume) {
+      setValidationError("Please attach the candidate's resume.");
+      return;
+    }
+
     setValidationError("");
+
     onSubmit(form);
+
     setForm(emptyForm);
     onClose();
   };
@@ -87,7 +100,6 @@ export default function ReferralFormModal({
           overflow: "hidden",
         }}
       >
-
         {/* HEADER */}
         <div
           style={{
@@ -154,6 +166,7 @@ export default function ReferralFormModal({
               boxShadow: "0 6px 18px rgba(15,76,129,0.08)",
             }}
           >
+            {/* Candidate Name */}
             <input
               placeholder="Candidate Name *"
               value={form.candidate}
@@ -163,6 +176,7 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+            {/* Email */}
             <input
               placeholder="Email *"
               value={form.email}
@@ -172,6 +186,7 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+            {/* Phone */}
             <input
               placeholder="Phone Number *"
               value={form.phone}
@@ -181,6 +196,7 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+            {/* Company */}
             <input
               placeholder="Current Company"
               value={form.company}
@@ -190,6 +206,7 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+            {/* Experience */}
             <input
               placeholder="Years of Experience (if any)"
               value={form.experience}
@@ -199,6 +216,7 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+            {/* Position */}
             <input
               placeholder="Position Applied For *"
               value={form.position}
@@ -208,6 +226,7 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+            {/* LinkedIn */}
             <input
               placeholder="LinkedIn Profile"
               value={form.linkedin}
@@ -220,19 +239,60 @@ export default function ReferralFormModal({
               }}
             />
 
-            <textarea
-              placeholder="Additional Notes"
-              value={form.notes}
-              onChange={(e) =>
-                updateField("notes", e.target.value)
-              }
-              rows={4}
+            {/* RESUME */}
+            <label
               style={{
-                ...inputStyle,
-                resize: "vertical",
                 gridColumn: "1 / span 2",
+                width: "100%",
+                minHeight: "90px",
+                padding: "16px",
+                borderRadius: "10px",
+                border: `1px dashed ${COLORS.border}`,
+                background: "#F8FAFC",
+                boxSizing: "border-box",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "6px",
+                cursor: "pointer",
+                textAlign: "center",
               }}
-            />
+            >
+              <div
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  color: COLORS.text,
+                }}
+              >
+                {form.resume
+                  ? form.resume.name
+                  : "Attach Resume *"}
+              </div>
+
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: COLORS.textSecondary,
+                }}
+              >
+                Supported formats: PDF, DOC, DOCX
+              </div>
+
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                hidden
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+
+                  if (file) {
+                    updateField("resume", file);
+                  }
+                }}
+              />
+            </label>
           </div>
         </div>
 
@@ -293,7 +353,6 @@ export default function ReferralFormModal({
             Submit Referral
           </PrimaryButton>
         </div>
-
       </DialogSurface>
     </Dialog>
   );
