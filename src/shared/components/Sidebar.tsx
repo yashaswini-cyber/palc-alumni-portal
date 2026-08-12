@@ -4,11 +4,11 @@ import Logo from "./Logo";
 const menuItems = [
   { name: "Dashboard", path: "/dashboard", icon: "DB" },
   { name: "Documents", path: "/dashboard/documents", icon: "DC" },
-  { name: "Verification", path: "/dashboard/verification", icon: "VR" },
+  { name: "Helpdesk", path: "/dashboard/helpdesk", icon: "HD" },
   { name: "Careers", path: "/dashboard/careers", icon: "CR" },
   { name: "Referrals", path: "/dashboard/referrals", icon: "RF" },
   { name: "Events", path: "/dashboard/events", icon: "EV" },
-  { name: "Helpdesk", path: "/dashboard/helpdesk", icon: "HD" },
+  { name: "Verification", path: "/dashboard/verification", icon: "VR" },
   { name: "Profile", path: "/dashboard/profile", icon: "PR" },
   { name: "Notifications", path: "/dashboard/notifications", icon: "NT" },
 ];
