@@ -36,6 +36,7 @@ export default function ReferralFormModal({
   onClose,
   onSubmit,
 }: Props) {
+<<<<<<< HEAD
   const [form, setForm] = useState<ReferralForm>(emptyForm);
   const [validationError, setValidationError] = useState("");
 
@@ -47,6 +48,13 @@ export default function ReferralFormModal({
       ...prev,
       [key]: value,
     }));
+=======
+  const [form, setForm] = useState(emptyForm);
+  const [validationError, setValidationError] = useState("");
+
+  const updateField = (key: keyof ReferralForm, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
 
     if (validationError) {
       setValidationError("");
@@ -64,6 +72,7 @@ export default function ReferralFormModal({
       return;
     }
 
+<<<<<<< HEAD
     if (!form.resume) {
       setValidationError("Please attach the candidate's resume.");
       return;
@@ -77,6 +86,14 @@ export default function ReferralFormModal({
     onClose();
   };
 
+=======
+    setValidationError("");
+    onSubmit(form);
+    setForm(emptyForm);
+    onClose();
+  };
+
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
   const inputStyle = {
     width: "100%",
     padding: "12px 14px",
@@ -100,6 +117,10 @@ export default function ReferralFormModal({
           overflow: "hidden",
         }}
       >
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
         {/* HEADER */}
         <div
           style={{
@@ -166,7 +187,10 @@ export default function ReferralFormModal({
               boxShadow: "0 6px 18px rgba(15,76,129,0.08)",
             }}
           >
+<<<<<<< HEAD
             {/* Candidate Name */}
+=======
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
             <input
               placeholder="Candidate Name *"
               value={form.candidate}
@@ -176,7 +200,10 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+<<<<<<< HEAD
             {/* Email */}
+=======
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
             <input
               placeholder="Email *"
               value={form.email}
@@ -186,7 +213,10 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+<<<<<<< HEAD
             {/* Phone */}
+=======
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
             <input
               placeholder="Phone Number *"
               value={form.phone}
@@ -196,7 +226,10 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+<<<<<<< HEAD
             {/* Company */}
+=======
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
             <input
               placeholder="Current Company"
               value={form.company}
@@ -206,7 +239,10 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+<<<<<<< HEAD
             {/* Experience */}
+=======
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
             <input
               placeholder="Years of Experience (if any)"
               value={form.experience}
@@ -216,7 +252,10 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+<<<<<<< HEAD
             {/* Position */}
+=======
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
             <input
               placeholder="Position Applied For *"
               value={form.position}
@@ -226,7 +265,10 @@ export default function ReferralFormModal({
               style={inputStyle}
             />
 
+<<<<<<< HEAD
             {/* LinkedIn */}
+=======
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
             <input
               placeholder="LinkedIn Profile"
               value={form.linkedin}
@@ -239,6 +281,7 @@ export default function ReferralFormModal({
               }}
             />
 
+<<<<<<< HEAD
             {/* RESUME */}
             <label
               style={{
@@ -293,6 +336,21 @@ export default function ReferralFormModal({
                 }}
               />
             </label>
+=======
+            <textarea
+              placeholder="Additional Notes"
+              value={form.notes}
+              onChange={(e) =>
+                updateField("notes", e.target.value)
+              }
+              rows={4}
+              style={{
+                ...inputStyle,
+                resize: "vertical",
+                gridColumn: "1 / span 2",
+              }}
+            />
+>>>>>>> 7d3c6a6 (Made some UI changes to helpdesk and referrals page on alumni side of portal.)
           </div>
         </div>
 
