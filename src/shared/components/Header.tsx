@@ -102,47 +102,69 @@ export default function Header() {
           />
         </label>
 
-        <button
-          aria-label="Notifications"
-          type="button"
-          onClick={() => navigate("/dashboard/notifications")}
-          style={{
-            width: "42px",
-            height: "42px",
-            borderRadius: "14px",
-            border: "1px solid #D9E2EF",
-            background: "#FFFFFF",
-            color: "#475569",
-            display: "grid",
-            placeItems: "center",
-            cursor: "pointer",
-            position: "relative",
-            boxShadow: "none",
-            transition: "background 160ms ease, border-color 160ms ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "#F8FAFC";
-            e.currentTarget.style.borderColor = "#BFDBFE";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "#FFFFFF";
-            e.currentTarget.style.borderColor = "#D9E2EF";
-          }}
-        >
-          <span style={{ fontSize: "12px", fontWeight: 850 }}>NT</span>
-          <span
-            style={{
-              width: "8px",
-              height: "8px",
-              borderRadius: "999px",
-              background: "#2563EB",
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              boxShadow: "0 0 0 3px #FFFFFF",
-            }}
-          />
-        </button>
+       <button
+  aria-label="Notifications"
+  type="button"
+  onClick={() => navigate("/dashboard/notifications")}
+  style={{
+    width: "42px",
+    height: "42px",
+    borderRadius: "14px",
+    border: "1px solid #D9E2EF",
+    background: "#FFFFFF",
+    color: "#475569",
+    display: "grid",
+    placeItems: "center",
+    cursor: "pointer",
+    position: "relative",
+    boxShadow: "none",
+    transition: "background 160ms ease, border-color 160ms ease",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.background = "#F8FAFC";
+    e.currentTarget.style.borderColor = "#BFDBFE";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.background = "#FFFFFF";
+    e.currentTarget.style.borderColor = "#D9E2EF";
+  }}
+>
+  <svg
+    width="21"
+    height="21"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <path
+      d="M18 8C18 5.79 16.21 4 14 4H10C7.79 4 6 5.79 6 8V12.5C6 14.1 5.4 15.1 4.5 16.2L3.5 17.5C3.2 17.9 3.5 18.5 4 18.5H20C20.5 18.5 20.8 17.9 20.5 17.5L19.5 16.2C18.6 15.1 18 14.1 18 12.5V8Z"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9.5 21C10.1 21.6 10.9 22 12 22C13.1 22 13.9 21.6 14.5 21"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+  </svg>
+
+  <span
+    style={{
+      width: "8px",
+      height: "8px",
+      borderRadius: "999px",
+      background: "#2563EB",
+      position: "absolute",
+      top: "8px",
+      right: "8px",
+      boxShadow: "0 0 0 3px #FFFFFF",
+    }}
+  />
+</button>
 
         <div
           onClick={() => setShowProfileMenu(!showProfileMenu)}
